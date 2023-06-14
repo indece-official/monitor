@@ -1,0 +1,9 @@
+{
+    "G104": {
+        "gopkg.in/guregu/null.v4.Int": ["Scan"],
+        "gopkg.in/guregu/null.v4.String": ["Scan"],
+        "gopkg.in/guregu/null.v4.Bool": ["Scan"],
+        "gopkg.in/guregu/null.v4.Time": ["Scan"],
+        "gopkg.in/guregu/null.v4.Float": ["Scan"]
+    }
+}

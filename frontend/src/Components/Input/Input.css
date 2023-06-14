@@ -1,0 +1,239 @@
+.InputText-field,
+.InputTextarea-field,
+.InputDateTime,
+.InputSelect-field,
+.InputFile,
+.InputSelectFile,
+.InputSelectEventLocation {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    border: 2px solid #2b2b2b;
+    border-radius: 0;
+    letter-spacing: 1px;
+    overflow: hidden;
+    position: relative;
+    color: #2b2b2b;
+    text-align: left;
+    cursor: text;
+    margin: 15px 0;
+    transition: border-color ease 0.3s;
+    background: #fff;
+}
+
+.InputText:not(.empty) .InputText-field,
+.InputText.focussed .InputText-field,
+.InputTextarea:not(.empty) .InputTextarea-field,
+.InputTextarea.focussed .InputTextarea-field,
+.InputDateTime:not(.empty),
+.InputDateTime.focussed,
+.InputSelect:not(.empty) .InputText-field,
+.InputFile:not(.empty),
+.InputSelectFile:not(.empty),
+.InputSelectEventLocation:not(.empty) {
+    border-color: #336068;
+}
+
+.InputText-label,
+.InputTextarea-label,
+.InputDateTime-label,
+.InputSelect-label,
+.InputFile-label,
+.InputSelectFile-label,
+.InputSelectEventLocation-label {
+    position: absolute;
+    font-size: 17px;
+    top: 15px;
+    left: 0;
+    color: #2b2b2b;
+    padding: 0 20px;
+    z-index: 0;
+    transition: top ease 0.3s, font-size ease 0.3s, border-color ease 0.3s;
+    pointer-events: none;
+}
+
+.InputText:not(.empty) .InputText-label,
+.InputText.focussed .InputText-label,
+.InputTextarea:not(.empty) .InputTextarea-label,
+.InputTextarea.focussed .InputTextarea-label,
+.InputDateTime:not(.empty) .InputDateTime-label,
+.InputDateTime.focussed .InputDateTime-label,
+.InputSelect:not(.empty) .InputSelect-label,
+.InputFile:not(.empty) .InputFile-label,
+.InputSelectFile:not(.empty) .InputSelectFile-label,
+.InputSelectEventLocation:not(.empty) .InputSelectEventLocation-label {
+    top: 0;
+    color: #336068;
+    font-size: 12px;
+}
+
+.InputText.error .InputText-label,
+.InputTextarea.error .InputTextarea-label {
+    color: #ff0000;
+}
+
+.InputText-error,
+.InputTextarea-error,
+.InputCheckbox-error,
+.InputSelect-error {
+    margin-top: 12px;
+    margin-bottom: 15px;
+    color: #ff0000;
+    text-align: left;
+    display: block;
+    background: #ffcccc;
+    padding: 5px 20px;
+    border-radius: 2px;
+    position: relative;
+}
+
+.InputText-error::after,
+.InputTextarea-error::after,
+.InputCheckbox-error::after,
+.InputSelect-error::after {
+    position: absolute;
+    content: '';
+    display: block;
+    top: -10px;
+    left: 20px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 10px 10px 10px;
+    border-color: transparent transparent #ffcccc transparent;
+}
+
+.InputText input[type=text],
+.InputText input[type=password],
+.InputText input[type=email],
+.InputTextarea textarea,
+.InputDateTime input[type=datetime-local],
+.InputSelect select,
+.InputFile-value,
+.InputSelectFile-value,
+.InputSelectEventLocation-value {
+    font-size: 17px;
+    display: block;
+    border: 0;
+    border-radius: 0;
+    letter-spacing: 1px;
+    padding-left: 20px;
+    padding-right: 30px;
+    padding-top: 18px;
+    padding-bottom: 12px;
+    background: transparent;
+    box-sizing: border-box;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    outline: 0;
+    height: 48px;
+}
+
+.InputDateTime.empty:not(.focussed) input[type=datetime-local] {
+    opacity: 0;
+}
+
+.InputFile input[type=file] {
+    width: 1px;
+    height: 1px;
+}
+
+.InputFile-value,
+.InputSelectFile-value,
+.InputSelectEventLocation-value {
+    cursor: pointer;
+}
+
+.InputTextarea textarea {
+    height: 100px;
+}
+
+.InputText-suffix,
+.InputTextarea-suffix,
+.InputDateTime-suffix,
+.InputSelectFile-suffix,
+.InputSelectEventLocation-suffix {
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: 0 10px;
+    font-size: 17px;
+    color: #2b2b2b;
+    z-index: 0;
+}
+
+.InputSelectFile img {
+    width: 30px;
+    height: 30px;
+}
+
+.InputMarkdown {
+    border: 2px solid #2b2b2b;
+    background: #fff;
+}
+
+.InputMarkdown .w-md-editor {
+    border: 0;
+    box-shadow: none;
+}
+
+.InputMarkdown-label {
+    color: #2b2b2b;
+    font-size: 12px;
+    padding: 5px 20px;
+    border-bottom: 1px solid #2b2b2b;
+}
+
+.InputCheckbox-field {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    text-align: left;
+    align-items: flex-start;
+    position: relative;
+    cursor: pointer;
+    color: #000;
+    margin: 10px 0;
+}
+
+.InputCheckbox.error .InputCheckbox-field {
+    color: #ff0000;
+}
+
+.InputCheckbox input[type=checkbox] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 1px;
+    width: 1px;
+}
+
+.InputCheckbox-mark {
+    height: 20px;
+    width: 20px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    border: 2px solid #000;
+    border-radius: 3px;
+    padding-top: 2px;
+    margin-right: 10px;
+    color: transparent;
+    font-size: 13px;
+    text-align: center;
+}
+
+.InputCheckbox.error .InputCheckbox-mark {
+    border-color: #ff0000;
+}
+
+.InputCheckbox-mark svg {
+    vertical-align: top;
+}
+
+.InputCheckbox input:checked ~ .InputCheckbox-mark {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: #fff;
+}

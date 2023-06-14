@@ -1,0 +1,11 @@
+k8s/
+backend/bin/
+backend/dist/
+backend/test/
+backend/config/local.conf
+frontend/node_modules/
+frontend/mock/
+frontend/coverage/
+frontend/build/
+.vscode
+README.md

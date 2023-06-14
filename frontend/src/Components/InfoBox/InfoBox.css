@@ -1,0 +1,19 @@
+.InfoBox {
+    border: 2px solid #0000aa;
+    padding: 10px 20px;
+    margin: 10px 0;
+    color: #0000aa;
+    white-space: nowrap;
+}
+
+.InfoBox svg {
+    vertical-align: middle;
+    font-size: 20px;
+    margin-right: 20px;
+}
+
+.InfoBox-message {
+    display: inline-block;
+    white-space: normal;
+    vertical-align: middle;
+}

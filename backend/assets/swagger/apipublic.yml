@@ -1,0 +1,1221 @@
+# indece Monitor
+# Copyright (C) 2023 indece UG (haftungsbeschränkt)
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License or any
+# later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <https://www.gnu.org/licenses/>.
+
+openapi: 3.0.1
+info:
+  title: Public API
+  description: Public API of ds-server
+  version: "1.0"
+paths:
+  /v1/login:
+    post:
+      tags:
+        - session
+      summary: Login
+      operationId: v1Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+  
+  /v1/logout:
+    post:
+      tags:
+        - session
+      summary: Logout
+      operationId: v1Logout
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+  /v1/setup/finish:
+    post:
+      tags:
+        - setup
+      summary: Finish setup
+      operationId: v1FinishSetup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: {}
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+  /v1/tag:
+    post:
+      tags:
+        - tag
+      summary: Add a tag
+      operationId: v1AddTag
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - color
+              properties:
+                name:
+                  type: string
+                color:
+                  type: string
+        required: true
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1AddTagJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+      - tag
+      summary: Get tags
+      operationId: v1GetTags
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetTagsJSONResponseBody'
+      x-codegen-request-body-name: body
+
+  /v1/tag/{tagUID}:
+    get:
+      tags:
+      - tag
+      summary: Get tag
+      operationId: v1GetTag
+      parameters:
+      - name: tagUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetTagJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    put:
+      tags:
+        - tag
+      summary: Update a tag
+      operationId: v1UpdateTag
+      parameters:
+      - name: tagUID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - color
+              properties:
+                name:
+                  type: string
+                color:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - tag
+      summary: Delete a tag
+      operationId: v1DeleteTag
+      parameters:
+      - name: tagUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+  /v1/host:
+    post:
+      tags:
+        - host
+      summary: Add an host
+      operationId: v1AddHost
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - tag_uids
+              properties:
+                name:
+                  type: string
+                tag_uids:
+                  type: array
+                  items:
+                    type: string
+        required: true
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1AddHostJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+      - host
+      summary: Get hosts
+      operationId: v1GetHosts
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetHostsJSONResponseBody'
+      x-codegen-request-body-name: body
+
+  /v1/host/{hostUID}:
+    get:
+      tags:
+      - host
+      summary: Get host
+      operationId: v1GetHost
+      parameters:
+      - name: hostUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetHostJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    put:
+      tags:
+        - host
+      summary: Update a host
+      operationId: v1UpdateHost
+      parameters:
+      - name: hostUID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - tag_uids
+              properties:
+                name:
+                  type: string
+                tag_uids:
+                  type: array
+                  items:
+                    type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - host
+      summary: Delete a host
+      operationId: v1DeleteHost
+      parameters:
+      - name: hostUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+  /v1/checker:
+    get:
+      tags:
+      - checker
+      summary: Get checkers
+      operationId: v1GetCheckers
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetCheckersJSONResponseBody'
+      x-codegen-request-body-name: body
+
+  /v1/checker/{checkerUID}:
+    get:
+      tags:
+      - checker
+      summary: Get checker
+      operationId: v1GetChecker
+      parameters:
+      - name: checkerUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetCheckerJSONResponseBody'
+      x-codegen-request-body-name: body
+
+  /v1/check:
+    post:
+      tags:
+        - check
+      summary: Add a check
+      operationId: v1AddCheck
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - checker_uid
+                - host_uid
+                - params
+              properties:
+                name:
+                  type: string
+                checker_uid:
+                  type: string
+                host_uid:
+                  type: string
+                schedule:
+                  type: string
+                params:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CheckV1Param'
+        required: true
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1AddCheckJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+      - check
+      summary: Get checks
+      operationId: v1GetChecks
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetChecksJSONResponseBody'
+      x-codegen-request-body-name: body
+
+  /v1/check/{checkUID}:
+    get:
+      tags:
+      - check
+      summary: Get check
+      operationId: v1GetCheck
+      parameters:
+      - name: checkUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetCheckJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    put:
+      tags:
+        - check
+      summary: Update a check
+      operationId: v1UpdateCheck
+      parameters:
+      - name: checkUID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - params
+              properties:
+                name:
+                  type: string
+                schedule:
+                  type: string
+                params:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/CheckV1Param'
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - check
+      summary: Delete a check
+      operationId: v1DeleteCheck
+      parameters:
+      - name: checkUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+  
+  /v1/host/{hostUID}/check:
+    get:
+      tags:
+      - check
+      summary: Get checks for host
+      operationId: v1GetHostChecks
+      parameters:
+      - name: hostUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetHostChecksJSONResponseBody'
+      x-codegen-request-body-name: body
+  
+  /v1/connector:
+    post:
+      tags:
+        - connector
+      summary: Add a connector
+      operationId: v1AddConnector
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - host_uid
+              properties:
+                host_uid:
+                  type: string
+        required: true
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1AddConnectorJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+      - connector
+      summary: Get connectors
+      operationId: v1GetConnectors
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetConnectorsJSONResponseBody'
+      x-codegen-request-body-name: body
+  
+  /v1/connector/{connectorUID}:
+    get:
+      tags:
+      - connector
+      summary: Get connector
+      operationId: v1GetConnector
+      parameters:
+      - name: connectorUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetConnectorJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - connector
+      summary: Delete a connector
+      operationId: v1DeleteConnector
+      parameters:
+      - name: connectorUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+  /v1/user:
+    post:
+      tags:
+        - user
+      summary: Add an user
+      operationId: v1AddUser
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+                - roles
+              properties:
+                username:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UserV1Role'
+        required: true
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1AddUserJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+      - user
+      summary: Get users
+      operationId: v1GetUsers
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetUsersJSONResponseBody'
+      x-codegen-request-body-name: body
+
+  /v1/user/{userUID}:
+    put:
+      tags:
+        - user
+      summary: Update an user
+      operationId: v1UpdateUser
+      parameters:
+      - name: userUID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - roles
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/UserV1Role'
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+      - user
+      summary: Get user
+      operationId: v1GetUser
+      parameters:
+      - name: userUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetUserJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - user
+      summary: Delete an user
+      operationId: v1DeleteUser
+      parameters:
+      - name: userUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+  /v1/user/{userUID}/password:
+    put:
+      tags:
+        - user
+      summary: Update an user's password
+      operationId: v1UpdateUserPassword
+      parameters:
+      - name: userUID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - password
+              properties:
+                password:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+  /v1/user/self:
+    get:
+      tags:
+      - user
+      summary: Get own user
+      operationId: v1GetOwnUser
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetOwnUserJSONResponseBody'
+      x-codegen-request-body-name: body
+
+  /v1/config:
+    get:
+      tags:
+      - config
+      summary: Get config
+      operationId: v1GetConfig
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetConfigJSONResponseBody'
+      x-codegen-request-body-name: body
+
+  /v1/config/{key}:
+    put:
+      tags:
+        - config
+      summary: Set a config property
+      operationId: v1SetConfigProperty
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ConfigPropertyV1Key'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - value
+              properties:
+                value:
+                  type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+components:
+  schemas:
+    TagV1:
+      type: object
+      required:
+        - uid
+        - name
+        - color
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+   
+    HostV1:
+      type: object
+      required:
+        - uid
+        - name
+        - tags
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagV1'
+
+    CheckStatusV1Status:
+      type: string
+      enum:
+        - OK
+        - WARNING
+        - CRITICAL
+        - UNKNOWN
+
+    CheckStatusV1:
+      type: object
+      required:
+        - uid
+        - status
+        - message
+        - datetime_created
+      properties:
+        uid:
+          type: string
+        status:
+          $ref: '#/components/schemas/CheckStatusV1Status'
+        message:
+          type: string
+        datetime_created:
+          type: string
+          format: date-time
+
+    CheckV1Param:
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+
+    CheckV1:
+      type: object
+      required:
+        - uid
+        - name
+        - host_uid
+        - checker_uid
+        - custom
+        - disabled
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        host_uid:
+          type: string
+        checker_uid:
+          type: string
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckV1Param'
+        custom:
+          type: boolean
+        schedule:
+          type: string
+        disabled:
+          type: boolean
+        status:
+          $ref: '#/components/schemas/CheckStatusV1'
+
+    CheckerV1ParamType:
+      type: string
+      enum:
+        - TEXT
+        - PASSWORD
+        - NUMBER
+        - SELECT
+        - DURATION
+        - BOOLEAN
+
+    CheckerV1Param:
+      type: object
+      required:
+        - name
+        - label
+        - required
+        - type
+      properties:
+        name:
+          type: string
+        label:
+          type: string
+        hint:
+          type: string
+        required:
+          type: boolean
+        type:
+          $ref: '#/components/schemas/CheckerV1ParamType'
+        options:
+          type: array
+          items:
+            type: string
+
+    CheckerV1Capabilities:
+      type: object
+      required:
+        - params
+      properties:
+        params:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckerV1Param'
+        default_schedule:
+          type: string
+
+    CheckerV1:
+      type: object
+      required:
+        - uid
+        - name
+        - type
+        - connector_type
+        - version
+        - capabilities
+        - custom_checks
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        connector_type:
+          type: string
+        version:
+          type: string
+        capabilities:
+          $ref: '#/components/schemas/CheckerV1Capabilities'
+        custom_checks:
+          type: boolean
+
+    ConnectorV1Status:
+      type: string
+      enum:
+        - UNKNOWN
+        - UNREGISTERED
+        - READY
+        - ERROR
+    
+    ConnectorV1:
+      type: object
+      required:
+        - uid
+        - host_uid
+        - connected
+        - status
+      properties:
+        uid:
+          type: string
+        host_uid:
+          type: string
+        type:
+          type: string
+        version:
+          type: string
+        status:
+          $ref: '#/components/schemas/ConnectorV1Status'
+        connected:
+          type: boolean
+        error:
+          type: string
+        last_ping:
+          type: string
+          format: date-time
+    
+    UserV1Source:
+      type: string
+      enum:
+        - LOCAL
+
+    UserV1Role:
+      type: string
+      enum:
+        - SHOW
+        - ADMIN
+
+    UserV1:
+      type: object
+      required:
+        - uid
+        - source
+        - username
+        - roles
+      properties:
+        uid:
+          type: string
+        source:
+          $ref: '#/components/schemas/UserV1Source'
+        username:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserV1Role'
+
+    ConfigPropertyV1Key:
+      type: string
+      enum:
+        - SETUP_FINISHED
+        - TLS_CA_CRT
+        - TLS_SERVER_CRT
+        - CONNECTOR_HOST
+        - CONNECTOR_PORT
+
+    ConfigPropertyV1:
+      type: object
+      required:
+        - key
+        - value
+        - editable
+      properties:
+        key:
+          $ref: '#/components/schemas/ConfigPropertyV1Key'
+        value:
+          type: string
+        editable:
+          type: boolean
+
+    v1AddTagJSONResponseBody:
+      type: object
+      required:
+        - tag_uid
+      properties:
+        tag_uid:
+          type: string
+    
+    v1GetTagsJSONResponseBody:
+      type: object
+      required:
+        - tags
+      properties:
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/TagV1'
+
+    v1GetTagJSONResponseBody:
+      type: object
+      required:
+        - tag
+      properties:
+        tag:
+          $ref: '#/components/schemas/TagV1'
+    
+    v1AddHostJSONResponseBody:
+      type: object
+      required:
+        - host_uid
+      properties:
+        host_uid:
+          type: string
+    
+    v1GetHostsJSONResponseBody:
+      type: object
+      required:
+        - hosts
+      properties:
+        hosts:
+          type: array
+          items:
+            $ref: '#/components/schemas/HostV1'
+    
+    v1GetHostJSONResponseBody:
+      type: object
+      required:
+        - host
+      properties:
+        host:
+          $ref: '#/components/schemas/HostV1'
+    
+    v1GetCheckersJSONResponseBody:
+      type: object
+      required:
+        - checkers
+      properties:
+        checkers:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckerV1'
+    
+    v1GetCheckerJSONResponseBody:
+      type: object
+      required:
+        - checker
+      properties:
+        checker:
+          $ref: '#/components/schemas/CheckerV1'
+    
+    v1AddCheckJSONResponseBody:
+      type: object
+      required:
+        - check_uid
+      properties:
+        check_uid:
+          type: string
+    
+    v1GetChecksJSONResponseBody:
+      type: object
+      required:
+        - checks
+      properties:
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckV1'
+    
+    v1GetCheckJSONResponseBody:
+      type: object
+      required:
+        - check
+      properties:
+        check:
+          $ref: '#/components/schemas/CheckV1'
+    
+    v1GetHostChecksJSONResponseBody:
+      type: object
+      required:
+        - checks
+      properties:
+        checks:
+          type: array
+          items:
+            $ref: '#/components/schemas/CheckV1'
+    
+    v1AddConnectorJSONResponseBody:
+      type: object
+      required:
+        - connector_uid
+        - config_file
+      properties:
+        connector_uid:
+          type: string
+        config_file:
+          type: string
+    
+    v1GetConnectorsJSONResponseBody:
+      type: object
+      required:
+        - connectors
+      properties:
+        connectors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectorV1'
+    
+    v1GetConnectorJSONResponseBody:
+      type: object
+      required:
+        - connector
+      properties:
+        connector:
+          $ref: '#/components/schemas/ConnectorV1'
+    
+    v1AddUserJSONResponseBody:
+      type: object
+      required:
+        - user_uid
+      properties:
+        user_uid:
+          type: string
+    
+    v1GetUsersJSONResponseBody:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserV1'
+    
+    v1GetOwnUserJSONResponseBody:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          $ref: '#/components/schemas/UserV1'
+    
+    v1GetUserJSONResponseBody:
+      type: object
+      required:
+        - user
+      properties:
+        user:
+          $ref: '#/components/schemas/UserV1'
+
+    v1GetConfigJSONResponseBody:
+      type: object
+      required:
+        - properties
+      properties:
+        properties:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConfigPropertyV1'

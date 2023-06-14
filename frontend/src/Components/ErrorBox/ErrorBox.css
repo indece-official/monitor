@@ -1,0 +1,25 @@
+.ErrorBox {
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+    border: 2px solid #f44;
+    padding: 10px 15px;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin-bottom: 10px;
+    color: #f44;
+}
+
+.ErrorBox svg {
+    vertical-align: middle;
+    font-size: 28px;
+    margin-right: 15px;
+}
+
+.ErrorBox-text {
+    flex-grow: 1;
+    flex-shrink: 1;
+    white-space: pre-wrap;
+}

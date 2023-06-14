@@ -1,0 +1,87 @@
+.ListEmpty {
+    border: 1px solid #666;
+    color: #777;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 10px 20px;
+}
+
+.ListItem {
+    border: 1px solid #333;
+    margin-bottom: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.ListItem.color-red {
+    background-color: #faa;
+}
+
+.ListItem.color-green {
+    background-color: #afa;
+}
+
+.ListItemHeader {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    position: relative;
+}
+
+.ListItemHeaderField {
+    flex-grow: 0;
+    flex-shrink: 0;
+    text-decoration: none;
+    color: inherit;
+    padding: 10px 20px;
+    text-align: right;
+}
+
+.ListItemHeaderField.clickable {
+    cursor: pointer;
+}
+
+.ListItemHeaderField.grow {
+    flex-basis: 100px;
+    flex-grow: 1;
+    text-align: left;
+}
+
+.ListItemHeaderField-subtext {
+    color: #777;
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+.ListItemHeaderAction {
+    flex-grow: 0;
+    flex-shrink: 0;
+    border-left: 1px solid #333;
+    padding: 2px 10px;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+}
+
+.ListItemHeaderAction.clickable {
+    cursor: pointer;
+}
+
+.ListItemHeaderAction-inner {
+    border-radius: 20px;
+    width: 40px;
+    height: 40px;
+    padding: 11px 10px;
+    box-sizing: border-box;
+}
+
+.ListItemHeaderAction.active .ListItemHeaderAction-inner {
+    background: #060;
+    color: #fff;
+}
+
+.ListItemBody {
+    padding: 10px 20px;
+}

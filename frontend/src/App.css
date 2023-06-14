@@ -1,0 +1,27 @@
+.App-content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  min-height: calc(100vh - 50px);
+  width: 100%;
+}
+
+.App-content .SideNav {
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.App-content-main {
+  flex-grow: 1;
+  flex-basis: 0;
+  flex-shrink: 1;
+  text-align: left;
+  padding: 10px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.App-content-main a {
+  text-decoration: none;
+  color: #333;
+}
