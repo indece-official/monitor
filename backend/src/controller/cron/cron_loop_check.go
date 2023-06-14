@@ -37,6 +37,19 @@ func (c *Controller) getCheck(checkUID string) (*model.PgCheckV1, error) {
 	return nil, fmt.Errorf("not matching check found")
 }
 
+func (c *Controller) getNotifier(notifierUID string) (*model.PgNotifierV1, error) {
+	c.mutexNotifiers.Lock()
+	defer c.mutexNotifiers.Unlock()
+
+	for _, pgNotifier := range c.notifiers {
+		if pgNotifier.UID == notifierUID {
+			return pgNotifier, nil
+		}
+	}
+
+	return nil, fmt.Errorf("not matching notifier found")
+}
+
 func (c *Controller) getChecker(checkerUID string) (*model.PgCheckerV1, error) {
 	c.mutexCheckers.Lock()
 	defer c.mutexCheckers.Unlock()
@@ -48,6 +61,19 @@ func (c *Controller) getChecker(checkerUID string) (*model.PgCheckerV1, error) {
 	}
 
 	return nil, fmt.Errorf("not matching checker found")
+}
+
+func (c *Controller) getHost(hostUID string) (*model.PgHostV1, error) {
+	c.mutexHosts.Lock()
+	defer c.mutexHosts.Unlock()
+
+	for _, pgHost := range c.hosts {
+		if pgHost.UID == hostUID {
+			return pgHost, nil
+		}
+	}
+
+	return nil, fmt.Errorf("not matching host found")
 }
 
 func (c *Controller) getConnectorByConnectorTypeAndHostUID(connectorType string, hostUID string) (*model.PgConnectorV1, error) {

@@ -67,6 +67,18 @@ func (c *Controller) reload() error {
 	c.connectors = pgConnectors
 	c.mutexConnectors.Unlock()
 
+	pgHosts, err := c.postgresService.GetHosts(
+		ctx,
+		&postgres.GetHostsFilter{},
+	)
+	if err != nil {
+		return fmt.Errorf("error loading hosts: %s", err)
+	}
+
+	c.mutexHosts.Lock()
+	c.hosts = pgHosts
+	c.mutexHosts.Unlock()
+
 	pgUsers, err := c.postgresService.GetUsers(
 		ctx,
 		&postgres.GetUsersFilter{},
@@ -78,6 +90,20 @@ func (c *Controller) reload() error {
 	c.mutexUsers.Lock()
 	c.users = pgUsers
 	c.mutexUsers.Unlock()
+
+	pgNotifiers, err := c.postgresService.GetNotifiers(
+		ctx,
+		&postgres.GetNotifiersFilter{
+			Disabled: null.BoolFrom(false),
+		},
+	)
+	if err != nil {
+		return fmt.Errorf("error loading notifiers: %s", err)
+	}
+
+	c.mutexNotifiers.Lock()
+	c.notifiers = pgNotifiers
+	c.mutexNotifiers.Unlock()
 
 	defaultInterval := 60 * time.Second
 

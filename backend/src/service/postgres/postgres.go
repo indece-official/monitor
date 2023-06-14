@@ -68,6 +68,11 @@ type IService interface {
 	UpdateTag(qctx context.Context, tagUID string, pgTag *model.PgTagV1) error
 	DeleteTag(qctx context.Context, tagUID string) error
 	GetTags(qctx context.Context, filter *GetTagsFilter) ([]*model.PgTagV1, error)
+
+	AddNotifier(qctx context.Context, pgNotifier *model.PgNotifierV1) error
+	UpdateNotifier(qctx context.Context, notifierUID string, pgNotifier *model.PgNotifierV1) error
+	DeleteNotifier(qctx context.Context, notifierUID string) error
+	GetNotifiers(qctx context.Context, filter *GetNotifiersFilter) ([]*model.PgNotifierV1, error)
 }
 
 // Service provides the interaction with the postgresql database

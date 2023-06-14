@@ -46,12 +46,16 @@ type Controller struct {
 	checks          []*model.PgCheckV1
 	checkers        []*model.PgCheckerV1
 	connectors      []*model.PgConnectorV1
+	hosts           []*model.PgHostV1
 	users           []*model.PgUserV1
+	notifiers       []*model.PgNotifierV1
 	scheduler       *gocron.Scheduler
 	mutexChecks     sync.Mutex
 	mutexCheckers   sync.Mutex
 	mutexConnectors sync.Mutex
+	mutexHosts      sync.Mutex
 	mutexUsers      sync.Mutex
+	mutexNotifiers  sync.Mutex
 	stop            bool
 	error           error
 	waitGroupStop   sync.WaitGroup

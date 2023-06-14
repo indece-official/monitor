@@ -38,5 +38,5 @@ type PgCheckV1 struct {
 	Custom           bool
 	DatetimeDisabled null.Time
 
-	Status *PgCheckStatusV1
+	Statuses []*PgCheckStatusV1
 }
