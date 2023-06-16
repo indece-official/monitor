@@ -795,12 +795,30 @@ components:
         color:
           type: string
    
+    HostV1Status:
+      type: object
+      required:
+        - count_critical
+        - count_warning
+        - count_ok
+        - count_unknown
+      properties:
+        count_critical:
+          type: integer
+        count_warning:
+          type: integer
+        count_ok:
+          type: integer
+        count_unknown:
+          type: integer
+
     HostV1:
       type: object
       required:
         - uid
         - name
         - tags
+        - status
       properties:
         uid:
           type: string
@@ -810,6 +828,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/TagV1'
+        status:
+          $ref: '#/components/schemas/HostV1Status'
 
     CheckStatusV1Status:
       type: string

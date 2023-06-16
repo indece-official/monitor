@@ -79,6 +79,11 @@ func (c *Controller) reload() error {
 	c.users = pgUsers
 	c.mutexUsers.Unlock()
 
+	err = c.cacheService.DeleteAllHostStatuses()
+	if err != nil {
+		return fmt.Errorf("error clearing host statuses: %s", err)
+	}
+
 	defaultInterval := 60 * time.Second
 
 	c.scheduler.Clear()
@@ -92,6 +97,22 @@ func (c *Controller) reload() error {
 			c.log.Warnf("Error loading checker for check %s: %s", pgCheck.UID, err)
 
 			continue
+		}
+
+		checkStatus := model.PgCheckStatusV1StatusUnkn
+		if pgCheck.Status != nil {
+			checkStatus = pgCheck.Status.Status
+		}
+
+		err = c.cacheService.UpsertHostCheckStatus(
+			pgCheck.HostUID,
+			&model.ReHostStatusV1Check{
+				CheckUID: pgCheck.UID,
+				Status:   checkStatus,
+			},
+		)
+		if err != nil {
+			return fmt.Errorf("error caching check status: %s", err)
 		}
 
 		if pgCheck.Schedule.Valid {

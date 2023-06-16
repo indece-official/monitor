@@ -2,11 +2,21 @@ import { BackendService } from './BackendService';
 import { TagV1 } from './TagService';
 
 
+export interface HostV1Status
+{
+    count_critical: number;
+    count_warning:  number;
+    count_ok:       number;
+    count_unknown:  number;
+}
+
+
 export interface HostV1
 {
     uid:    string;
     name:   string;
     tags:   Array<TagV1>;
+    status: HostV1Status;
 }
 
 

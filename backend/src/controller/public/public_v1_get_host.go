@@ -46,12 +46,17 @@ func (c *Controller) reqV1GetHost(w http.ResponseWriter, r *http.Request) gousuc
 	}
 
 	if len(pgHosts) != 1 {
-		return gousuchi.NotFound(r, "Hosts not found")
+		return gousuchi.NotFound(r, "Host not found")
 	}
 
 	pgHost := pgHosts[0]
 
-	respData, err := c.mapPgHostV1ToAPIGetHostV1ResponseBody(pgHost)
+	reHostStatus, err := c.cacheService.GetHostStatus(pgHost.UID)
+	if err != nil {
+		return gousuchi.InternalServerError(r, "Error loading host status: %s", err)
+	}
+
+	respData, err := c.mapPgHostV1ToAPIGetHostV1ResponseBody(pgHost, reHostStatus)
 	if err != nil {
 		return gousuchi.InternalServerError(r, "Error mapping response: %s", err)
 	}

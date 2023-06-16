@@ -19,6 +19,8 @@ import { isAdmin, UserService, UserV1 } from '../../Services/UserService';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
 import { Formatter } from '../../utils/Formatter';
 
+import './HostPage.css';
+
 
 export interface HostPageRouteParams
 {
@@ -209,6 +211,7 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                         <ListItem key={check.uid}>
                             <ListItemHeader>
                                 <ListItemHeaderField
+                                    className={`HostPage-check-status status-${(check.status?.status || CheckStatusV1Status.Unknown).toLowerCase()}`}
                                     text={Formatter.checkStatus(check.status?.status || CheckStatusV1Status.Unknown)}
                                 />
                                 

@@ -273,6 +273,17 @@ func (c *Controller) addCheckStatus(
 		return fmt.Errorf("error adding check status: %s", err)
 	}
 
+	err = c.cacheService.UpsertHostCheckStatus(
+		pgCheck.HostUID,
+		&model.ReHostStatusV1Check{
+			CheckUID: pgCheck.UID,
+			Status:   pgCheckStatus.Status,
+		},
+	)
+	if err != nil {
+		return fmt.Errorf("error caching check status: %s", err)
+	}
+
 	if !notify {
 		return nil
 	}
