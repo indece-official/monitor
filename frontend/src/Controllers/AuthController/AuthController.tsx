@@ -26,7 +26,8 @@ class $AuthController extends React.Component<AuthControllerProps>
         await this._userService.load();
 
         if ( !this._userService.isLoggedIn().get() &&
-             this.props.router.location.pathname !== '/login' )
+             this.props.router.location.pathname !== '/login' &&
+             this.props.router.location.pathname !== '/setup' )
         {
             this.props.router.navigate('/login');
         }
