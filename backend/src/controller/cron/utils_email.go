@@ -29,7 +29,7 @@ func (c *Controller) sendEmail(
 	locale model.Locale,
 	templateType template.TemplateType,
 	to string,
-	params map[string]string,
+	params map[string]interface{},
 ) error {
 	bodyHTML, err := c.templateService.Generate(
 		locale,

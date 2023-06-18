@@ -2,8 +2,10 @@ package model
 
 import "time"
 
-type ReUnnotifiedStatusChangedV1 struct {
-	CheckUID        string    `json:"check_uid"`
-	NotifierUID     string    `json:"notifier_uid"`
-	DatetimeCreated time.Time `json:"datetime_created"`
+type ReUnnotifiedStatusChangeV1 struct {
+	HostUID         string                `json:"host_uid"`
+	CheckUID        string                `json:"check_uid"`
+	NotifierUID     string                `json:"notifier_uid"`
+	Status          PgCheckStatusV1Status `json:"status"`
+	DatetimeCreated time.Time             `json:"datetime_created"`
 }

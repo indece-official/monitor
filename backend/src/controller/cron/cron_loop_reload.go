@@ -126,8 +126,8 @@ func (c *Controller) reload() error {
 		}
 
 		checkStatus := model.PgCheckStatusV1StatusUnkn
-		if pgCheck.Status != nil {
-			checkStatus = pgCheck.Status.Status
+		if len(pgCheck.Statuses) > 0 {
+			checkStatus = pgCheck.Statuses[0].Status
 		}
 
 		err = c.cacheService.UpsertHostCheckStatus(

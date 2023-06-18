@@ -22,7 +22,6 @@ import (
 
 	"github.com/indece-official/monitor/backend/src/model"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
-	"github.com/indece-official/monitor/backend/src/service/template"
 	"github.com/indece-official/monitor/backend/src/utils"
 	"gopkg.in/guregu/null.v4"
 )
@@ -41,7 +40,8 @@ func (c *Controller) getHostStats(
 	pgChecks, err := c.postgresService.GetChecks(
 		ctx,
 		&postgres.GetChecksFilter{
-			HostUID: null.StringFrom(hostUID),
+			HostUID:     null.StringFrom(hostUID),
+			CountStatus: 1,
 		},
 	)
 	if err != nil {
@@ -51,13 +51,13 @@ func (c *Controller) getHostStats(
 	hostStats := &HostStats{}
 
 	for _, pgCheck := range pgChecks {
-		if pgCheck.Status == nil {
+		if len(pgCheck.Statuses) == 0 {
 			hostStats.CountUnknown++
 
 			continue
 		}
 
-		switch pgCheck.Status.Status {
+		switch pgCheck.Statuses[0].Status {
 		case model.PgCheckStatusV1StatusCrit:
 			hostStats.CountCritical++
 		case model.PgCheckStatusV1StatusWarn:
@@ -263,8 +263,8 @@ func (c *Controller) addCheckStatus(
 
 	notify := false
 
-	if pgCheck.Status == nil ||
-		pgCheckStatus.Status != pgCheck.Status.Status {
+	if len(pgCheck.Statuses) == 0 ||
+		pgCheckStatus.Status != pgCheck.Statuses[0].Status {
 		notify = true
 	}
 
@@ -278,6 +278,7 @@ func (c *Controller) addCheckStatus(
 		&model.ReHostStatusV1Check{
 			CheckUID: pgCheck.UID,
 			Status:   pgCheckStatus.Status,
+			Message:  pgCheckStatus.Message,
 		},
 	)
 	if err != nil {
@@ -288,52 +289,17 @@ func (c *Controller) addCheckStatus(
 		return nil
 	}
 
-	pgHosts, err := c.postgresService.GetHosts(
-		ctx,
-		&postgres.GetHostsFilter{
-			HostUID: null.StringFrom(pgCheck.HostUID),
-		},
-	)
-	if err != nil {
-		return fmt.Errorf("error loading existing hosts: %s", err)
-	}
-
-	if len(pgHosts) != 1 {
-		return fmt.Errorf("host not found")
-	}
-
-	pgHost := pgHosts[0]
-
-	hostStats, err := c.getHostStats(ctx, pgHost.UID)
-	if err != nil {
-		return fmt.Errorf("error loading host stats: %s", err)
-	}
-
-	templateParams := map[string]string{}
-
-	templateParams["host_name"] = pgHost.Name
-	templateParams["count_ok"] = fmt.Sprintf("%d", hostStats.CountOK)
-	templateParams["count_warning"] = fmt.Sprintf("%d", hostStats.CountWarning)
-	templateParams["count_critical"] = fmt.Sprintf("%d", hostStats.CountCritical)
-	templateParams["count_unknown"] = fmt.Sprintf("%d", hostStats.CountUnknown)
-	templateParams["check_name"] = pgCheck.Name
-	templateParams["checkstatus_status"] = string(pgCheckStatus.Status)
-	templateParams["checkstatus_message"] = pgCheckStatus.Message
-
-	for _, pgUser := range c.users {
-		if !pgUser.Email.Valid {
-			continue
-		}
-
-		err = c.sendEmail(
-			ctx,
-			model.LocaleEnUs,
-			template.TemplateTypeStatusChanged,
-			pgUser.Email.String,
-			templateParams,
+	for _, pgNotifier := range c.notifiers {
+		err = c.cacheService.SetUnnotifiedStatusChange(
+			&model.ReUnnotifiedStatusChangeV1{
+				HostUID:     pgCheck.HostUID,
+				NotifierUID: pgNotifier.UID,
+				CheckUID:    pgCheck.UID,
+				Status:      pgCheckStatus.Status,
+			},
 		)
 		if err != nil {
-			return fmt.Errorf("error sending email: %s", err)
+			return fmt.Errorf("error adding unnotified status change: %s", err)
 		}
 	}
 

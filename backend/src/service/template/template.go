@@ -32,7 +32,7 @@ import (
 const ServiceName = "template"
 
 type ExecutionData struct {
-	Data map[string]string
+	Data map[string]interface{}
 }
 
 type ITemplate interface {
@@ -66,7 +66,7 @@ var TemplatePartsEmail = []TemplatePart{
 type IService interface {
 	gousu.IService
 
-	Generate(locale model.Locale, templateType TemplateType, templatePart TemplatePart, params map[string]string) (string, error)
+	Generate(locale model.Locale, templateType TemplateType, templatePart TemplatePart, params map[string]interface{}) (string, error)
 }
 
 type Service struct {
@@ -155,7 +155,7 @@ func (s *Service) Generate(
 	locale model.Locale,
 	templateType TemplateType,
 	templatePart TemplatePart,
-	params map[string]string,
+	params map[string]interface{},
 ) (string, error) {
 	var buf bytes.Buffer
 

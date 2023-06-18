@@ -51,8 +51,8 @@ func (c *Controller) mapPgCheckV1ToAPICheckV1(pgCheck *model.PgCheckV1, addParam
 		apiCheck.Params = &apiCheckParams
 	}
 
-	if pgCheck.Status != nil {
-		apiCheck.Status, err = c.mapPgCheckStatusV1ToAPICheckStatusV1(pgCheck.Status)
+	if len(pgCheck.Statuses) > 0 {
+		apiCheck.Status, err = c.mapPgCheckStatusV1ToAPICheckStatusV1(pgCheck.Statuses[0])
 		if err != nil {
 			return nil, fmt.Errorf("error mapping check status: %s", err)
 		}
