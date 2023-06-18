@@ -95,6 +95,8 @@ func (c *Controller) Start() error {
 
 	c.waitGroupStop.Add(1)
 	go func() {
+		time.Sleep(10 * time.Second)
+
 		for !c.stop {
 			c.error = nil
 

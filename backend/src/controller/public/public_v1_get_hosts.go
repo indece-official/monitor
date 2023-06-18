@@ -20,6 +20,7 @@ import (
 	"net/http"
 
 	"github.com/indece-official/go-gousu/gousuchi/v2"
+	"github.com/indece-official/monitor/backend/src/model"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
 )
 
@@ -37,7 +38,18 @@ func (c *Controller) reqV1GetHosts(w http.ResponseWriter, r *http.Request) gousu
 		return gousuchi.InternalServerError(r, "Error loading connectors: %s", err)
 	}
 
-	respData, err := c.mapPgHostV1ToAPIGetHostsV1ResponseBody(pgHosts)
+	reHostStatuses := map[string]*model.ReHostStatusV1{}
+
+	for _, pgHost := range pgHosts {
+		reHostStatus, err := c.cacheService.GetHostStatus(pgHost.UID)
+		if err != nil {
+			return gousuchi.InternalServerError(r, "Error loading host status: %s", err)
+		}
+
+		reHostStatuses[pgHost.UID] = reHostStatus
+	}
+
+	respData, err := c.mapPgHostV1ToAPIGetHostsV1ResponseBody(pgHosts, reHostStatuses)
 	if err != nil {
 		return gousuchi.InternalServerError(r, "Error mapping response: %s", err)
 	}

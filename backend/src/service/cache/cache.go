@@ -46,6 +46,11 @@ type IService interface {
 	GetConnectorStatus(connectorUID string) (*model.ReConnectorStatusV1, error)
 	DeleteConnectorStatus(connectorUID string) error
 
+	UpsertHostCheckStatus(hostUID string, reStatusCheck *model.ReHostStatusV1Check) error
+	GetHostStatus(hostUID string) (*model.ReHostStatusV1, error)
+	DeleteHostStatus(hostUID string) error
+	DeleteAllHostStatuses() error
+
 	SubscribeForSystemEvents() (chan *model.ReSystemEventV1, *Subscription, error)
 	PublishSystemEvent(reSystemEvent *model.ReSystemEventV1) error
 
@@ -64,10 +69,12 @@ type Service struct {
 	openConnectorActions     map[string]map[string]*model.ReConnectorActionV1
 	connectorEvents          map[string]chan *model.ReConnectorEventV1
 	connectorStatus          map[string]*model.ReConnectorStatusV1
+	hostStatus               map[string]*model.ReHostStatusV1
 	systemEvents             map[string]chan *model.ReSystemEventV1
 	userSessions             map[string]*model.ReUserSessionV1
 	mutexOpenConnectorAction sync.Mutex
 	mutexConnectorStatus     sync.Mutex
+	mutexHostStatus          sync.Mutex
 	setupToken               *SetupToken
 }
 
@@ -96,6 +103,7 @@ func NewService(ctx gousu.IContext) gousu.IService {
 		openConnectorActions: map[string]map[string]*model.ReConnectorActionV1{},
 		connectorEvents:      map[string]chan *model.ReConnectorEventV1{},
 		connectorStatus:      map[string]*model.ReConnectorStatusV1{},
+		hostStatus:           map[string]*model.ReHostStatusV1{},
 		systemEvents:         map[string]chan *model.ReSystemEventV1{},
 		userSessions:         map[string]*model.ReUserSessionV1{},
 	}
