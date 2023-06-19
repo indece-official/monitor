@@ -5,7 +5,7 @@ import { HostService, HostV1 } from '../../Services/HostService';
 import { Button } from '../../Components/Button/Button';
 import { LinkUtils } from '../../utils/LinkUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faPlus, faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 import { LabelValueList } from '../../Components/LabelValueList/LabelValueList';
 import { LabelValue } from '../../Components/LabelValueList/LabelValue';
@@ -129,6 +129,29 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
     }
 
 
+    private async _executeCheck ( checkUID: string ): Promise<void>
+    {
+        try
+        {
+            this.setState({
+                loading:    true,
+                error:      null
+            });
+
+            await this._checkService.executeCheck(checkUID);
+        }
+        catch ( err )
+        {
+            console.error(`Error executing checks: ${(err as Error).message}`, err);
+
+            this.setState({
+                loading:    false,
+                error:      err as Error
+            });
+        }
+    }
+
+
     public async componentDidMount ( ): Promise<void>
     {
         this._userService.isLoggedIn().subscribe(this, ( user ) =>
@@ -221,6 +244,13 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                                     grow={true}
                                 />
 
+                                {isAdmin(this.state.user) ?
+                                    <ListItemHeaderAction
+                                        onClick={ ( ) => this._executeCheck(check.uid)}
+                                        icon={faRefresh}
+                                    />
+                                : null}
+                                
                                 {isAdmin(this.state.user) && check.custom && this.state.host ?
                                     <ListItemHeaderAction
                                         to={LinkUtils.make('host', this.state.host.uid,'check', check.uid, 'edit')}

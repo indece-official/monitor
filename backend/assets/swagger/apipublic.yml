@@ -467,6 +467,24 @@ paths:
           content: {}
       x-codegen-request-body-name: body
   
+  /v1/check/{checkUID}/execute:
+    post:
+      tags:
+      - check
+      summary: Execute check
+      operationId: v1ExecuteCheck
+      parameters:
+      - name: checkUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+  
   /v1/host/{hostUID}/check:
     get:
       tags:

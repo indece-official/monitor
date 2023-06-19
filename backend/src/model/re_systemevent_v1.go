@@ -27,6 +27,7 @@ const (
 	ReSystemEventV1TypeCheckAdded      ReSystemEventV1Type = "check_added"
 	ReSystemEventV1TypeCheckUpdated    ReSystemEventV1Type = "check_updated"
 	ReSystemEventV1TypeCheckDeleted    ReSystemEventV1Type = "check_deleted"
+	ReSystemEventV1TypeCheckExecute    ReSystemEventV1Type = "check_execute"
 	ReSystemEventV1TypeHostAdded       ReSystemEventV1Type = "host_added"
 	ReSystemEventV1TypeHostUpdated     ReSystemEventV1Type = "host_updated"
 	ReSystemEventV1TypeHostDeleted     ReSystemEventV1Type = "host_deleted"
@@ -48,6 +49,10 @@ type ReSystemEventV1CheckUpdatedPayload struct {
 }
 
 type ReSystemEventV1CheckDeletedPayload struct {
+	CheckUID string `json:"check_uid"`
+}
+
+type ReSystemEventV1CheckExecutePayload struct {
 	CheckUID string `json:"check_uid"`
 }
 
@@ -127,6 +132,8 @@ func (r *ReSystemEventV1) UnmarshalJSON(b []byte) error {
 		payload = &ReSystemEventV1CheckUpdatedPayload{}
 	case ReSystemEventV1TypeCheckDeleted:
 		payload = &ReSystemEventV1CheckDeletedPayload{}
+	case ReSystemEventV1TypeCheckExecute:
+		payload = &ReSystemEventV1CheckExecutePayload{}
 	case ReSystemEventV1TypeHostAdded:
 		payload = &ReSystemEventV1HostAddedPayload{}
 	case ReSystemEventV1TypeHostUpdated:

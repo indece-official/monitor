@@ -106,6 +106,10 @@ func (c *Controller) reload() error {
 	c.notifiers = pgNotifiers
 	c.mutexNotifiers.Unlock()
 
+	c.mutexChecks.Lock()
+	c.mutexNotifier.Lock()
+	defer c.mutexNotifier.Unlock()
+	defer c.mutexChecks.Unlock()
 	err = c.cacheService.DeleteAllHostStatuses()
 	if err != nil {
 		return fmt.Errorf("error clearing host statuses: %s", err)
@@ -115,7 +119,6 @@ func (c *Controller) reload() error {
 
 	c.scheduler.Clear()
 
-	c.mutexChecks.Lock()
 	for _, pgCheck := range c.checks {
 		checkUID := pgCheck.UID
 
@@ -127,8 +130,10 @@ func (c *Controller) reload() error {
 		}
 
 		checkStatus := model.PgCheckStatusV1StatusUnkn
+		checkMessage := ""
 		if len(pgCheck.Statuses) > 0 {
 			checkStatus = pgCheck.Statuses[0].Status
+			checkMessage = pgCheck.Statuses[0].Message
 		}
 
 		err = c.cacheService.UpsertHostCheckStatus(
@@ -136,6 +141,7 @@ func (c *Controller) reload() error {
 			&model.ReHostStatusV1Check{
 				CheckUID: pgCheck.UID,
 				Status:   checkStatus,
+				Message:  checkMessage,
 			},
 		)
 		if err != nil {
@@ -180,7 +186,6 @@ func (c *Controller) reload() error {
 			}
 		}
 	}
-	c.mutexChecks.Unlock()
 
 	return nil
 }
@@ -216,7 +221,21 @@ func (c *Controller) reloadLoop() error {
 				model.ReSystemEventV1TypeNotifierDeleted:
 				err := c.reload()
 				if err != nil {
-					c.log.Errorf("Error running checks: %s", err)
+					c.log.Errorf("Error running reload: %s", err)
+
+					continue
+				}
+			case model.ReSystemEventV1TypeCheckExecute:
+				payload, ok := reSystemEvent.Payload.(*model.ReSystemEventV1CheckExecutePayload)
+				if !ok {
+					c.log.Errorf("Invalid payload for execute check event")
+
+					continue
+				}
+
+				err := c.check(payload.CheckUID)
+				if err != nil {
+					c.log.Errorf("Error executing check: %s", err)
 
 					continue
 				}

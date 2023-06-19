@@ -56,6 +56,7 @@ type Controller struct {
 	mutexHosts      sync.Mutex
 	mutexUsers      sync.Mutex
 	mutexNotifiers  sync.Mutex
+	mutexNotifier   sync.Mutex
 	stop            bool
 	error           error
 	waitGroupStop   sync.WaitGroup

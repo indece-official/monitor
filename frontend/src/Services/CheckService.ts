@@ -175,4 +175,18 @@ export class CheckService
             }
         );
     }
+   
+   
+    public async executeCheck ( checkUID: string ): Promise<void>
+    {
+        await this._backendService.fetchJson(
+            `/api/v1/check/${encodeURIComponent(checkUID)}/execute`,
+            {
+                method: 'POST',
+                headers:    {
+                    'Accept':   'application/json'
+                }
+            }
+        );
+    }
 }

@@ -97,6 +97,7 @@ func (c *Controller) getRouter() chi.Router {
 	router.Put("/api/v1/check/{checkUID}", c.baseController.Wrap(c.reqV1UpdateCheck))
 	router.Delete("/api/v1/check/{checkUID}", c.baseController.Wrap(c.reqV1DeleteCheck))
 	router.Get("/api/v1/check/{checkUID}", c.baseController.Wrap(c.reqV1GetCheck))
+	router.Post("/api/v1/check/{checkUID}/execute", c.baseController.Wrap(c.reqV1ExecuteCheck))
 
 	router.Get("/api/v1/tag", c.baseController.Wrap(c.reqV1GetTags))
 	router.Post("/api/v1/tag", c.baseController.Wrap(c.reqV1AddTag))

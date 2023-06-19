@@ -191,6 +191,9 @@ func (c *Controller) checkNotificationDue(ctx context.Context, reNotification *m
 }
 
 func (c *Controller) notify(ctx context.Context) error {
+	c.mutexNotifier.Lock()
+	defer c.mutexNotifier.Unlock()
+
 	reNotifications, err := c.cacheService.GetNotifications()
 	if err != nil {
 		return fmt.Errorf("error loading notifications: %s", err)
