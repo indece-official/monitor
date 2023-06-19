@@ -27,9 +27,9 @@ import (
 )
 
 type GetCheckersFilter struct {
-	CheckerUID    null.String
-	Type          null.String
-	ConnectorType null.String
+	CheckerUID null.String
+	Type       null.String
+	AgentType  null.String
 }
 
 func (s *Service) GetCheckers(qctx context.Context, filter *GetCheckersFilter) ([]*model.PgCheckerV1, error) {
@@ -53,9 +53,9 @@ func (s *Service) GetCheckers(qctx context.Context, filter *GetCheckersFilter) (
 		conditionParams = append(conditionParams, filter.Type.String)
 	}
 
-	if filter.ConnectorType.Valid {
-		conditions = append(conditions, fmt.Sprintf("mo_checker_v1.connector_type = $%d", len(conditionParams)+1))
-		conditionParams = append(conditionParams, filter.ConnectorType.String)
+	if filter.AgentType.Valid {
+		conditions = append(conditions, fmt.Sprintf("mo_checker_v1.agent_type = $%d", len(conditionParams)+1))
+		conditionParams = append(conditionParams, filter.AgentType.String)
 	}
 
 	// #nosec G202 -- Query parameters are used for all input data
@@ -64,7 +64,7 @@ func (s *Service) GetCheckers(qctx context.Context, filter *GetCheckersFilter) (
 		`SELECT
 			mo_checker_v1.uid,
 			mo_checker_v1.type,
-			mo_checker_v1.connector_type,
+			mo_checker_v1.agent_type,
 			mo_checker_v1.version,
 			mo_checker_v1.name,
 			mo_checker_v1.capabilities,
@@ -89,7 +89,7 @@ func (s *Service) GetCheckers(qctx context.Context, filter *GetCheckersFilter) (
 		err = rows.Scan(
 			&pgChecker.UID,
 			&pgChecker.Type,
-			&pgChecker.ConnectorType,
+			&pgChecker.AgentType,
 			&pgChecker.Name,
 			&pgChecker.Version,
 			&capabilitiesJSON,

@@ -1,6 +1,6 @@
 //go:generate go run assets/generate.go
 //go:generate sh -c "mkdir -p generated/model/apipublic && oapi-codegen --package=apipublic --generate=types ../assets/swagger/apipublic.yml > ./generated/model/apipublic/apipublic.gen.go"
-//go:generate /bin/sh -c "mkdir -p generated/model/apiconnector && protoc --go_out=./generated/model/ --go-grpc_out=./generated/model/ --proto_path=../assets/grpc/ ../assets/grpc/connector.proto"
+//go:generate /bin/sh -c "mkdir -p generated/model/apiagent && protoc --go_out=./generated/model/ --go-grpc_out=./generated/model/ --proto_path=../assets/grpc/ ../assets/grpc/agent.proto"
 
 // indece Monitor
 // Copyright (C) 2023 indece UG (haftungsbeschränkt)
@@ -24,7 +24,7 @@ import (
 	"fmt"
 
 	"github.com/indece-official/monitor/backend/src/buildvars"
-	"github.com/indece-official/monitor/backend/src/controller/connector"
+	"github.com/indece-official/monitor/backend/src/controller/agent"
 	"github.com/indece-official/monitor/backend/src/controller/cron"
 	"github.com/indece-official/monitor/backend/src/controller/initializer"
 	"github.com/indece-official/monitor/backend/src/controller/public"
@@ -47,7 +47,7 @@ func main() {
 	runner.CreateService(cert.NewService)
 	runner.CreateController(initializer.NewController)
 	runner.CreateController(public.NewController)
-	runner.CreateController(connector.NewController)
+	runner.CreateController(agent.NewController)
 	runner.CreateController(cron.NewController)
 	runner.CreateController(gousu.NewActuatorController)
 

@@ -34,7 +34,7 @@ func (c *Controller) reqV1GetCheckers(w http.ResponseWriter, r *http.Request) go
 		&postgres.GetCheckersFilter{},
 	)
 	if err != nil {
-		return gousuchi.InternalServerError(r, "Error loading connectors: %s", err)
+		return gousuchi.InternalServerError(r, "Error loading checkers: %s", err)
 	}
 
 	respData, err := c.mapPgCheckerV1ToAPIGetCheckersV1ResponseBody(pgCheckers)

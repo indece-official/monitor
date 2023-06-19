@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { HomePage } from './Pages/HomePage/HomePage';
 import { SideNav } from './Components/SideNav/SideNav';
-import { ConnectorsPage } from './Pages/ConnectorsPage/ConnectorsPage';
-import { AddConnectorPage } from './Pages/AddConnectorPage/AddConnectorPage';
+import { AgentsPage } from './Pages/AgentsPage/AgentsPage';
+import { AddAgentPage } from './Pages/AddAgentPage/AddAgentPage';
 import { UsersPage } from './Pages/UsersPage/UsersPage';
 import { AddUserPage } from './Pages/AddUserPage/AddUserPage';
 import { AuthController } from './Controllers/AuthController/AuthController';
@@ -17,9 +17,9 @@ import { UserV1Role } from './Services/UserService';
 import { DashboardPage } from './Pages/DashboardPage/DashboardPage';
 import { EditUserPage } from './Pages/EditUserPage/EditUserPage';
 import { UserPage } from './Pages/UserPage/UserPage';
-import { ConnectorPage } from './Pages/ConnectorPage/ConnectorPage';
+import { AgentPage } from './Pages/AgentPage/AgentPage';
 import { DeleteUserPage } from './Pages/DeleteUserPage/DeleteUserPage';
-import { DeleteConnectorPage } from './Pages/DeleteConnectorPage/DeleteConnectorPage';
+import { DeleteAgentPage } from './Pages/DeleteAgentPage/DeleteAgentPage';
 import { DeleteHostPage } from './Pages/DeleteHostPage/DeleteHostPage';
 import { AddHostPage } from './Pages/AddHostPage/AddHostPage';
 import { HostPage } from './Pages/HostPage/HostPage';
@@ -67,29 +67,29 @@ export class App extends React.Component
                                 />
 
                                 <Route
-                                    path='/connectors'
-                                    element={<RouteGuard element={<ConnectorsPage />} />}
+                                    path='/agents'
+                                    element={<RouteGuard element={<AgentsPage />} />}
                                 />
 
                                 <Route
-                                    path='/connector/add'
+                                    path='/agent/add'
                                     element={<RouteGuard
-                                        element={<AddConnectorPage />}
+                                        element={<AddAgentPage />}
                                         roles={[UserV1Role.Admin]}
                                     />}
                                 />
 
                                 <Route
-                                    path='/connector/:connectorUID'
+                                    path='/agent/:agentUID'
                                     element={<RouteGuard
-                                        element={<ConnectorPage />}
+                                        element={<AgentPage />}
                                     />}
                                 />
 
                                 <Route
-                                    path='/connector/:connectorUID/delete'
+                                    path='/agent/:agentUID/delete'
                                     element={<RouteGuard
-                                        element={<DeleteConnectorPage />}
+                                        element={<DeleteAgentPage />}
                                         roles={[UserV1Role.Admin]}
                                     />}
                                 />

@@ -58,7 +58,7 @@ func (c *Controller) reqV1SetConfigProperty(w http.ResponseWriter, r *http.Reque
 		return gousuchi.InternalServerError(r, "Error upserting config property in postgres: %s", err)
 	}
 
-	if pgConfigProperty.Key == model.PgConfigPropertyV1KeyConnectorHost {
+	if pgConfigProperty.Key == model.PgConfigPropertyV1KeyAgentHost {
 		err = c.generateServerCert(r.Context())
 		if err != nil {
 			return gousuchi.InternalServerError(r, "Error generating new server certificates: %s", err)

@@ -8,7 +8,7 @@ import { CheckService } from '../../../Services/CheckService';
 import { HostService, HostV1 } from '../../../Services/HostService';
 import { CheckerService, CheckerV1 } from '../../../Services/CheckerService';
 import { InputSelect } from '../../../Components/Input/InputSelect';
-import { ConnectorService } from '../../../Services/ConnectorService';
+import { AgentService } from '../../../Services/AgentService';
 
 
 export interface AddCheckStartStepProps
@@ -40,7 +40,7 @@ interface AddCheckStartStepState
 export class AddCheckStartStep extends React.Component<AddCheckStartStepProps, AddCheckStartStepState>
 {
     private readonly _hostService: HostService;
-    private readonly _connectorService: ConnectorService;
+    private readonly _agentService: AgentService;
     private readonly _checkerService: CheckerService;
     private readonly _checkService: CheckService;
 
@@ -63,7 +63,7 @@ export class AddCheckStartStep extends React.Component<AddCheckStartStepProps, A
         };
 
         this._hostService = HostService.getInstance();
-        this._connectorService = ConnectorService.getInstance();
+        this._agentService = AgentService.getInstance();
         this._checkerService = CheckerService.getInstance();
         this._checkService = CheckService.getInstance();
 
@@ -82,10 +82,10 @@ export class AddCheckStartStep extends React.Component<AddCheckStartStepProps, A
 
             const host = await this._hostService.getHost(this.props.hostUID);
             let checkers = await this._checkerService.getCheckers();
-            let connectors = await this._connectorService.getConnectors();
+            let agents = await this._agentService.getAgents();
 
-            connectors = connectors.filter( ( connector ) => connector.host_uid === host.uid );
-            checkers = checkers.filter( ( checker ) => checker.custom_checks && connectors.find( connector => connector.type === checker.connector_type ) );
+            agents = agents.filter( ( agent ) => agent.host_uid === host.uid );
+            checkers = checkers.filter( ( checker ) => checker.custom_checks && agents.find( agent => agent.type === checker.agent_type ) );
 
             this.setState({
                 loading:    false,

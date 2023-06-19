@@ -77,10 +77,10 @@ func (c *Controller) getRouter() chi.Router {
 
 	router.Post("/api/v1/setup/finish", c.baseController.Wrap(c.reqV1FinishSetup))
 
-	router.Get("/api/v1/connector", c.baseController.Wrap(c.reqV1GetConnectors))
-	router.Post("/api/v1/connector", c.baseController.Wrap(c.reqV1AddConnector))
-	router.Get("/api/v1/connector/{connectorUID}", c.baseController.Wrap(c.reqV1GetConnector))
-	router.Delete("/api/v1/connector/{connectorUID}", c.baseController.Wrap(c.reqV1DeleteConnector))
+	router.Get("/api/v1/agent", c.baseController.Wrap(c.reqV1GetAgents))
+	router.Post("/api/v1/agent", c.baseController.Wrap(c.reqV1AddAgent))
+	router.Get("/api/v1/agent/{agentUID}", c.baseController.Wrap(c.reqV1GetAgent))
+	router.Delete("/api/v1/agent/{agentUID}", c.baseController.Wrap(c.reqV1DeleteAgent))
 
 	router.Get("/api/v1/user", c.baseController.Wrap(c.reqV1GetUsers))
 	router.Get("/api/v1/user/self", c.baseController.Wrap(c.reqV1GetOwnUser))

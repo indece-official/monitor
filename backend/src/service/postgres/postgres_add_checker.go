@@ -40,7 +40,7 @@ func (s *Service) AddChecker(qctx context.Context, pgChecker *model.PgCheckerV1)
 		`INSERT INTO mo_checker_v1 (
 			uid,
 			type,
-			connector_type,
+			agent_type,
 			version,
 			name,
 			capabilities,
@@ -61,7 +61,7 @@ func (s *Service) AddChecker(qctx context.Context, pgChecker *model.PgCheckerV1)
 		)`,
 		pgChecker.UID,
 		pgChecker.Type,
-		pgChecker.ConnectorType,
+		pgChecker.AgentType,
 		pgChecker.Version,
 		pgChecker.Name,
 		capabilitiesJSON,

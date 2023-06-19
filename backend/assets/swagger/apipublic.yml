@@ -488,12 +488,12 @@ paths:
                 $ref: '#/components/schemas/v1GetHostChecksJSONResponseBody'
       x-codegen-request-body-name: body
   
-  /v1/connector:
+  /v1/agent:
     post:
       tags:
-        - connector
-      summary: Add a connector
-      operationId: v1AddConnector
+        - agent
+      summary: Add a agent
+      operationId: v1AddAgent
       requestBody:
         content:
           application/json:
@@ -511,31 +511,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/v1AddConnectorJSONResponseBody'
+                $ref: '#/components/schemas/v1AddAgentJSONResponseBody'
       x-codegen-request-body-name: body
 
     get:
       tags:
-      - connector
-      summary: Get connectors
-      operationId: v1GetConnectors
+      - agent
+      summary: Get agents
+      operationId: v1GetAgents
       responses:
         200:
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/v1GetConnectorsJSONResponseBody'
+                $ref: '#/components/schemas/v1GetAgentsJSONResponseBody'
       x-codegen-request-body-name: body
   
-  /v1/connector/{connectorUID}:
+  /v1/agent/{agentUID}:
     get:
       tags:
-      - connector
-      summary: Get connector
-      operationId: v1GetConnector
+      - agent
+      summary: Get agent
+      operationId: v1GetAgent
       parameters:
-      - name: connectorUID
+      - name: agentUID
         in: path
         required: true
         schema:
@@ -546,16 +546,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/v1GetConnectorJSONResponseBody'
+                $ref: '#/components/schemas/v1GetAgentJSONResponseBody'
       x-codegen-request-body-name: body
 
     delete:
       tags:
-        - connector
-      summary: Delete a connector
-      operationId: v1DeleteConnector
+        - agent
+      summary: Delete a agent
+      operationId: v1DeleteAgent
       parameters:
-      - name: connectorUID
+      - name: agentUID
         in: path
         required: true
         schema:
@@ -1065,7 +1065,7 @@ components:
         - uid
         - name
         - type
-        - connector_type
+        - agent_type
         - version
         - capabilities
         - custom_checks
@@ -1076,7 +1076,7 @@ components:
           type: string
         type:
           type: string
-        connector_type:
+        agent_type:
           type: string
         version:
           type: string
@@ -1085,7 +1085,7 @@ components:
         custom_checks:
           type: boolean
 
-    ConnectorV1Status:
+    AgentV1Status:
       type: string
       enum:
         - UNKNOWN
@@ -1093,7 +1093,7 @@ components:
         - READY
         - ERROR
     
-    ConnectorV1:
+    AgentV1:
       type: object
       required:
         - uid
@@ -1110,7 +1110,7 @@ components:
         version:
           type: string
         status:
-          $ref: '#/components/schemas/ConnectorV1Status'
+          $ref: '#/components/schemas/AgentV1Status'
         connected:
           type: boolean
         error:
@@ -1159,8 +1159,8 @@ components:
         - SETUP_FINISHED
         - TLS_CA_CRT
         - TLS_SERVER_CRT
-        - CONNECTOR_HOST
-        - CONNECTOR_PORT
+        - AGENT_HOST
+        - AGENT_PORT
 
     ConfigPropertyV1:
       type: object
@@ -1372,34 +1372,34 @@ components:
           items:
             $ref: '#/components/schemas/CheckV1'
     
-    v1AddConnectorJSONResponseBody:
+    v1AddAgentJSONResponseBody:
       type: object
       required:
-        - connector_uid
+        - agent_uid
         - config_file
       properties:
-        connector_uid:
+        agent_uid:
           type: string
         config_file:
           type: string
     
-    v1GetConnectorsJSONResponseBody:
+    v1GetAgentsJSONResponseBody:
       type: object
       required:
-        - connectors
+        - agents
       properties:
-        connectors:
+        agents:
           type: array
           items:
-            $ref: '#/components/schemas/ConnectorV1'
+            $ref: '#/components/schemas/AgentV1'
     
-    v1GetConnectorJSONResponseBody:
+    v1GetAgentJSONResponseBody:
       type: object
       required:
-        - connector
+        - agent
       properties:
-        connector:
-          $ref: '#/components/schemas/ConnectorV1'
+        agent:
+          $ref: '#/components/schemas/AgentV1'
     
     v1AddUserJSONResponseBody:
       type: object

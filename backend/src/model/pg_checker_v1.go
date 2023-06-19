@@ -55,11 +55,11 @@ type PgCheckerV1Capabilities struct {
 }
 
 type PgCheckerV1 struct {
-	UID           string
-	Type          string
-	ConnectorType string
-	Version       string
-	Name          string
-	Capabilities  *PgCheckerV1Capabilities
-	CustomChecks  bool
+	UID          string
+	Type         string
+	AgentType    string
+	Version      string
+	Name         string
+	Capabilities *PgCheckerV1Capabilities
+	CustomChecks bool
 }

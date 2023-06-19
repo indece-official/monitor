@@ -15,8 +15,8 @@ export interface SetupServerInfoStepProps
 
 interface SetupServerInfoStepFormData
 {
-    connector_host: string;
-    connector_port: string;
+    agent_host: string;
+    agent_port: string;
 }
 
 
@@ -39,8 +39,8 @@ export class SetupServerInfoStep extends React.Component<SetupServerInfoStepProp
 
         this.state = {
             initialFormData: {
-                connector_host: window.location.hostname,
-                connector_port: '9440'
+                agent_host: window.location.hostname,
+                agent_port: '9440'
             },
             loading:    false,
             error:      null
@@ -67,13 +67,13 @@ export class SetupServerInfoStep extends React.Component<SetupServerInfoStepProp
             });
 
             await this._configService.setConfigProperty(
-                ConfigPropertyV1Key.ConnectorHost,
-                values.connector_host.trim()
+                ConfigPropertyV1Key.AgentHost,
+                values.agent_host.trim()
             );
             
             await this._configService.setConfigProperty(
-                ConfigPropertyV1Key.ConnectorPort,
-                values.connector_port.trim()
+                ConfigPropertyV1Key.AgentPort,
+                values.agent_port.trim()
             );
 
             this.setState({
@@ -109,14 +109,14 @@ export class SetupServerInfoStep extends React.Component<SetupServerInfoStepProp
                     {({ values }) => (
                         <Form>
                             <InputText
-                                name='connector_host'
-                                label='Hostname for connectors to connect to'
+                                name='agent_host'
+                                label='Hostname for agents to connect to'
                                 required={true}
                             />
                            
                             <InputText
-                                name='connector_port'
-                                label='Port for connectors to connect to'
+                                name='agent_port'
+                                label='Port for agents to connect to'
                                 required={true}
                             />
 

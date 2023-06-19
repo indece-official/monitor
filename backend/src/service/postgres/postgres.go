@@ -49,10 +49,10 @@ type IService interface {
 	DeleteHost(qctx context.Context, hostUID string) error
 	GetHosts(qctx context.Context, filter *GetHostsFilter) ([]*model.PgHostV1, error)
 
-	AddConnector(qctx context.Context, pgConnector *model.PgConnectorV1) error
-	UpdateConnector(qctx context.Context, connectorUID string, pgConnector *model.PgConnectorV1) error
-	DeleteConnector(qctx context.Context, connectorUID string) error
-	GetConnectors(qctx context.Context, filter *GetConnectorsFilter) ([]*model.PgConnectorV1, error)
+	AddAgent(qctx context.Context, pgAgent *model.PgAgentV1) error
+	UpdateAgent(qctx context.Context, agentUID string, pgAgent *model.PgAgentV1) error
+	DeleteAgent(qctx context.Context, agentUID string) error
+	GetAgents(qctx context.Context, filter *GetAgentsFilter) ([]*model.PgAgentV1, error)
 
 	AddChecker(qctx context.Context, pgChecker *model.PgCheckerV1) error
 	GetCheckers(qctx context.Context, filter *GetCheckersFilter) ([]*model.PgCheckerV1, error)

@@ -32,7 +32,7 @@ func (c *Controller) generateServerCert(ctx context.Context) error {
 			Keys: []model.PgConfigPropertyV1Key{
 				model.PgConfigPropertyV1KeyTLSCaCrt,
 				model.PgConfigPropertyV1KeyTLSCaKey,
-				model.PgConfigPropertyV1KeyConnectorHost,
+				model.PgConfigPropertyV1KeyAgentHost,
 			},
 		},
 	)
@@ -40,9 +40,9 @@ func (c *Controller) generateServerCert(ctx context.Context) error {
 		return fmt.Errorf("error loading config properties: %s", err)
 	}
 
-	if pgConfigProperties[model.PgConfigPropertyV1KeyConnectorHost] == nil ||
-		pgConfigProperties[model.PgConfigPropertyV1KeyConnectorHost].Value == "" {
-		return fmt.Errorf("connector host not configured")
+	if pgConfigProperties[model.PgConfigPropertyV1KeyAgentHost] == nil ||
+		pgConfigProperties[model.PgConfigPropertyV1KeyAgentHost].Value == "" {
+		return fmt.Errorf("agent host not configured")
 	}
 
 	if pgConfigProperties[model.PgConfigPropertyV1KeyTLSCaCrt] == nil ||
@@ -53,7 +53,7 @@ func (c *Controller) generateServerCert(ctx context.Context) error {
 	}
 
 	serverPEM, err := c.certService.GenerateServerCert(
-		pgConfigProperties[model.PgConfigPropertyV1KeyConnectorHost].Value,
+		pgConfigProperties[model.PgConfigPropertyV1KeyAgentHost].Value,
 		&cert.PEMCert{
 			Crt: []byte(pgConfigProperties[model.PgConfigPropertyV1KeyTLSCaCrt].Value),
 			Key: []byte(pgConfigProperties[model.PgConfigPropertyV1KeyTLSCaKey].Value),

@@ -26,6 +26,8 @@ import (
 	"encoding/pem"
 	"fmt"
 	"time"
+
+	"gopkg.in/guregu/null.v4"
 )
 
 func (s *Service) GenerateCACert() (*PEMCert, error) {
@@ -89,7 +91,9 @@ func (s *Service) GenerateCACert() (*PEMCert, error) {
 	}
 
 	return &PEMCert{
-		Crt: caCrtPEM.Bytes(),
-		Key: caPrivKeyPEM.Bytes(),
+		Crt:        caCrtPEM.Bytes(),
+		Key:        caPrivKeyPEM.Bytes(),
+		CreatedAt:  null.TimeFrom(ca.NotBefore),
+		ValidUntil: null.TimeFrom(ca.NotAfter),
 	}, nil
 }

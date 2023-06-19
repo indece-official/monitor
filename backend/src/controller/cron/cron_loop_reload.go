@@ -56,17 +56,17 @@ func (c *Controller) reload() error {
 	c.checkers = pgCheckers
 	c.mutexCheckers.Unlock()
 
-	pgConnectors, err := c.postgresService.GetConnectors(
+	pgAgents, err := c.postgresService.GetAgents(
 		ctx,
-		&postgres.GetConnectorsFilter{},
+		&postgres.GetAgentsFilter{},
 	)
 	if err != nil {
-		return fmt.Errorf("error loading connectors: %s", err)
+		return fmt.Errorf("error loading agents: %s", err)
 	}
 
-	c.mutexConnectors.Lock()
-	c.connectors = pgConnectors
-	c.mutexConnectors.Unlock()
+	c.mutexAgents.Lock()
+	c.agents = pgAgents
+	c.mutexAgents.Unlock()
 
 	pgHosts, err := c.postgresService.GetHosts(
 		ctx,

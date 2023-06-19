@@ -3,8 +3,8 @@ import { BackendService } from './BackendService';
 
 export enum ConfigPropertyV1Key
 {
-    ConnectorHost   = 'CONNECTOR_HOST',
-    ConnectorPort   = 'CONNECTOR_PORT',
+    AgentHost       = 'AGENT_HOST',
+    AgentPort       = 'AGENT_PORT',
     TlsCaCrt        = 'TLS_CA_CRT',
     TlsServerCrt    = 'TLS_SERVER_CRT'
 }

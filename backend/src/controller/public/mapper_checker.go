@@ -67,7 +67,7 @@ func (c *Controller) mapPgCheckerV1ToAPICheckerV1(pgChecker *model.PgCheckerV1) 
 	apiChecker.Uid = pgChecker.UID
 	apiChecker.Name = pgChecker.Name
 	apiChecker.Type = pgChecker.Type
-	apiChecker.ConnectorType = pgChecker.ConnectorType
+	apiChecker.AgentType = pgChecker.AgentType
 	apiChecker.Version = pgChecker.Version
 	apiChecker.Capabilities = apipublic.CheckerV1Capabilities{}
 	apiChecker.Capabilities.Params = []apipublic.CheckerV1Param{}

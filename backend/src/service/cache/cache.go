@@ -30,21 +30,21 @@ import (
 const ServiceName = "cache"
 
 type IService interface {
-	SubscribeForConnectorActions(connectorUID string) (chan *model.ReConnectorActionV1, *Subscription, error)
-	PublishConnectorAction(reConnectorAction *model.ReConnectorActionV1) error
+	SubscribeForAgentActions(agentUID string) (chan *model.ReAgentActionV1, *Subscription, error)
+	PublishAgentAction(reAgentAction *model.ReAgentActionV1) error
 
-	AddOpenConnectorAction(reConnectorAction *model.ReConnectorActionV1) error
-	GetOpenConnectorAction(connectorUID string, actionUID string) (*model.ReConnectorActionV1, error)
-	GetOpenConnectorActions(connectorUID string) ([]*model.ReConnectorActionV1, error)
-	GetAllOpenConnectorActions() ([]*model.ReConnectorActionV1, error)
-	DeleteOpenConnectorAction(connectorUID string, actionUID string) error
+	AddOpenAgentAction(reAgentAction *model.ReAgentActionV1) error
+	GetOpenAgentAction(agentUID string, actionUID string) (*model.ReAgentActionV1, error)
+	GetOpenAgentActions(agentUID string) ([]*model.ReAgentActionV1, error)
+	GetAllOpenAgentActions() ([]*model.ReAgentActionV1, error)
+	DeleteOpenAgentAction(agentUID string, actionUID string) error
 
-	SubscribeForConnectorEvents() (chan *model.ReConnectorEventV1, *Subscription, error)
-	PublishConnectorEvent(reConnectorEvent *model.ReConnectorEventV1) error
+	SubscribeForAgentEvents() (chan *model.ReAgentEventV1, *Subscription, error)
+	PublishAgentEvent(reAgentEvent *model.ReAgentEventV1) error
 
-	SetConnectorStatus(connectorUID string, reStatus *model.ReConnectorStatusV1) error
-	GetConnectorStatus(connectorUID string) (*model.ReConnectorStatusV1, error)
-	DeleteConnectorStatus(connectorUID string) error
+	SetAgentStatus(agentUID string, reStatus *model.ReAgentStatusV1) error
+	GetAgentStatus(agentUID string) (*model.ReAgentStatusV1, error)
+	DeleteAgentStatus(agentUID string) error
 
 	UpsertHostCheckStatus(hostUID string, reStatusCheck *model.ReHostStatusV1Check) error
 	GetHostStatus(hostUID string) (*model.ReHostStatusV1, error)
@@ -69,20 +69,20 @@ type IService interface {
 }
 
 type Service struct {
-	log                      *logger.Log
-	connectorActions         map[string]map[string]chan *model.ReConnectorActionV1
-	openConnectorActions     map[string]map[string]*model.ReConnectorActionV1
-	connectorEvents          map[string]chan *model.ReConnectorEventV1
-	connectorStatus          map[string]*model.ReConnectorStatusV1
-	hostStatus               map[string]*model.ReHostStatusV1
-	systemEvents             map[string]chan *model.ReSystemEventV1
-	userSessions             map[string]*model.ReUserSessionV1
-	notifications            map[string]*model.ReNotificationV1
-	mutexOpenConnectorAction sync.Mutex
-	mutexConnectorStatus     sync.Mutex
-	mutexHostStatus          sync.Mutex
-	mutexNotifications       sync.Mutex
-	setupToken               *SetupToken
+	log                  *logger.Log
+	agentActions         map[string]map[string]chan *model.ReAgentActionV1
+	openAgentActions     map[string]map[string]*model.ReAgentActionV1
+	agentEvents          map[string]chan *model.ReAgentEventV1
+	agentStatus          map[string]*model.ReAgentStatusV1
+	hostStatus           map[string]*model.ReHostStatusV1
+	systemEvents         map[string]chan *model.ReSystemEventV1
+	userSessions         map[string]*model.ReUserSessionV1
+	notifications        map[string]*model.ReNotificationV1
+	mutexOpenAgentAction sync.Mutex
+	mutexAgentStatus     sync.Mutex
+	mutexHostStatus      sync.Mutex
+	mutexNotifications   sync.Mutex
+	setupToken           *SetupToken
 }
 
 var _ IService = (*Service)(nil)
@@ -105,15 +105,15 @@ func (s *Service) Health() error {
 
 func NewService(ctx gousu.IContext) gousu.IService {
 	return &Service{
-		log:                  logger.GetLogger(fmt.Sprintf("service.%s", ServiceName)),
-		connectorActions:     map[string]map[string]chan *model.ReConnectorActionV1{},
-		openConnectorActions: map[string]map[string]*model.ReConnectorActionV1{},
-		connectorEvents:      map[string]chan *model.ReConnectorEventV1{},
-		connectorStatus:      map[string]*model.ReConnectorStatusV1{},
-		hostStatus:           map[string]*model.ReHostStatusV1{},
-		systemEvents:         map[string]chan *model.ReSystemEventV1{},
-		userSessions:         map[string]*model.ReUserSessionV1{},
-		notifications:        map[string]*model.ReNotificationV1{},
+		log:              logger.GetLogger(fmt.Sprintf("service.%s", ServiceName)),
+		agentActions:     map[string]map[string]chan *model.ReAgentActionV1{},
+		openAgentActions: map[string]map[string]*model.ReAgentActionV1{},
+		agentEvents:      map[string]chan *model.ReAgentEventV1{},
+		agentStatus:      map[string]*model.ReAgentStatusV1{},
+		hostStatus:       map[string]*model.ReHostStatusV1{},
+		systemEvents:     map[string]chan *model.ReSystemEventV1{},
+		userSessions:     map[string]*model.ReUserSessionV1{},
+		notifications:    map[string]*model.ReNotificationV1{},
 	}
 }
 

@@ -16,7 +16,11 @@
 
 package cert
 
+import "gopkg.in/guregu/null.v4"
+
 type PEMCert struct {
-	Crt []byte
-	Key []byte
+	Crt        []byte
+	Key        []byte
+	CreatedAt  null.Time
+	ValidUntil null.Time
 }

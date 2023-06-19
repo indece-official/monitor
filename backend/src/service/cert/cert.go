@@ -28,7 +28,7 @@ const ServiceName = "cert"
 type IService interface {
 	GenerateCACert() (*PEMCert, error)
 	GenerateServerCert(hostname string, ca *PEMCert) (*PEMCert, error)
-	GenerateClientCert(connectorUID string, clientsPEM *PEMCert) (*PEMCert, error)
+	GenerateClientCert(agentUID string, clientsPEM *PEMCert) (*PEMCert, error)
 }
 
 type Service struct {

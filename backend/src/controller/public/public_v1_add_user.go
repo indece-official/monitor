@@ -42,17 +42,17 @@ func (c *Controller) reqV1AddUser(w http.ResponseWriter, r *http.Request) gousuc
 
 	pgUser, err := c.mapAPIAddUserV1RequestBodyToPgUserV1(requestBody)
 	if err != nil {
-		return gousuchi.BadRequest(r, "Error mapping request to connector: %s", err)
+		return gousuchi.BadRequest(r, "Error mapping request to user: %s", err)
 	}
 
 	pgUser.UID, err = utils.UUID()
 	if err != nil {
-		return gousuchi.InternalServerError(r, "Error generating connector uid: %s", err)
+		return gousuchi.InternalServerError(r, "Error generating user uid: %s", err)
 	}
 
 	err = c.postgresService.AddUser(r.Context(), pgUser)
 	if err != nil {
-		return gousuchi.InternalServerError(r, "Error adding connector to postgres: %s", err)
+		return gousuchi.InternalServerError(r, "Error adding user to postgres: %s", err)
 	}
 
 	respData, err := c.mapPgUserV1ToAPIAddUserV1ResponseBody(pgUser)

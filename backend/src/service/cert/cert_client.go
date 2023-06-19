@@ -26,9 +26,11 @@ import (
 	"encoding/pem"
 	"fmt"
 	"time"
+
+	"gopkg.in/guregu/null.v4"
 )
 
-func (s *Service) GenerateClientCert(connectorUID string, clientsPEM *PEMCert) (*PEMCert, error) {
+func (s *Service) GenerateClientCert(agentUID string, clientsPEM *PEMCert) (*PEMCert, error) {
 	clientsCrtPem, _ := pem.Decode(clientsPEM.Crt)
 	if clientsCrtPem == nil {
 		return nil, fmt.Errorf("error loading clients cert - no pem block found")
@@ -67,7 +69,7 @@ func (s *Service) GenerateClientCert(connectorUID string, clientsPEM *PEMCert) (
 	clientCrt := &x509.Certificate{
 		SerialNumber: serialNumber,
 		Subject: pkix.Name{
-			CommonName:    connectorUID,
+			CommonName:    agentUID,
 			Organization:  []string{"Company, INC."},
 			Country:       []string{"US"},
 			Province:      []string{""},
@@ -108,7 +110,9 @@ func (s *Service) GenerateClientCert(connectorUID string, clientsPEM *PEMCert) (
 	}
 
 	return &PEMCert{
-		Crt: clientCrtPEM.Bytes(),
-		Key: clientKeyPEM.Bytes(),
+		Crt:        clientCrtPEM.Bytes(),
+		Key:        clientKeyPEM.Bytes(),
+		CreatedAt:  null.TimeFrom(clientCrt.NotBefore),
+		ValidUntil: null.TimeFrom(clientCrt.NotAfter),
 	}, nil
 }

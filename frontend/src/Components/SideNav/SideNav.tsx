@@ -155,7 +155,7 @@ export class SideNav extends React.Component<SideNavProps, SideNavState>
 
                         {this.state.user && !Environment.setup.enabled?
                             <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('connectors')}>Connectors</Link>
+                                <Link to={LinkUtils.make('agents')}>Agents</Link>
                             </div>
                         : null}
                         

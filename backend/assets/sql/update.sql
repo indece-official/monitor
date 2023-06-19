@@ -13,3 +13,23 @@
 ---
 --- You should have received a copy of the GNU General Public License
 --- along with this program. If not, see <https:--www.gnu.org/licenses/>.
+
+--- Update before rev. 3 are not supported
+DO $$
+BEGIN
+    IF (SELECT "value" FROM "mo_dbinfo" WHERE "name" = 'revision') != '1' THEN
+        RETURN;
+    END IF;
+
+    RAISE EXCEPTION 'Automatic db updates before db revision 3 are not supported';
+END $$;
+
+--- Update before rev. 3 are not supported
+DO $$
+BEGIN
+    IF (SELECT "value" FROM "mo_dbinfo" WHERE "name" = 'revision') != '2' THEN
+        RETURN;
+    END IF;
+
+    RAISE EXCEPTION 'Automatic db updates before db revision 3 are not supported';
+END $$;

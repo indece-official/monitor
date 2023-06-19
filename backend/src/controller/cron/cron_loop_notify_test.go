@@ -270,8 +270,9 @@ func TestCheckNotificationDueIsDue(t *testing.T) {
 
 	ctx := context.Background()
 
-	isDue, matchingPgFilters, err := controller.checkNotificationDue(ctx, reNotification)
+	hasMatches, isDue, matchingPgFilters, err := controller.checkNotificationDue(ctx, reNotification)
 	assert.NoError(t, err)
+	assert.True(t, hasMatches)
 	assert.True(t, isDue)
 	assert.Len(t, matchingPgFilters, 2)
 	assert.Len(t, matchingPgFilters[0].TagUIDs, 1)
@@ -332,8 +333,9 @@ func TestCheckNotificationDueNotDue(t *testing.T) {
 
 	ctx := context.Background()
 
-	isDue, matchingPgFilters, err := controller.checkNotificationDue(ctx, reNotification)
+	hasMatches, isDue, matchingPgFilters, err := controller.checkNotificationDue(ctx, reNotification)
 	assert.NoError(t, err)
+	assert.True(t, hasMatches)
 	assert.False(t, isDue)
 	assert.Len(t, matchingPgFilters, 0)
 }

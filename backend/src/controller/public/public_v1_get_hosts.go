@@ -35,7 +35,7 @@ func (c *Controller) reqV1GetHosts(w http.ResponseWriter, r *http.Request) gousu
 		&postgres.GetHostsFilter{},
 	)
 	if err != nil {
-		return gousuchi.InternalServerError(r, "Error loading connectors: %s", err)
+		return gousuchi.InternalServerError(r, "Error loading hosts: %s", err)
 	}
 
 	reHostStatuses := map[string]*model.ReHostStatusV1{}

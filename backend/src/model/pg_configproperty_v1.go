@@ -25,8 +25,8 @@ const (
 	PgConfigPropertyV1KeyTLSCaKey      PgConfigPropertyV1Key = "tls_ca_key"
 	PgConfigPropertyV1KeyTLSServerCrt  PgConfigPropertyV1Key = "tls_server_crt"
 	PgConfigPropertyV1KeyTLSServerKey  PgConfigPropertyV1Key = "tls_server_key"
-	PgConfigPropertyV1KeyConnectorHost PgConfigPropertyV1Key = "connector_host"
-	PgConfigPropertyV1KeyConnectorPort PgConfigPropertyV1Key = "connector_port"
+	PgConfigPropertyV1KeyAgentHost     PgConfigPropertyV1Key = "agent_host"
+	PgConfigPropertyV1KeyAgentPort     PgConfigPropertyV1Key = "agent_port"
 )
 
 const (
@@ -46,8 +46,8 @@ var PgConfigPropertyV1Protections = map[PgConfigPropertyV1Key]PgConfigPropertyV1
 	PgConfigPropertyV1KeySetupFinished: PgConfigPropertyV1ProtectionProtected,
 	PgConfigPropertyV1KeyTLSCaCrt:      PgConfigPropertyV1ProtectionProtected,
 	PgConfigPropertyV1KeyTLSServerCrt:  PgConfigPropertyV1ProtectionProtected,
-	PgConfigPropertyV1KeyConnectorHost: PgConfigPropertyV1ProtectionPublic,
-	PgConfigPropertyV1KeyConnectorPort: PgConfigPropertyV1ProtectionPublic,
+	PgConfigPropertyV1KeyAgentHost:     PgConfigPropertyV1ProtectionPublic,
+	PgConfigPropertyV1KeyAgentPort:     PgConfigPropertyV1ProtectionPublic,
 }
 
 type PgConfigPropertyV1 struct {

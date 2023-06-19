@@ -29,7 +29,7 @@ func (c *Controller) generateCerts(ctx context.Context) error {
 		ctx,
 		&postgres.GetConfigPropertiesFilter{
 			Keys: []model.PgConfigPropertyV1Key{
-				model.PgConfigPropertyV1KeyConnectorHost,
+				model.PgConfigPropertyV1KeyAgentHost,
 			},
 		},
 	)
@@ -64,10 +64,10 @@ func (c *Controller) generateCerts(ctx context.Context) error {
 		return fmt.Errorf("error adding tls_ca_key config property: %s", err)
 	}
 
-	if pgConfigProperties[model.PgConfigPropertyV1KeyConnectorHost] != nil &&
-		pgConfigProperties[model.PgConfigPropertyV1KeyConnectorHost].Value != "" {
+	if pgConfigProperties[model.PgConfigPropertyV1KeyAgentHost] != nil &&
+		pgConfigProperties[model.PgConfigPropertyV1KeyAgentHost].Value != "" {
 		serverPEM, err := c.certService.GenerateServerCert(
-			pgConfigProperties[model.PgConfigPropertyV1KeyConnectorHost].Value,
+			pgConfigProperties[model.PgConfigPropertyV1KeyAgentHost].Value,
 			caPEM,
 		)
 		if err != nil {

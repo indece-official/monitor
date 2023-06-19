@@ -76,19 +76,19 @@ func (c *Controller) getHost(hostUID string) (*model.PgHostV1, error) {
 	return nil, fmt.Errorf("not matching host found")
 }
 
-func (c *Controller) getConnectorByConnectorTypeAndHostUID(connectorType string, hostUID string) (*model.PgConnectorV1, error) {
-	c.mutexConnectors.Lock()
-	defer c.mutexConnectors.Unlock()
+func (c *Controller) getAgentByAgentTypeAndHostUID(agentType string, hostUID string) (*model.PgAgentV1, error) {
+	c.mutexAgents.Lock()
+	defer c.mutexAgents.Unlock()
 
-	for _, pgConnector := range c.connectors {
-		if pgConnector.Type.Valid &&
-			pgConnector.Type.String == connectorType &&
-			pgConnector.HostUID == hostUID {
-			return pgConnector, nil
+	for _, pgAgent := range c.agents {
+		if pgAgent.Type.Valid &&
+			pgAgent.Type.String == agentType &&
+			pgAgent.HostUID == hostUID {
+			return pgAgent, nil
 		}
 	}
 
-	return nil, fmt.Errorf("not matching connector found")
+	return nil, fmt.Errorf("not matching agent found")
 }
 
 func (c *Controller) check(checkUID string) error {
@@ -106,49 +106,47 @@ func (c *Controller) check(checkUID string) error {
 		return nil
 	}
 
-	pgConnector, err := c.getConnectorByConnectorTypeAndHostUID(pgChecker.ConnectorType, pgCheck.HostUID)
+	pgAgent, err := c.getAgentByAgentTypeAndHostUID(pgChecker.AgentType, pgCheck.HostUID)
 	if err != nil {
-		c.log.Warnf("Error loading connector for check %s: %s", pgCheck.UID, err)
+		c.log.Warnf("Error loading agent for check %s: %s", pgCheck.UID, err)
 
 		return nil
 	}
 
-	reConnectorActionPayload := &model.ReConnectorActionV1CheckPayload{}
+	reAgentActionPayload := &model.ReAgentActionV1CheckPayload{}
 
-	reConnectorActionPayload.CheckUID = pgCheck.UID
-	reConnectorActionPayload.CheckerType = pgChecker.Type
-	reConnectorActionPayload.Params = []*model.ReConnectorActionV1CheckPayloadParam{}
+	reAgentActionPayload.CheckUID = pgCheck.UID
+	reAgentActionPayload.CheckerType = pgChecker.Type
+	reAgentActionPayload.Params = []*model.ReAgentActionV1CheckPayloadParam{}
 	for _, pgCheckParam := range pgCheck.Config.Params {
-		reCheckParam := &model.ReConnectorActionV1CheckPayloadParam{}
+		reCheckParam := &model.ReAgentActionV1CheckPayloadParam{}
 
 		reCheckParam.Name = pgCheckParam.Name
 		reCheckParam.Value = pgCheckParam.Value
 
-		reConnectorActionPayload.Params = append(reConnectorActionPayload.Params, reCheckParam)
+		reAgentActionPayload.Params = append(reAgentActionPayload.Params, reCheckParam)
 	}
-	reConnectorActionPayload.TimeoutAt = time.Now().Add(10 * time.Second)
-	reConnectorActionPayload.TimeoutDuration = 30 * time.Second
+	reAgentActionPayload.TimeoutAt = time.Now().Add(10 * time.Second)
+	reAgentActionPayload.TimeoutDuration = 30 * time.Second
 
-	reConnectorAction := &model.ReConnectorActionV1{}
-	reConnectorAction.Type = model.ReConnectorActionV1TypeCheck
-	reConnectorAction.ActionUID, err = utils.UUID()
+	reAgentAction := &model.ReAgentActionV1{}
+	reAgentAction.Type = model.ReAgentActionV1TypeCheck
+	reAgentAction.ActionUID, err = utils.UUID()
 	if err != nil {
 		return fmt.Errorf("error generating uid for action: %s", err)
 	}
-	reConnectorAction.ConnectorUID = pgConnector.UID
-	reConnectorAction.Payload = reConnectorActionPayload
+	reAgentAction.AgentUID = pgAgent.UID
+	reAgentAction.Payload = reAgentActionPayload
 
-	err = c.cacheService.PublishConnectorAction(reConnectorAction)
+	err = c.cacheService.PublishAgentAction(reAgentAction)
 	if err != nil {
-		return fmt.Errorf("error publishing connector action: %s", err)
+		return fmt.Errorf("error publishing agent action: %s", err)
 	}
 
-	err = c.cacheService.AddOpenConnectorAction(reConnectorAction)
+	err = c.cacheService.AddOpenAgentAction(reAgentAction)
 	if err != nil {
-		return fmt.Errorf("error adding open connector action: %s", err)
+		return fmt.Errorf("error adding open agent action: %s", err)
 	}
-
-	c.log.Infof("Triggered check %s on connector %s", pgCheck.UID, pgConnector.UID)
 
 	return nil
 }

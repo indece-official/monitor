@@ -26,6 +26,8 @@ import (
 	"encoding/pem"
 	"fmt"
 	"time"
+
+	"gopkg.in/guregu/null.v4"
 )
 
 func (s *Service) GenerateServerCert(hostname string, caPEM *PEMCert) (*PEMCert, error) {
@@ -111,7 +113,9 @@ func (s *Service) GenerateServerCert(hostname string, caPEM *PEMCert) (*PEMCert,
 	}
 
 	return &PEMCert{
-		Crt: serverCrtPEM.Bytes(),
-		Key: serverKeyPEM.Bytes(),
+		Crt:        serverCrtPEM.Bytes(),
+		Key:        serverKeyPEM.Bytes(),
+		CreatedAt:  null.TimeFrom(serverCrt.NotBefore),
+		ValidUntil: null.TimeFrom(serverCrt.NotAfter),
 	}, nil
 }

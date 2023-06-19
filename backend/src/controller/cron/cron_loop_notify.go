@@ -149,17 +149,17 @@ func (c *Controller) filterStatus(
 	return false
 }
 
-func (c *Controller) checkNotificationDue(ctx context.Context, reNotification *model.ReNotificationV1) (bool, []*model.PgNotifierV1ConfigFilter, error) {
+func (c *Controller) checkNotificationDue(ctx context.Context, reNotification *model.ReNotificationV1) (bool, bool, []*model.PgNotifierV1ConfigFilter, error) {
 	matchingPgFilters := []*model.PgNotifierV1ConfigFilter{}
 
 	pgNotifier, err := c.getNotifier(reNotification.NotifierUID)
 	if err != nil {
-		return false, nil, fmt.Errorf("error loading notifier for unnotified status change: %s", err)
+		return false, false, nil, fmt.Errorf("error loading notifier for unnotified status change: %s", err)
 	}
 
 	pgHost, err := c.getHost(reNotification.HostUID)
 	if err != nil {
-		return false, nil, fmt.Errorf("error loading host for unnotified status change: %s", err)
+		return false, false, nil, fmt.Errorf("error loading host for unnotified status change: %s", err)
 	}
 
 	filterMatch := false
@@ -184,60 +184,61 @@ func (c *Controller) checkNotificationDue(ctx context.Context, reNotification *m
 	}
 
 	if filterMatch {
-		return len(matchingPgFilters) > 0, matchingPgFilters, nil
+		return true, len(matchingPgFilters) > 0, matchingPgFilters, nil
 	}
 
-	return false, nil, fmt.Errorf("no filter matches for notification")
+	return false, false, nil, nil
 }
 
 func (c *Controller) notify(ctx context.Context) error {
 	reNotifications, err := c.cacheService.GetNotifications()
 	if err != nil {
-		return fmt.Errorf("error loading unnotified status changes: %s", err)
+		return fmt.Errorf("error loading notifications: %s", err)
 	}
 
 	relevantReNotifications := []*model.ReNotificationV1{}
 
 	for _, reNotification := range reNotifications {
-		isDue, matchingPgFilters, err := c.checkNotificationDue(ctx, reNotification)
+		hasMatches, isDue, matchingPgFilters, err := c.checkNotificationDue(ctx, reNotification)
 		if err != nil {
-			c.log.Warnf("Error loading notifier for unnotified status change: %s", err)
+			c.log.Warnf("Error checking if notification is due: %s", err)
 
 			err = c.cacheService.DeleteNotification(reNotification.CheckUID, reNotification.NotifierUID)
 			if err != nil {
-				return fmt.Errorf("error deleting unnotified status change: %s", err)
+				return fmt.Errorf("error deleting notification: %s", err)
 			}
 
 			continue
 		}
 
-		c.log.Infof("Notification for check %s is due?: %v (%d filters: %v)", reNotification.CheckUID, isDue, len(matchingPgFilters), matchingPgFilters)
+		if !hasMatches {
+			err = c.cacheService.DeleteNotification(reNotification.CheckUID, reNotification.NotifierUID)
+			if err != nil {
+				return fmt.Errorf("error deleting notification: %s", err)
+			}
+
+			continue
+		}
 
 		if !isDue {
 			continue
 		}
 
 		// Recheck status
+		err = c.cacheService.DeleteNotification(reNotification.CheckUID, reNotification.NotifierUID)
+		if err != nil {
+			return fmt.Errorf("error deleting sent notification: %s", err)
+		}
 
 		reHostStatusCheck, err := c.cacheService.GetHostCheckStatus(reNotification.HostUID, reNotification.CheckUID)
 		if err != nil {
 			c.log.Warnf("Error loading host status: %s", err)
-
-			err = c.cacheService.DeleteNotification(reNotification.CheckUID, reNotification.NotifierUID)
-			if err != nil {
-				return fmt.Errorf("error deleting unnotified status change: %s", err)
-			}
 
 			continue
 		}
 
 		if reHostStatusCheck == nil {
 			c.log.Warnf("Error no host status found: %s", err)
-
-			err = c.cacheService.DeleteNotification(reNotification.CheckUID, reNotification.NotifierUID)
-			if err != nil {
-				return fmt.Errorf("error deleting unnotified status change: %s", err)
-			}
 
 			continue
 		}
@@ -258,13 +259,6 @@ func (c *Controller) notify(ctx context.Context) error {
 			err = c.sendNotifications(ctx, changes)
 			if err != nil {
 				return fmt.Errorf("error loading check: %s", err)
-			}
-
-			for _, notification := range changes {
-				err = c.cacheService.DeleteNotification(notification.CheckUID, notification.NotifierUID)
-				if err != nil {
-					return fmt.Errorf("error deleting sent notification: %s", err)
-				}
 			}
 		}
 	}

@@ -44,12 +44,12 @@ func (c *Controller) reqV1AddCheck(w http.ResponseWriter, r *http.Request) gousu
 
 	pgCheck, err := c.mapAPIAddCheckV1RequestBodyToPgCheckV1(requestBody)
 	if err != nil {
-		return gousuchi.BadRequest(r, "Error mapping request to connector: %s", err)
+		return gousuchi.BadRequest(r, "Error mapping request to check: %s", err)
 	}
 
 	pgCheck.UID, err = utils.UUID()
 	if err != nil {
-		return gousuchi.InternalServerError(r, "Error generating connector uid: %s", err)
+		return gousuchi.InternalServerError(r, "Error generating check uid: %s", err)
 	}
 
 	pgCheckers, err := c.postgresService.GetCheckers(
@@ -74,7 +74,7 @@ func (c *Controller) reqV1AddCheck(w http.ResponseWriter, r *http.Request) gousu
 
 	err = c.postgresService.AddCheck(r.Context(), pgCheck)
 	if err != nil {
-		return gousuchi.InternalServerError(r, "Error adding connector to postgres: %s", err)
+		return gousuchi.InternalServerError(r, "Error adding check to postgres: %s", err)
 	}
 
 	reSystemEventPayload := &model.ReSystemEventV1CheckAddedPayload{}

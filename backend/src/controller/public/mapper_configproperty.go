@@ -31,10 +31,10 @@ func (c *Controller) mapPgConfigPropertyV1KeyToAPIConfigPropertyV1Key(pgConfigPr
 		return apipublic.TLSCACRT, nil
 	case model.PgConfigPropertyV1KeyTLSServerCrt:
 		return apipublic.TLSSERVERCRT, nil
-	case model.PgConfigPropertyV1KeyConnectorHost:
-		return apipublic.CONNECTORHOST, nil
-	case model.PgConfigPropertyV1KeyConnectorPort:
-		return apipublic.CONNECTORPORT, nil
+	case model.PgConfigPropertyV1KeyAgentHost:
+		return apipublic.AGENTHOST, nil
+	case model.PgConfigPropertyV1KeyAgentPort:
+		return apipublic.AGENTPORT, nil
 	default:
 		return "", fmt.Errorf("invalid config property key: %s", pgConfigPropertyKey)
 	}
@@ -42,10 +42,10 @@ func (c *Controller) mapPgConfigPropertyV1KeyToAPIConfigPropertyV1Key(pgConfigPr
 
 func (c *Controller) mapAPIConfigPropertyV1KeyToPgConfigPropertyV1Key(apiConfigPropertyKey apipublic.ConfigPropertyV1Key) (model.PgConfigPropertyV1Key, error) {
 	switch apiConfigPropertyKey {
-	case apipublic.CONNECTORHOST:
-		return model.PgConfigPropertyV1KeyConnectorHost, nil
-	case apipublic.CONNECTORPORT:
-		return model.PgConfigPropertyV1KeyConnectorPort, nil
+	case apipublic.AGENTHOST:
+		return model.PgConfigPropertyV1KeyAgentHost, nil
+	case apipublic.AGENTPORT:
+		return model.PgConfigPropertyV1KeyAgentPort, nil
 	default:
 		return "", fmt.Errorf("invalid config property key: %s", apiConfigPropertyKey)
 	}

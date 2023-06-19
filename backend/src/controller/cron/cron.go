@@ -45,14 +45,14 @@ type Controller struct {
 	smtpService     smtp.IService
 	checks          []*model.PgCheckV1
 	checkers        []*model.PgCheckerV1
-	connectors      []*model.PgConnectorV1
+	agents          []*model.PgAgentV1
 	hosts           []*model.PgHostV1
 	users           []*model.PgUserV1
 	notifiers       []*model.PgNotifierV1
 	scheduler       *gocron.Scheduler
 	mutexChecks     sync.Mutex
 	mutexCheckers   sync.Mutex
-	mutexConnectors sync.Mutex
+	mutexAgents     sync.Mutex
 	mutexHosts      sync.Mutex
 	mutexUsers      sync.Mutex
 	mutexNotifiers  sync.Mutex
@@ -100,11 +100,11 @@ func (c *Controller) Start() error {
 		for !c.stop {
 			c.error = nil
 
-			err := c.connectorEventLoop()
+			err := c.agentEventLoop()
 			if err != nil {
 				c.error = err
 
-				c.log.Errorf("Error in connector event loop: %s", err)
+				c.log.Errorf("Error in agent event loop: %s", err)
 			}
 
 			time.Sleep(5 * time.Second)

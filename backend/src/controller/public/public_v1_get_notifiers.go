@@ -34,7 +34,7 @@ func (c *Controller) reqV1GetNotifiers(w http.ResponseWriter, r *http.Request) g
 		&postgres.GetNotifiersFilter{},
 	)
 	if err != nil {
-		return gousuchi.InternalServerError(r, "Error loading connectors: %s", err)
+		return gousuchi.InternalServerError(r, "Error loading notifiers: %s", err)
 	}
 
 	respData, err := c.mapPgNotifierV1ToAPIGetNotifiersV1ResponseBody(pgNotifiers, false)

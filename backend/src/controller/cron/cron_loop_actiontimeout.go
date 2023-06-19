@@ -30,30 +30,28 @@ func (c *Controller) checkActionTimeouts() error {
 	now := time.Now()
 	ctx := context.Background()
 
-	openReConnectorActions, err := c.cacheService.GetAllOpenConnectorActions()
+	openReAgentActions, err := c.cacheService.GetAllOpenAgentActions()
 	if err != nil {
-		return fmt.Errorf("error getting open connector actions: %s", err)
+		return fmt.Errorf("error getting open agent actions: %s", err)
 	}
 
-	for _, openReConnectorAction := range openReConnectorActions {
-		if openReConnectorAction.Type != model.ReConnectorActionV1TypeCheck {
+	for _, openReAgentAction := range openReAgentActions {
+		if openReAgentAction.Type != model.ReAgentActionV1TypeCheck {
 			continue
 		}
 
-		reActionPayload, ok := openReConnectorAction.Payload.(*model.ReConnectorActionV1CheckPayload)
+		reActionPayload, ok := openReAgentAction.Payload.(*model.ReAgentActionV1CheckPayload)
 		if !ok {
-			c.log.Errorf("Invalid connector action payload")
+			c.log.Errorf("Invalid agent action payload")
 
 			continue
 		}
 
 		if reActionPayload.TimeoutAt.Before(now) {
-			err = c.cacheService.DeleteOpenConnectorAction(openReConnectorAction.ConnectorUID, openReConnectorAction.ActionUID)
+			err = c.cacheService.DeleteOpenAgentAction(openReAgentAction.AgentUID, openReAgentAction.ActionUID)
 			if err != nil {
-				return fmt.Errorf("error deleting open connector actions: %s", err)
+				return fmt.Errorf("error deleting open agent actions: %s", err)
 			}
-
-			c.log.Warnf("Timeout on action %s", openReConnectorAction.ActionUID)
 
 			err = c.addCheckStatus(
 				ctx,

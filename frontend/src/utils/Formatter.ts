@@ -1,13 +1,13 @@
 import DayJS from 'dayjs';
 import { CheckStatusV1Status } from '../Services/CheckService';
-import { ConnectorV1, ConnectorV1Status } from '../Services/ConnectorService';
+import { AgentV1, AgentV1Status } from '../Services/AgentService';
 import { UserV1Role } from '../Services/UserService';
 
 
-const CONNECTOR_STATUS_MAP: Record<ConnectorV1Status, string> = {
-    [ConnectorV1Status.Unregistered]:   'Configuring ...',
-    [ConnectorV1Status.Ready]:          'Ready',
-    [ConnectorV1Status.Error]:          'Error',
+const AGENT_STATUS_MAP: Record<AgentV1Status, string> = {
+    [AgentV1Status.Unregistered]:   'Configuring ...',
+    [AgentV1Status.Ready]:          'Ready',
+    [AgentV1Status.Error]:          'Error',
 };
 
 
@@ -38,9 +38,9 @@ export class Formatter
     }
 
 
-    public static connectorStatus ( connector: ConnectorV1 ): string
+    public static agentStatus ( agent: AgentV1 ): string
     {
-        return `${CONNECTOR_STATUS_MAP[connector.status] || connector.status} (${connector.connected ? 'Online' : 'Offline'})`;
+        return `${AGENT_STATUS_MAP[agent.status] || agent.status} (${agent.connected ? 'Online' : 'Offline'})`;
     }
     
     

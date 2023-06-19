@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS mo_dbinfo (
 
 INSERT INTO mo_dbinfo(name, value)
     VALUES
-        ('revision', 2)
+        ('revision', 3)
     ON CONFLICT DO NOTHING;
 
 --- Table for storing config properties
@@ -137,22 +137,21 @@ BEGIN
     END IF;
 END $$;
 
---- Table for storing connectors
-CREATE TABLE IF NOT EXISTS mo_connector (
+--- Table for storing agents
+CREATE TABLE IF NOT EXISTS mo_agent (
     uid VARCHAR(36) NOT NULL,
     host_uid VARCHAR(36) NOT NULL REFERENCES mo_host(uid),
     type VARCHAR(256) NULL,
     version VARCHAR(32) NULL,
-    tls_client_crt TEXT NOT NULL,
-    tls_client_key TEXT NOT NULL,
+    certs JSON NOT NULL,
     datetime_created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     datetime_updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     datetime_registered TIMESTAMP WITH TIME ZONE NULL DEFAULT NULL,
     datetime_deleted TIMESTAMP WITH TIME ZONE NULL DEFAULT NULL
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS mo_connector_uid
-    ON mo_connector(uid);
+CREATE UNIQUE INDEX IF NOT EXISTS mo_agent_uid
+    ON mo_agent(uid);
 
 DO $$
 BEGIN
@@ -162,8 +161,8 @@ BEGIN
         WHERE table_type='VIEW' AND
         table_schema='public'
         AND table_catalog=current_database()
-        AND table_name='mo_connector_v1') THEN
-        CREATE VIEW mo_connector_v1 AS SELECT * FROM mo_connector;
+        AND table_name='mo_agent_v1') THEN
+        CREATE VIEW mo_agent_v1 AS SELECT * FROM mo_agent;
     END IF;
 END $$;
 
@@ -171,7 +170,7 @@ END $$;
 CREATE TABLE IF NOT EXISTS mo_checker (
     uid VARCHAR(36) NOT NULL,
     type VARCHAR(256) NOT NULL,
-    connector_type VARCHAR(256) NOT NULL,
+    agent_type VARCHAR(256) NOT NULL,
     version VARCHAR(32) NULL,
     name VARCHAR(256) NOT NULL,
     custom_checks BOOLEAN NOT NULL,
