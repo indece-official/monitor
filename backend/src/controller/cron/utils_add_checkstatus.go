@@ -19,6 +19,7 @@ package cron
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/indece-official/monitor/backend/src/model"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
@@ -84,7 +85,8 @@ func (c *Controller) addCheckStatus(
 	pgChecks, err := c.postgresService.GetChecks(
 		ctx,
 		&postgres.GetChecksFilter{
-			CheckUID: null.StringFrom(checkUID),
+			CheckUID:    null.StringFrom(checkUID),
+			CountStatus: 1,
 		},
 	)
 	if err != nil {
@@ -263,14 +265,12 @@ func (c *Controller) addCheckStatus(
 
 	notify := false
 	prevStatus := model.PgCheckStatusV1StatusUnkn
+	if len(pgCheck.Statuses) > 0 {
+		prevStatus = pgCheck.Statuses[0].Status
+	}
 
-	if len(pgCheck.Statuses) == 0 ||
-		pgCheckStatus.Status != pgCheck.Statuses[0].Status {
+	if pgCheckStatus.Status != prevStatus {
 		notify = true
-
-		if len(pgCheck.Statuses) > 0 {
-			prevStatus = pgCheck.Statuses[0].Status
-		}
 	}
 
 	err = c.postgresService.AddCheckStatus(ctx, pgCheckStatus)
@@ -297,11 +297,12 @@ func (c *Controller) addCheckStatus(
 	for _, pgNotifier := range c.notifiers {
 		err = c.cacheService.SetNotification(
 			&model.ReNotificationV1{
-				HostUID:        pgCheck.HostUID,
-				NotifierUID:    pgNotifier.UID,
-				CheckUID:       pgCheck.UID,
-				Status:         pgCheckStatus.Status,
-				PreviousStatus: prevStatus,
+				HostUID:         pgCheck.HostUID,
+				NotifierUID:     pgNotifier.UID,
+				CheckUID:        pgCheck.UID,
+				Status:          pgCheckStatus.Status,
+				PreviousStatus:  prevStatus,
+				DatetimeCreated: time.Now(),
 			},
 		)
 		if err != nil {
