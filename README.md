@@ -20,7 +20,7 @@ services:
       - /opt/postgres-data:/var/lib/postgresql/data
 
   monitor:
-    image: indece/monitor:v1.0.0-alpha.3
+    image: indece/monitor:latest
     restart: always
     depends_on:
       - postgres
