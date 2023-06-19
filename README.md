@@ -20,7 +20,7 @@ services:
       - /opt/postgres-data:/var/lib/postgresql/data
 
   monitor:
-    image: indece/monitor:latest
+    image: indece/monitor:v1.0.0-alpha.3
     restart: always
     depends_on:
       - postgres
@@ -30,11 +30,6 @@ services:
       - POSTGRES_DATABASE=monitor
       - POSTGRES_USER=myuser
       - POSTGRES_PASSWORD=mypassword
-      - SMTP_HOST=mymailserver.com
-      - SMTP_PORT=465
-      - SMTP_USER=bot@mymailserver.com
-      - SMTP_PASSWORD=mymailpassword
-      - SMTP_FROM=bot@mymailserver.com
     ports:
       - 0.0.0.0:9440:9440
     exposes:
