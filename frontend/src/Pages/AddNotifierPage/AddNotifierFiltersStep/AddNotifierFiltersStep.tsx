@@ -2,7 +2,7 @@ import React from 'react';
 import { FieldArray, Form, Formik } from 'formik';
 import { InputText } from '../../../Components/Input/InputText';
 import { Button } from '../../../Components/Button/Button';
-import { NotifierV1Filter, NotifierV1Type } from '../../../Services/NotifierService';
+import { NotifierV1Filter } from '../../../Services/NotifierService';
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { InputMultiSelect } from '../../../Components/Input/InputMultiSelect';

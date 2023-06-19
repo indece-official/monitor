@@ -19,13 +19,14 @@ package cron
 import (
 	"context"
 
-	"github.com/indece-official/go-gousu/goususmtp/v2"
 	"github.com/indece-official/monitor/backend/src/model"
+	"github.com/indece-official/monitor/backend/src/service/smtp"
 	"github.com/indece-official/monitor/backend/src/service/template"
 )
 
 func (c *Controller) sendEmail(
 	qctx context.Context,
+	sender *smtp.Sender,
 	locale model.Locale,
 	templateType template.TemplateType,
 	to string,
@@ -61,13 +62,13 @@ func (c *Controller) sendEmail(
 		return err
 	}
 
-	email := &goususmtp.Email{}
+	email := &smtp.Email{}
 	email.To = to
 	email.Subject = subject
 	email.BodyPlain = bodyText
 	email.BodyHTML = bodyHTML
 
-	err = c.smtpService.SendEmail(email)
+	err = sender.SendEmail(email)
 	if err != nil {
 		return err
 	}

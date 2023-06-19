@@ -38,7 +38,8 @@ func (c *Controller) reqV1GetHostChecks(w http.ResponseWriter, r *http.Request) 
 	pgChecks, err := c.postgresService.GetChecks(
 		r.Context(),
 		&postgres.GetChecksFilter{
-			HostUID: null.StringFrom(hostUID),
+			HostUID:     null.StringFrom(hostUID),
+			CountStatus: 1,
 		},
 	)
 	if err != nil {

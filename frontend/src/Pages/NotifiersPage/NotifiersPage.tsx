@@ -13,7 +13,6 @@ import { ListItem } from '../../Components/List/ListItem';
 import { ListItemHeader } from '../../Components/List/ListItemHeader';
 import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
-import { ListItemBody } from '../../Components/List/ListItemBody';
 
 
 export interface NotifiersPageProps
@@ -128,7 +127,6 @@ export class NotifiersPage extends React.Component<NotifiersPageProps, Notifiers
                         <ListItem key={notifier.uid}>
                             <ListItemHeader>
                                 <ListItemHeaderField
-                                    to={LinkUtils.make('notifier', notifier.uid)}
                                     grow={true}
                                     text={notifier.name}
                                     subtext={notifier.type}

@@ -35,8 +35,10 @@ import { EditCheckPage } from './Pages/EditCheckPage/EditCheckPage';
 import { DeleteCheckPage } from './Pages/DeleteCheckPage/DeleteCheckPage';
 import { NotifiersPage } from './Pages/NotifiersPage/NotifiersPage';
 import { AddNotifierPage } from './Pages/AddNotifierPage/AddNotifierPage';
+import { EditNotifierPage } from './Pages/EditNotifierPage/EditNotifierPage';
 
 import './App.css';
+import { DeleteNotifierPage } from './Pages/DeleteNotifierPage/DeleteNotifierPage';
 
 
 export class App extends React.Component
@@ -242,6 +244,22 @@ export class App extends React.Component
                                     path='/notifier/add'
                                     element={<RouteGuard
                                         element={<AddNotifierPage />}
+                                        roles={[UserV1Role.Admin]}
+                                    />}
+                                />
+
+                                <Route
+                                    path='/notifier/:notifierUID/edit'
+                                    element={<RouteGuard
+                                        element={<EditNotifierPage />}
+                                        roles={[UserV1Role.Admin]}
+                                    />}
+                                />
+                               
+                                <Route
+                                    path='/notifier/:notifierUID/delete'
+                                    element={<RouteGuard
+                                        element={<DeleteNotifierPage />}
                                         roles={[UserV1Role.Admin]}
                                     />}
                                 />

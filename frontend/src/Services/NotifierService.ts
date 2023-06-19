@@ -49,10 +49,10 @@ export const NotifierV1Types: Array<NotifierV1Type> = [
 
 export interface NotifierV1
 {
-    uid:    string;
-    name:   string;
-    type:   NotifierV1Type;
-    config: NotifierV1Config;
+    uid:        string;
+    name:       string;
+    type:       NotifierV1Type;
+    config?:    NotifierV1Config | null;
 }
 
 

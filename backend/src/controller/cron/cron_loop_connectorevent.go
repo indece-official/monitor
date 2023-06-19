@@ -27,8 +27,6 @@ import (
 func (c *Controller) processConnectorEvent(reConnectorEvent *model.ReConnectorEventV1) error {
 	ctx := context.Background()
 
-	c.log.Infof("Received connector event %s from connector %s", reConnectorEvent.Type, reConnectorEvent.ConnectorUID)
-
 	switch reConnectorEvent.Type {
 	case model.ReConnectorEventV1TypeCheckResult:
 		rePayload, ok := reConnectorEvent.Payload.(*model.ReConnectorEventV1CheckResultPayload)

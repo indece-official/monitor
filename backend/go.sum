@@ -20,8 +20,6 @@ github.com/indece-official/go-gousu/gousuchi/v2 v2.0.0-20230507231903-e0eaacb0ac
 github.com/indece-official/go-gousu/gousuchi/v2 v2.0.0-20230507231903-e0eaacb0ac27/go.mod h1:pVkj5V0iOtFQcFzcvinPQM6vVDOsZJVuoH1TP0HwD6g=
 github.com/indece-official/go-gousu/gousupostgres/v2 v2.0.0-20230507231903-e0eaacb0ac27 h1:uujS8r3GzQ0AbTEBZfcNijCfmvppo9kTLDu+D0RSXto=
 github.com/indece-official/go-gousu/gousupostgres/v2 v2.0.0-20230507231903-e0eaacb0ac27/go.mod h1:taORAxYY0xRO3lopurmOkWrpY+h0YvchBnntkK5R7wE=
-github.com/indece-official/go-gousu/goususmtp/v2 v2.0.0-20230507231903-e0eaacb0ac27 h1:8lAqOCfNsejFnl01ZSFyFgcicfNKfSLCHau1VX0IG7g=
-github.com/indece-official/go-gousu/goususmtp/v2 v2.0.0-20230507231903-e0eaacb0ac27/go.mod h1:aCXvG2v8g4+kI/iDI810mlgMuajV67En8BEo+kMG0Uo=
 github.com/indece-official/go-gousu/v2 v2.2.0 h1:oAn5BFfrT79Hg/1UiSvk3yAgUBzE0tCJosAB54ZPmpM=
 github.com/indece-official/go-gousu/v2 v2.2.0/go.mod h1:Tdz1ER1qFpTnmizZAfJTg8HucFXuAydASVgdNlra29M=
 github.com/kr/pretty v0.1.0/go.mod h1:dAy3ld7l9f0ibDNOQOHHMYYIIbhfbHSm3C4ZsoJORNo=
@@ -49,6 +47,7 @@ github.com/shurcooL/vfsgen v0.0.0-20200824052919-0d455de96546 h1:pXY9qYc/MP5zdvq
 github.com/shurcooL/vfsgen v0.0.0-20200824052919-0d455de96546/go.mod h1:TrYk7fJVaAttu97ZZKrO9UbRa8izdowaMIZcxYMbVaw=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/objx v0.4.0/go.mod h1:YvHI0jy2hoMjB+UWwv71VJQ9isScKT/TqJzVSSt89Yw=
+github.com/stretchr/objx v0.5.0 h1:1zr/of2m5FGMsad5YfcqgdqdWrIhu+EBEJRhR1U7z/c=
 github.com/stretchr/objx v0.5.0/go.mod h1:Yh+to48EsGEfYuaHDzXPcE3xhTkx73EhmCGUpEOglKo=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
@@ -93,6 +92,8 @@ google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc h1:
 google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc/go.mod h1:66JfowdXAEgad5O9NnYcsNPLCPZJD++2L9X0PCMODrA=
 google.golang.org/grpc v1.55.0 h1:3Oj82/tFSCeUrRTg/5E/7d/W5A1tj6Ky1ABAuZuv5ag=
 google.golang.org/grpc v1.55.0/go.mod h1:iYEXKGkEBhg1PjZQvoYEVPTDkHo1/bjTnfwTeGONTY8=
+google.golang.org/grpc v1.56.0 h1:+y7Bs8rtMd07LeXmL3NxcTLn7mUkbKZqEpPhMNkwJEE=
+google.golang.org/grpc v1.56.0/go.mod h1:I9bI3vqKfayGqPUAwGdOSu7kt6oIJLixfffKrpXqQ9s=
 google.golang.org/protobuf v1.26.0-rc.1/go.mod h1:jlhhOSvTdKEhbULTjvd4ARK9grFBp09yW+WbY/TyQbw=
 google.golang.org/protobuf v1.26.0/go.mod h1:9q0QmTI4eRPtz6boOQmLYwt+qCgq0jsYwAQnmE0givc=
 google.golang.org/protobuf v1.30.0 h1:kPPoIgf3TsEvrm0PFe15JQ+570QVxYzEvvHqChK+cng=

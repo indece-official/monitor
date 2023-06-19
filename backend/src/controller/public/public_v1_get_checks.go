@@ -31,7 +31,9 @@ func (c *Controller) reqV1GetChecks(w http.ResponseWriter, r *http.Request) gous
 
 	pgChecks, err := c.postgresService.GetChecks(
 		r.Context(),
-		&postgres.GetChecksFilter{},
+		&postgres.GetChecksFilter{
+			CountStatus: 1,
+		},
 	)
 	if err != nil {
 		return gousuchi.InternalServerError(r, "Error loading checks: %s", err)

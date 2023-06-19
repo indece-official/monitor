@@ -22,12 +22,12 @@ import (
 	"time"
 
 	"github.com/go-co-op/gocron"
-	"github.com/indece-official/go-gousu/goususmtp/v2"
 	"github.com/indece-official/go-gousu/v2/gousu"
 	"github.com/indece-official/go-gousu/v2/gousu/logger"
 	"github.com/indece-official/monitor/backend/src/model"
 	"github.com/indece-official/monitor/backend/src/service/cache"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
+	"github.com/indece-official/monitor/backend/src/service/smtp"
 	"github.com/indece-official/monitor/backend/src/service/template"
 )
 
@@ -42,7 +42,7 @@ type Controller struct {
 	postgresService postgres.IService
 	cacheService    cache.IService
 	templateService template.IService
-	smtpService     goususmtp.IService
+	smtpService     smtp.IService
 	checks          []*model.PgCheckV1
 	checkers        []*model.PgCheckerV1
 	connectors      []*model.PgConnectorV1
@@ -178,7 +178,7 @@ func NewController(ctx gousu.IContext) gousu.IController {
 		postgresService: ctx.GetService(postgres.ServiceName).(postgres.IService),
 		cacheService:    ctx.GetService(cache.ServiceName).(cache.IService),
 		templateService: ctx.GetService(template.ServiceName).(template.IService),
-		smtpService:     ctx.GetService(goususmtp.ServiceName).(goususmtp.IService),
+		smtpService:     ctx.GetService(smtp.ServiceName).(smtp.IService),
 	}
 }
 

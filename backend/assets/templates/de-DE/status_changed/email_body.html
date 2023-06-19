@@ -1,42 +1,46 @@
 <html style="padding: 0; margin: 0;">
-    <body style="padding-left: 20px; padding-right: 20px; padding-top: 20px; padding-bottom: 20px; font-family: 'Arial', sans-serif; font-size: 18px;">
+    <body style="padding-left: 10px; padding-right: 10px; padding-top: 20px; padding-bottom: 20px; font-family: 'Arial', sans-serif; font-size: 18px;">
         <p>Status changes on host {{ .Data.host_name }}:</p>
         <p></p>
         <table>
             <tbody>
-                <tr>
-                    {{ if eq .Data.checkstatus_status "crit" }}
-                        <td style="color: #fff; background-color: #f00; width: 80px; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; text-align: center;">
-                            CRITICAL
-                        </td>
-                    {{ end }}
+                {{ range .Data.checks }}
+                    <tr>
+                        {{ if eq .checkstatus_status "crit" }}
+                            <td rowspan="2" style="color: #fff; background-color: #DE7D75; width: 80px; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; text-align: center;">
+                                CRITICAL
+                            </td>
+                        {{ end }}
+                        
+                        {{ if eq .checkstatus_status "warn" }}
+                            <td rowspan="2" style="color: #000; background-color: #B4B441; width: 80px; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; text-align: center;">
+                                WARNING
+                            </td>
+                        {{ end }}
                     
-                    {{ if eq .Data.checkstatus_status "warn" }}
-                        <td style="color: #000; background-color: #ff0; width: 80px; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; text-align: center;">
-                            WARNING
-                        </td>
-                    {{ end }}
-                
-                    {{ if eq .Data.checkstatus_status "ok" }}
-                        <td style="color: #000; background-color: #0f0; width: 80px; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; text-align: center;">
-                            OK
-                        </td>
-                    {{ end }}
+                        {{ if eq .checkstatus_status "ok" }}
+                            <td rowspan="2" style="color: #000; background-color: #A9DC96; width: 80px; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; text-align: center;">
+                                OK
+                            </td>
+                        {{ end }}
+                        
+                        {{ if eq .checkstatus_status "unkn" }}
+                            <td rowspan="2" style="color: #000; background-color: #fff; width: 80px; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; text-align: center;">
+                                UNKNOWN
+                            </td>
+                        {{ end }}
                     
-                    {{ if eq .Data.checkstatus_status "unkn" }}
-                        <td style="color: #000; background-color: #fff; width: 80px; padding-left: 20px; padding-right: 20px; padding-top: 10px; padding-bottom: 10px; text-align: center;">
-                            UNKNOWN
+                        <td>
+                            {{ .check_name }}
                         </td>
-                    {{ end }}
-                
-                    <td>
-                        {{ .Data.check_name }} &ndash;
-                    </td>
+                    </tr>
 
-                    <td>
-                        {{ .Data.checkstatus_message }}
-                    </td>
-                </tr>
+                    <tr>
+                        <td>
+                            {{ .checkstatus_message }}
+                        </td>
+                    </tr>
+                {{ end }}
             </tbody>
         </table>
     </body>

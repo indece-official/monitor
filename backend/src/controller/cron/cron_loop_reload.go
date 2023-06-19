@@ -32,7 +32,8 @@ func (c *Controller) reload() error {
 	pgChecks, err := c.postgresService.GetChecks(
 		ctx,
 		&postgres.GetChecksFilter{
-			Disabled: null.BoolFrom(false),
+			Disabled:    null.BoolFrom(false),
+			CountStatus: 1,
 		},
 	)
 	if err != nil {

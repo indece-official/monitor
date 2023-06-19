@@ -40,7 +40,7 @@ func (s *Service) UpdateNotifier(qctx context.Context, notifierUID string, pgNot
 		`UPDATE mo_notifier_v1
 		SET
 			name = $2,
-			config = $4,
+			config = $3,
 			datetime_updated = NOW()
 		WHERE
 			uid = $1 AND

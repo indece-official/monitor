@@ -10,10 +10,20 @@ import (
 	"github.com/indece-official/monitor/backend/src/service/template"
 )
 
-func (c *Controller) sendNotifications(ctx context.Context, reNotifications []*model.ReNotificationV1) error {
+func (c *Controller) sendNotifications(
+	ctx context.Context,
+	reNotifications []*model.ReNotificationV1,
+) error {
+	c.log.Infof("Sending notifications (%d) for host %s", len(reNotifications), reNotifications[0].HostUID)
+
 	pgHost, err := c.getHost(reNotifications[0].HostUID)
 	if err != nil {
 		return fmt.Errorf("error loading host: %s", err)
+	}
+
+	pgNotifier, err := c.getNotifier(reNotifications[0].NotifierUID)
+	if err != nil {
+		return fmt.Errorf("error loading notifier: %s", err)
 	}
 
 	templateParamChecks := []map[string]string{}
@@ -23,15 +33,15 @@ func (c *Controller) sendNotifications(ctx context.Context, reNotifications []*m
 			return fmt.Errorf("error loading check: %s", err)
 		}
 
-		reHostStatusCheck, err := c.cacheService.GetHostCheckStatus(pgCheck.HostUID, pgCheck.HostUID)
+		reHostStatusCheck, err := c.cacheService.GetHostCheckStatus(pgCheck.HostUID, pgCheck.UID)
 		if err != nil {
-			c.log.Warnf("Error loading host status: %s", err)
+			c.log.Warnf("Error loading host status check: %s", err)
 
 			continue
 		}
 
 		if reHostStatusCheck == nil {
-			c.log.Warnf("Error no host status found: %s", err)
+			c.log.Warnf("Error no host status check found")
 
 			continue
 		}
@@ -57,6 +67,9 @@ func (c *Controller) sendNotifications(ctx context.Context, reNotifications []*m
 	templateParams["count_unknown"] = fmt.Sprintf("%d", hostStats.CountUnknown)
 	templateParams["checks"] = templateParamChecks
 
+	sender := c.smtpService.Open(pgNotifier.Config.Params.EmailSmtp)
+	defer sender.Close()
+
 	for _, pgUser := range c.users {
 		if !pgUser.Email.Valid {
 			continue
@@ -64,6 +77,7 @@ func (c *Controller) sendNotifications(ctx context.Context, reNotifications []*m
 
 		err = c.sendEmail(
 			ctx,
+			sender,
 			model.LocaleEnUs,
 			template.TemplateTypeStatusChanged,
 			pgUser.Email.String,
@@ -197,6 +211,8 @@ func (c *Controller) notify(ctx context.Context) error {
 			continue
 		}
 
+		c.log.Infof("Notification for check %s is due?: %v (%d filters: %v)", reNotification.CheckUID, isDue, len(matchingPgFilters), matchingPgFilters)
+
 		if !isDue {
 			continue
 		}
@@ -227,7 +243,7 @@ func (c *Controller) notify(ctx context.Context) error {
 		}
 
 		for _, pgFilter := range matchingPgFilters {
-			if c.filterStatus(pgFilter, reNotification.Status, reHostStatusCheck.Status) {
+			if c.filterStatus(pgFilter, reNotification.PreviousStatus, reHostStatusCheck.Status) {
 				relevantReNotifications = append(relevantReNotifications, reNotification)
 				break
 			}
@@ -242,6 +258,13 @@ func (c *Controller) notify(ctx context.Context) error {
 			err = c.sendNotifications(ctx, changes)
 			if err != nil {
 				return fmt.Errorf("error loading check: %s", err)
+			}
+
+			for _, notification := range changes {
+				err = c.cacheService.DeleteNotification(notification.CheckUID, notification.NotifierUID)
+				if err != nil {
+					return fmt.Errorf("error deleting sent notification: %s", err)
+				}
 			}
 		}
 	}

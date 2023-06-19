@@ -262,10 +262,15 @@ func (c *Controller) addCheckStatus(
 	}
 
 	notify := false
+	prevStatus := model.PgCheckStatusV1StatusUnkn
 
 	if len(pgCheck.Statuses) == 0 ||
 		pgCheckStatus.Status != pgCheck.Statuses[0].Status {
 		notify = true
+
+		if len(pgCheck.Statuses) > 0 {
+			prevStatus = pgCheck.Statuses[0].Status
+		}
 	}
 
 	err = c.postgresService.AddCheckStatus(ctx, pgCheckStatus)
@@ -292,10 +297,11 @@ func (c *Controller) addCheckStatus(
 	for _, pgNotifier := range c.notifiers {
 		err = c.cacheService.SetNotification(
 			&model.ReNotificationV1{
-				HostUID:     pgCheck.HostUID,
-				NotifierUID: pgNotifier.UID,
-				CheckUID:    pgCheck.UID,
-				Status:      pgCheckStatus.Status,
+				HostUID:        pgCheck.HostUID,
+				NotifierUID:    pgNotifier.UID,
+				CheckUID:       pgCheck.UID,
+				Status:         pgCheckStatus.Status,
+				PreviousStatus: prevStatus,
 			},
 		)
 		if err != nil {

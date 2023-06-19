@@ -23,7 +23,6 @@ package main
 import (
 	"fmt"
 
-	"github.com/indece-official/go-gousu/goususmtp/v2"
 	"github.com/indece-official/monitor/backend/src/buildvars"
 	"github.com/indece-official/monitor/backend/src/controller/connector"
 	"github.com/indece-official/monitor/backend/src/controller/cron"
@@ -32,6 +31,7 @@ import (
 	"github.com/indece-official/monitor/backend/src/service/cache"
 	"github.com/indece-official/monitor/backend/src/service/cert"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
+	"github.com/indece-official/monitor/backend/src/service/smtp"
 	"github.com/indece-official/monitor/backend/src/service/template"
 
 	"github.com/indece-official/go-gousu/v2/gousu"
@@ -41,7 +41,7 @@ func main() {
 	runner := gousu.NewRunner(buildvars.ProjectName, fmt.Sprintf("%s (Build %s)", buildvars.BuildVersion, buildvars.BuildDate))
 
 	runner.CreateService(postgres.NewService)
-	runner.CreateService(goususmtp.NewService)
+	runner.CreateService(smtp.NewService)
 	runner.CreateService(cache.NewService)
 	runner.CreateService(template.NewService)
 	runner.CreateService(cert.NewService)

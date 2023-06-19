@@ -1,13 +1,9 @@
 import React from 'react';
 import { FieldArray, Form, Formik } from 'formik';
-import { ErrorBox } from '../../../Components/ErrorBox/ErrorBox';
 import { InputText } from '../../../Components/Input/InputText';
 import { Button } from '../../../Components/Button/Button';
-import { Spinner } from '../../../Components/Spinner/Spinner';
-import { NotifierService, NotifierV1ConfigParams, NotifierV1Type, NotifierV1Types } from '../../../Services/NotifierService';
-import { InputMultiSelect } from '../../../Components/Input/InputMultiSelect';
-import { TagService, TagV1 } from '../../../Services/TagService';
-import { InputSelect } from '../../../Components/Input/InputSelect';
+import { NotifierV1ConfigParams, NotifierV1Type } from '../../../Services/NotifierService';
+
 import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -138,9 +134,7 @@ export class AddNotifierParamsStep extends React.Component<AddNotifierParamsStep
                                             <div className='SetupAddHostsStep-hosts'>
                                                 <Button
                                                     type='button'
-                                                    onClick={() => arrayHelpers.push({
-                                                        labels: []
-                                                    })}>
+                                                    onClick={() => arrayHelpers.push('')}>
                                                     <FontAwesomeIcon icon={faPlus} />
                                                     Add a receiver
                                                 </Button>

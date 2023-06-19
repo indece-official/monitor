@@ -118,8 +118,6 @@ func (c *Controller) CheckV1(stream apiconnector.Connector_CheckV1Server) error 
 			return fmt.Errorf("internal server error")
 		}
 
-		c.log.Infof("Received check response: %v", resp)
-
 		reConnectorEvent := &model.ReConnectorEventV1{}
 		reConnectorEvent.ConnectorUID = reSession.ConnectorUID
 		reConnectorEvent.Type = model.ReConnectorEventV1TypeCheckResult
