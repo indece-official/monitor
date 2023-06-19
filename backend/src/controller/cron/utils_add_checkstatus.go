@@ -290,8 +290,8 @@ func (c *Controller) addCheckStatus(
 	}
 
 	for _, pgNotifier := range c.notifiers {
-		err = c.cacheService.SetUnnotifiedStatusChange(
-			&model.ReUnnotifiedStatusChangeV1{
+		err = c.cacheService.SetNotification(
+			&model.ReNotificationV1{
 				HostUID:     pgCheck.HostUID,
 				NotifierUID: pgNotifier.UID,
 				CheckUID:    pgCheck.UID,

@@ -48,6 +48,7 @@ type IService interface {
 
 	UpsertHostCheckStatus(hostUID string, reStatusCheck *model.ReHostStatusV1Check) error
 	GetHostStatus(hostUID string) (*model.ReHostStatusV1, error)
+	GetHostCheckStatus(hostUID string, checkUID string) (*model.ReHostStatusV1Check, error)
 	DeleteHostStatus(hostUID string) error
 	DeleteAllHostStatuses() error
 
@@ -62,26 +63,26 @@ type IService interface {
 	GetSetupToken() (null.String, error)
 	DeleteSetupToken() error
 
-	SetUnnotifiedStatusChange(reUnnotifiedStatusChange *model.ReUnnotifiedStatusChangeV1) error
-	GetUnnotifiedStatusChanges() ([]*model.ReUnnotifiedStatusChangeV1, error)
-	DeleteUnnotifiedStatusChange(checkUID string, notifierUID string) error
+	SetNotification(reNotification *model.ReNotificationV1) error
+	GetNotifications() ([]*model.ReNotificationV1, error)
+	DeleteNotification(checkUID string, notifierUID string) error
 }
 
 type Service struct {
-	log                          *logger.Log
-	connectorActions             map[string]map[string]chan *model.ReConnectorActionV1
-	openConnectorActions         map[string]map[string]*model.ReConnectorActionV1
-	connectorEvents              map[string]chan *model.ReConnectorEventV1
-	connectorStatus              map[string]*model.ReConnectorStatusV1
-	hostStatus                   map[string]*model.ReHostStatusV1
-	systemEvents                 map[string]chan *model.ReSystemEventV1
-	userSessions                 map[string]*model.ReUserSessionV1
-	unnotifiedStatusChanges      map[string]*model.ReUnnotifiedStatusChangeV1
-	mutexOpenConnectorAction     sync.Mutex
-	mutexConnectorStatus         sync.Mutex
-	mutexHostStatus              sync.Mutex
-	mutexUnnotifiedStatusChanges sync.Mutex
-	setupToken                   *SetupToken
+	log                      *logger.Log
+	connectorActions         map[string]map[string]chan *model.ReConnectorActionV1
+	openConnectorActions     map[string]map[string]*model.ReConnectorActionV1
+	connectorEvents          map[string]chan *model.ReConnectorEventV1
+	connectorStatus          map[string]*model.ReConnectorStatusV1
+	hostStatus               map[string]*model.ReHostStatusV1
+	systemEvents             map[string]chan *model.ReSystemEventV1
+	userSessions             map[string]*model.ReUserSessionV1
+	notifications            map[string]*model.ReNotificationV1
+	mutexOpenConnectorAction sync.Mutex
+	mutexConnectorStatus     sync.Mutex
+	mutexHostStatus          sync.Mutex
+	mutexNotifications       sync.Mutex
+	setupToken               *SetupToken
 }
 
 var _ IService = (*Service)(nil)
@@ -104,15 +105,15 @@ func (s *Service) Health() error {
 
 func NewService(ctx gousu.IContext) gousu.IService {
 	return &Service{
-		log:                     logger.GetLogger(fmt.Sprintf("service.%s", ServiceName)),
-		connectorActions:        map[string]map[string]chan *model.ReConnectorActionV1{},
-		openConnectorActions:    map[string]map[string]*model.ReConnectorActionV1{},
-		connectorEvents:         map[string]chan *model.ReConnectorEventV1{},
-		connectorStatus:         map[string]*model.ReConnectorStatusV1{},
-		hostStatus:              map[string]*model.ReHostStatusV1{},
-		systemEvents:            map[string]chan *model.ReSystemEventV1{},
-		userSessions:            map[string]*model.ReUserSessionV1{},
-		unnotifiedStatusChanges: map[string]*model.ReUnnotifiedStatusChangeV1{},
+		log:                  logger.GetLogger(fmt.Sprintf("service.%s", ServiceName)),
+		connectorActions:     map[string]map[string]chan *model.ReConnectorActionV1{},
+		openConnectorActions: map[string]map[string]*model.ReConnectorActionV1{},
+		connectorEvents:      map[string]chan *model.ReConnectorEventV1{},
+		connectorStatus:      map[string]*model.ReConnectorStatusV1{},
+		hostStatus:           map[string]*model.ReHostStatusV1{},
+		systemEvents:         map[string]chan *model.ReSystemEventV1{},
+		userSessions:         map[string]*model.ReUserSessionV1{},
+		notifications:        map[string]*model.ReNotificationV1{},
 	}
 }
 

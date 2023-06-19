@@ -33,6 +33,8 @@ import { AddTagPage } from './Pages/AddTagPage/AddTagPage';
 import { DeleteTagPage } from './Pages/DeleteTagPage/DeleteTagPage';
 import { EditCheckPage } from './Pages/EditCheckPage/EditCheckPage';
 import { DeleteCheckPage } from './Pages/DeleteCheckPage/DeleteCheckPage';
+import { NotifiersPage } from './Pages/NotifiersPage/NotifiersPage';
+import { AddNotifierPage } from './Pages/AddNotifierPage/AddNotifierPage';
 
 import './App.css';
 
@@ -225,6 +227,21 @@ export class App extends React.Component
                                     path='/tag/:tagUID/delete'
                                     element={<RouteGuard
                                         element={<DeleteTagPage />}
+                                        roles={[UserV1Role.Admin]}
+                                    />}
+                                />
+
+                                <Route
+                                    path='/notifiers'
+                                    element={<RouteGuard
+                                        element={<NotifiersPage />}
+                                    />}
+                                />
+
+                                <Route
+                                    path='/notifier/add'
+                                    element={<RouteGuard
+                                        element={<AddNotifierPage />}
                                         roles={[UserV1Role.Admin]}
                                     />}
                                 />

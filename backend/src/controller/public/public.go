@@ -115,6 +115,12 @@ func (c *Controller) getRouter() chi.Router {
 
 	router.Get("/api/v1/host/{hostUID}/check", c.baseController.Wrap(c.reqV1GetHostChecks))
 
+	router.Get("/api/v1/notifier", c.baseController.Wrap(c.reqV1GetNotifiers))
+	router.Post("/api/v1/notifier", c.baseController.Wrap(c.reqV1AddNotifier))
+	router.Put("/api/v1/notifier/{notifierUID}", c.baseController.Wrap(c.reqV1UpdateNotifier))
+	router.Delete("/api/v1/notifier/{notifierUID}", c.baseController.Wrap(c.reqV1DeleteNotifier))
+	router.Get("/api/v1/notifier/{notifierUID}", c.baseController.Wrap(c.reqV1GetNotifier))
+
 	return router
 }
 

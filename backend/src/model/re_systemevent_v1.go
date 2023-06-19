@@ -24,16 +24,19 @@ import (
 type ReSystemEventV1Type string
 
 const (
-	ReSystemEventV1TypeCheckAdded   ReSystemEventV1Type = "check_added"
-	ReSystemEventV1TypeCheckUpdated ReSystemEventV1Type = "check_updated"
-	ReSystemEventV1TypeCheckDeleted ReSystemEventV1Type = "check_deleted"
-	ReSystemEventV1TypeHostAdded    ReSystemEventV1Type = "host_added"
-	ReSystemEventV1TypeHostUpdated  ReSystemEventV1Type = "host_updated"
-	ReSystemEventV1TypeHostDeleted  ReSystemEventV1Type = "host_deleted"
-	ReSystemEventV1TypeTagAdded     ReSystemEventV1Type = "tag_added"
-	ReSystemEventV1TypeTagUpdated   ReSystemEventV1Type = "tag_updated"
-	ReSystemEventV1TypeTagDeleted   ReSystemEventV1Type = "tag_deleted"
-	ReSystemEventV1TypeCertsUpdated ReSystemEventV1Type = "certs_updates"
+	ReSystemEventV1TypeCheckAdded      ReSystemEventV1Type = "check_added"
+	ReSystemEventV1TypeCheckUpdated    ReSystemEventV1Type = "check_updated"
+	ReSystemEventV1TypeCheckDeleted    ReSystemEventV1Type = "check_deleted"
+	ReSystemEventV1TypeHostAdded       ReSystemEventV1Type = "host_added"
+	ReSystemEventV1TypeHostUpdated     ReSystemEventV1Type = "host_updated"
+	ReSystemEventV1TypeHostDeleted     ReSystemEventV1Type = "host_deleted"
+	ReSystemEventV1TypeTagAdded        ReSystemEventV1Type = "tag_added"
+	ReSystemEventV1TypeTagUpdated      ReSystemEventV1Type = "tag_updated"
+	ReSystemEventV1TypeTagDeleted      ReSystemEventV1Type = "tag_deleted"
+	ReSystemEventV1TypeNotifierAdded   ReSystemEventV1Type = "notifier_added"
+	ReSystemEventV1TypeNotifierUpdated ReSystemEventV1Type = "notifier_updated"
+	ReSystemEventV1TypeNotifierDeleted ReSystemEventV1Type = "notifier_deleted"
+	ReSystemEventV1TypeCertsUpdated    ReSystemEventV1Type = "certs_updates"
 )
 
 type ReSystemEventV1CheckAddedPayload struct {
@@ -70,6 +73,18 @@ type ReSystemEventV1TagUpdatedPayload struct {
 
 type ReSystemEventV1TagDeletedPayload struct {
 	TagUID string `json:"tag_uid"`
+}
+
+type ReSystemEventV1NotifierAddedPayload struct {
+	NotifierUID string `json:"notifier_uid"`
+}
+
+type ReSystemEventV1NotifierUpdatedPayload struct {
+	NotifierUID string `json:"notifier_uid"`
+}
+
+type ReSystemEventV1NotifierDeletedPayload struct {
+	NotifierUID string `json:"notifier_uid"`
 }
 
 type ReSystemEventV1CertsUpdatedPayload struct {
@@ -124,6 +139,12 @@ func (r *ReSystemEventV1) UnmarshalJSON(b []byte) error {
 		payload = &ReSystemEventV1TagUpdatedPayload{}
 	case ReSystemEventV1TypeTagDeleted:
 		payload = &ReSystemEventV1TagDeletedPayload{}
+	case ReSystemEventV1TypeNotifierAdded:
+		payload = &ReSystemEventV1NotifierAddedPayload{}
+	case ReSystemEventV1TypeNotifierUpdated:
+		payload = &ReSystemEventV1NotifierUpdatedPayload{}
+	case ReSystemEventV1TypeNotifierDeleted:
+		payload = &ReSystemEventV1NotifierDeletedPayload{}
 	case ReSystemEventV1TypeCertsUpdated:
 		payload = &ReSystemEventV1CertsUpdatedPayload{}
 	default:

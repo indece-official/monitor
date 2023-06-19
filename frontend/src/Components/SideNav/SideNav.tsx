@@ -18,7 +18,7 @@ export interface SideNavProps
 interface SideNavState
 {
     expanded:   boolean;
-    user:   UserV1 | null;
+    user:       UserV1 | null;
 }
 
 
@@ -33,7 +33,7 @@ export class SideNav extends React.Component<SideNavProps, SideNavState>
 
         this.state = {
             expanded:   false,
-            user:   null
+            user:       null
         };
 
         this._userService = UserService.getInstance();
@@ -162,6 +162,12 @@ export class SideNav extends React.Component<SideNavProps, SideNavState>
                         {this.state.user && !Environment.setup.enabled?
                             <div className='SideNav-item'>
                                 <Link to={LinkUtils.make('tags')}>Tags</Link>
+                            </div>
+                        : null}
+                        
+                        {this.state.user && !Environment.setup.enabled?
+                            <div className='SideNav-item'>
+                                <Link to={LinkUtils.make('notifiers')}>Notifiers</Link>
                             </div>
                         : null}
                         

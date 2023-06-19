@@ -2,7 +2,7 @@ package model
 
 import "time"
 
-type ReUnnotifiedStatusChangeV1 struct {
+type ReNotificationV1 struct {
 	HostUID         string                `json:"host_uid"`
 	CheckUID        string                `json:"check_uid"`
 	NotifierUID     string                `json:"notifier_uid"`

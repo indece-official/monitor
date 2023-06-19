@@ -206,7 +206,13 @@ func (c *Controller) reloadLoop() error {
 			switch reSystemEvent.Type {
 			case model.ReSystemEventV1TypeCheckAdded,
 				model.ReSystemEventV1TypeCheckUpdated,
-				model.ReSystemEventV1TypeCheckDeleted:
+				model.ReSystemEventV1TypeCheckDeleted,
+				model.ReSystemEventV1TypeHostAdded,
+				model.ReSystemEventV1TypeHostUpdated,
+				model.ReSystemEventV1TypeHostDeleted,
+				model.ReSystemEventV1TypeNotifierAdded,
+				model.ReSystemEventV1TypeNotifierUpdated,
+				model.ReSystemEventV1TypeNotifierDeleted:
 				err := c.reload()
 				if err != nil {
 					c.log.Errorf("Error running checks: %s", err)

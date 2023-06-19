@@ -60,6 +60,24 @@ func (s *Service) GetHostStatus(hostUID string) (*model.ReHostStatusV1, error) {
 	return reStatus, nil
 }
 
+func (s *Service) GetHostCheckStatus(hostUID string, checkUID string) (*model.ReHostStatusV1Check, error) {
+	s.mutexHostStatus.Lock()
+	defer s.mutexHostStatus.Unlock()
+
+	reStatus, ok := s.hostStatus[hostUID]
+	if !ok {
+		return nil, nil
+	}
+
+	for _, reCheck := range reStatus.Checks {
+		if reCheck.CheckUID == checkUID {
+			return reCheck, nil
+		}
+	}
+
+	return nil, nil
+}
+
 func (s *Service) DeleteHostStatus(hostUID string) error {
 	s.mutexHostStatus.Lock()
 	defer s.mutexHostStatus.Unlock()

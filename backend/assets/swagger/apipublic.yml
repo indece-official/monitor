@@ -779,6 +779,121 @@ paths:
           content: {}
       x-codegen-request-body-name: body
 
+  /v1/notifier:
+    post:
+      tags:
+        - notifier
+      summary: Add a notifier
+      operationId: v1AddNotifier
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - type
+                - config
+              properties:
+                name:
+                  type: string
+                type:
+                  $ref: '#/components/schemas/NotifierV1Type'
+                config: 
+                  $ref: '#/components/schemas/NotifierV1Config'
+        required: true
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1AddNotifierJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+      - notifier
+      summary: Get notifiers
+      operationId: v1GetNotifiers
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetNotifiersJSONResponseBody'
+      x-codegen-request-body-name: body
+  
+  /v1/notifier/{notifierUID}:
+    get:
+      tags:
+      - notifier
+      summary: Get notifier
+      operationId: v1GetNotifier
+      parameters:
+      - name: notifierUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetNotifierJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    put:
+      tags:
+        - notifier
+      summary: Update a notifier
+      operationId: v1UpdateNotifier
+      parameters:
+      - name: notifierUID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - config
+              properties:
+                name:
+                  type: string
+                config: 
+                  $ref: '#/components/schemas/NotifierV1Config'
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - notifier
+      summary: Delete a notifier
+      operationId: v1DeleteNotifier
+      parameters:
+      - name: notifierUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
 components:
   schemas:
     TagV1:
@@ -1061,6 +1176,96 @@ components:
         editable:
           type: boolean
 
+    NotifierV1Filter:
+      type: object
+      required:
+        - tag_uids
+        - critical
+        - warning
+        - unknown
+        - decline
+        - min_duration
+      properties:
+        tag_uids:
+          type: array
+          items:
+            type: string
+        critical:
+          type: boolean
+        warning:
+          type: boolean
+        unknown:
+          type: boolean
+        decline:
+          type: boolean
+        min_duration:
+          type: string
+
+    NotifierV1ConfigParamsEmailSmtp:
+      type: object
+      required:
+        - host
+        - port
+        - user
+        - password
+        - from
+        - to
+      properties:
+        host:
+          type: string
+        port:
+          type: integer
+        user:
+          type: string
+        password:
+          type: string
+        from:
+          type: string
+        to:
+          type: array
+          items:
+            type: string
+
+    NotifierV1ConfigParams:
+      type: object
+      properties:
+        email_smtp:
+          $ref: '#/components/schemas/NotifierV1ConfigParamsEmailSmtp'
+
+    NotifierV1Config:
+      type: object
+      required:
+        - filters
+        - params
+      properties:
+        filters:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotifierV1Filter'
+        params:
+          $ref: '#/components/schemas/NotifierV1ConfigParams'
+
+    NotifierV1Type:
+      type: string
+      enum:
+        - EMAIL_SMTP
+
+    NotifierV1:
+      type: object
+      required:
+        - uid
+        - name
+        - type
+      properties:
+        uid:
+          type: string
+        name:
+          type: string
+        type:
+          $ref: '#/components/schemas/NotifierV1Type'
+        config: 
+          $ref: '#/components/schemas/NotifierV1Config'
+
     v1AddTagJSONResponseBody:
       type: object
       required:
@@ -1239,3 +1444,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ConfigPropertyV1'
+
+    v1AddNotifierJSONResponseBody:
+      type: object
+      required:
+        - notifier_uid
+      properties:
+        notifier_uid:
+          type: string
+    
+    v1GetNotifiersJSONResponseBody:
+      type: object
+      required:
+        - notifiers
+      properties:
+        notifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotifierV1'
+
+    v1GetNotifierJSONResponseBody:
+      type: object
+      required:
+        - notifier
+      properties:
+        notifier:
+          $ref: '#/components/schemas/NotifierV1'
