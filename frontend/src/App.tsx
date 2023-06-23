@@ -36,9 +36,9 @@ import { DeleteCheckPage } from './Pages/DeleteCheckPage/DeleteCheckPage';
 import { NotifiersPage } from './Pages/NotifiersPage/NotifiersPage';
 import { AddNotifierPage } from './Pages/AddNotifierPage/AddNotifierPage';
 import { EditNotifierPage } from './Pages/EditNotifierPage/EditNotifierPage';
+import { DeleteNotifierPage } from './Pages/DeleteNotifierPage/DeleteNotifierPage';
 
 import './App.css';
-import { DeleteNotifierPage } from './Pages/DeleteNotifierPage/DeleteNotifierPage';
 
 
 export class App extends React.Component
@@ -170,6 +170,14 @@ export class App extends React.Component
                                     />}
                                 />
 
+                                <Route
+                                    path='/host/:hostUID/agent/add'
+                                    element={<RouteGuard
+                                        element={<AddAgentPage />}
+                                        roles={[UserV1Role.Admin]}
+                                    />}
+                                />
+                                
                                 <Route
                                     path='/host/:hostUID/check/add'
                                     element={<RouteGuard

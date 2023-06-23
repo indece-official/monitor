@@ -59,7 +59,7 @@ export class AddAgentWaitRegisteredStep extends React.Component<AddAgentWaitRegi
                 agent
             });
 
-            if ( agent.status === AgentV1Status.Unregistered )
+            if ( agent.status === AgentV1Status.Ready )
             {
                 if ( this._intervalReload )
                 {

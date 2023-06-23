@@ -4,9 +4,16 @@ import { AddAgentSuccessStep } from './AddAgentSuccessStep/AddAgentSuccessStep';
 import { AddAgentConnectStep } from './AddAgentConnectStep/AddAgentConnectStep';
 import { AddAgentWaitRegisteredStep } from './AddAgentWaitRegisteredStep/AddAgentWaitRegisteredStep';
 import { AddAgentFailedStep } from './AddAgentFailedStep/AddAgentFailedStep';
+import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 
 
-export interface AddAgentPageProps
+export interface AddAgentPageRouteParams
+{
+    hostUID?:   string;
+}
+
+
+export interface AddAgentPageProps extends RouteComponentProps<AddAgentPageRouteParams>
 {
 }
 
@@ -28,7 +35,7 @@ interface AddAgentPageState
 }
 
 
-export class AddAgentPage extends React.Component<AddAgentPageProps, AddAgentPageState>
+class $AddAgentPage extends React.Component<AddAgentPageProps, AddAgentPageState>
 {
     constructor ( props: AddAgentPageProps )
     {
@@ -85,6 +92,7 @@ export class AddAgentPage extends React.Component<AddAgentPageProps, AddAgentPag
             <div className='AddAgentPage'>
                 {this.state.step === AddAgentStep.Start ?
                     <AddAgentStartStep
+                        hostUID={this.props.router.params.hostUID}
                         onFinish={this._finishStart}
                     />
                 : null}
@@ -119,3 +127,6 @@ export class AddAgentPage extends React.Component<AddAgentPageProps, AddAgentPag
         );
     }
 }
+
+
+export const AddAgentPage = withRouter($AddAgentPage);

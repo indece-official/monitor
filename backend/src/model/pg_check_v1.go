@@ -24,12 +24,12 @@ type PgCheckV1Param struct {
 }
 
 type PgCheckV1Config struct {
-	Params []*PgCheckV1Param `json:"params"`
+	Params  []*PgCheckV1Param `json:"params"`
+	Timeout null.String       `json:"timeout"`
 }
 
 type PgCheckV1 struct {
 	UID              string
-	HostUID          string
 	CheckerUID       string
 	Name             string
 	Type             null.String

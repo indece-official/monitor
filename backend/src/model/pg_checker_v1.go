@@ -52,12 +52,13 @@ type PgCheckerV1Capabilities struct {
 	Params          []*PgCheckerV1Param `json:"params"`
 	Values          []*PgCheckerV1Value `json:"values"`
 	DefaultSchedule null.String         `json:"default_schedule"`
+	DefaultTimeout  null.String         `json:"default_timeout"`
 }
 
 type PgCheckerV1 struct {
 	UID          string
 	Type         string
-	AgentType    string
+	AgentUID     string
 	Version      string
 	Name         string
 	Capabilities *PgCheckerV1Capabilities

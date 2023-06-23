@@ -76,14 +76,12 @@ func (c *Controller) getHost(hostUID string) (*model.PgHostV1, error) {
 	return nil, fmt.Errorf("not matching host found")
 }
 
-func (c *Controller) getAgentByAgentTypeAndHostUID(agentType string, hostUID string) (*model.PgAgentV1, error) {
+func (c *Controller) getAgent(agentUID string) (*model.PgAgentV1, error) {
 	c.mutexAgents.Lock()
 	defer c.mutexAgents.Unlock()
 
 	for _, pgAgent := range c.agents {
-		if pgAgent.Type.Valid &&
-			pgAgent.Type.String == agentType &&
-			pgAgent.HostUID == hostUID {
+		if pgAgent.UID == agentUID {
 			return pgAgent, nil
 		}
 	}
@@ -106,7 +104,7 @@ func (c *Controller) check(checkUID string) error {
 		return nil
 	}
 
-	pgAgent, err := c.getAgentByAgentTypeAndHostUID(pgChecker.AgentType, pgCheck.HostUID)
+	pgAgent, err := c.getAgent(pgChecker.AgentUID)
 	if err != nil {
 		c.log.Warnf("Error loading agent for check %s: %s", pgCheck.UID, err)
 
@@ -126,8 +124,21 @@ func (c *Controller) check(checkUID string) error {
 
 		reAgentActionPayload.Params = append(reAgentActionPayload.Params, reCheckParam)
 	}
-	reAgentActionPayload.TimeoutAt = time.Now().Add(10 * time.Second)
+
 	reAgentActionPayload.TimeoutDuration = 30 * time.Second
+	if pgCheck.Config.Timeout.Valid && pgCheck.Config.Timeout.String != "" {
+		reAgentActionPayload.TimeoutDuration, err = time.ParseDuration(pgCheck.Config.Timeout.String)
+		if err != nil {
+			return fmt.Errorf("error parsing check timeout for action: %s", err)
+		}
+	} else if pgChecker.Capabilities.DefaultTimeout.Valid && pgChecker.Capabilities.DefaultTimeout.String != "" {
+		reAgentActionPayload.TimeoutDuration, err = time.ParseDuration(pgChecker.Capabilities.DefaultTimeout.String)
+		if err != nil {
+			return fmt.Errorf("error parsing checker default timeout for action: %s", err)
+		}
+	}
+
+	reAgentActionPayload.TimeoutAt = time.Now().Add(reAgentActionPayload.TimeoutDuration)
 
 	reAgentAction := &model.ReAgentActionV1{}
 	reAgentAction.Type = model.ReAgentActionV1TypeCheck

@@ -85,7 +85,7 @@ export class AddCheckStartStep extends React.Component<AddCheckStartStepProps, A
             let agents = await this._agentService.getAgents();
 
             agents = agents.filter( ( agent ) => agent.host_uid === host.uid );
-            checkers = checkers.filter( ( checker ) => checker.custom_checks && agents.find( agent => agent.type === checker.agent_type ) );
+            checkers = checkers.filter( ( checker ) => checker.custom_checks && agents.find( agent => agent.uid === checker.agent_uid ) );
 
             this.setState({
                 loading:    false,
@@ -121,7 +121,6 @@ export class AddCheckStartStep extends React.Component<AddCheckStartStepProps, A
 
             const checkUID = await this._checkService.addCheck({
                 name:           values.name.trim(),
-                host_uid:       this.props.hostUID,
                 checker_uid:    values.checker_uid.trim(),
                 schedule:       values.schedule.trim() || null,
                 params:         Object.entries(values.params).map( o => ({

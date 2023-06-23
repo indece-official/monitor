@@ -39,7 +39,6 @@ func (s *Service) AddCheck(qctx context.Context, pgCheck *model.PgCheckV1) error
 		qctx,
 		`INSERT INTO mo_check_v1 (
 			uid,
-			host_uid,
 			checker_uid,
 			name,
 			type,
@@ -58,13 +57,11 @@ func (s *Service) AddCheck(qctx context.Context, pgCheck *model.PgCheckV1) error
 			$5,
 			$6,
 			$7,
-			$8,
 			NOW(),
 			NOW(),
-			$9
+			$8
 		)`,
 		pgCheck.UID,
-		pgCheck.HostUID,
 		pgCheck.CheckerUID,
 		pgCheck.Name,
 		pgCheck.Type,

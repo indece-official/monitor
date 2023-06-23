@@ -9,6 +9,7 @@ import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 import { CheckerService, CheckerV1 } from '../../Services/CheckerService';
 import { HostService, HostV1 } from '../../Services/HostService';
+import { AgentService, AgentV1 } from '../../Services/AgentService';
 
 
 export interface EditCheckPageRouteParams
@@ -36,6 +37,7 @@ interface EditCheckPageState
     initialFormData:    EditCheckPageFormData;
     check:              CheckV1 | null;
     checker:            CheckerV1 | null;
+    agent:              AgentV1 | null;
     host:               HostV1 | null;
     loading:            boolean;
     error:              Error | null;
@@ -47,6 +49,7 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
 {
     private readonly _checkService: CheckService;
     private readonly _checkerService: CheckerService;
+    private readonly _agentService: AgentService;
     private readonly _hostService: HostService;
 
 
@@ -62,6 +65,7 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
             },
             check:      null,
             checker:    null,
+            agent:      null,
             host:       null,
             loading:    false,
             error:      null,
@@ -70,6 +74,7 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
 
         this._checkService = CheckService.getInstance();
         this._checkerService = CheckerService.getInstance();
+        this._agentService = AgentService.getInstance();
         this._hostService = HostService.getInstance();
 
         this._submit = this._submit.bind(this);
@@ -87,7 +92,8 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
 
             const check = await this._checkService.getCheck(this.props.router.params.checkUID);
             const checker = await this._checkerService.getChecker(check.checker_uid);
-            const host = await this._hostService.getHost(check.host_uid);
+            const agent = await this._agentService.getAgent(checker.agent_uid);
+            const host = await this._hostService.getHost(agent.host_uid);
 
             const params: Record<string, string> = {};
             for ( const param of check.params )
@@ -99,6 +105,7 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
                 loading:    false,
                 check,
                 checker,
+                agent,
                 host,
                 initialFormData: {
                     name:       check.name || '',

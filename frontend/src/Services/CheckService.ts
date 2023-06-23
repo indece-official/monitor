@@ -30,7 +30,6 @@ export interface CheckV1
 {
     uid:            string;
     name:           string;
-    host_uid:       string;
     checker_uid:    string;
     custom:         boolean;
     schedule:       string | null;
@@ -44,7 +43,6 @@ export interface AddCheckV1
 {
     name:           string;
     checker_uid:    string;
-    host_uid:       string;
     schedule:       string | null;
     params:         Array<CheckV1Param>;
 }

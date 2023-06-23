@@ -35,7 +35,7 @@ export interface CheckerV1
     uid:            string;
     name:           string;
     type:           string;
-    agent_type:     string;
+    agent_uid:      string;
     version:        string;
     custom_checks:  boolean;
     capabilities:   CheckerV1Capabilities;

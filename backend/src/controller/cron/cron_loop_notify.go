@@ -33,7 +33,7 @@ func (c *Controller) sendNotifications(
 			return fmt.Errorf("error loading check: %s", err)
 		}
 
-		reHostStatusCheck, err := c.cacheService.GetHostCheckStatus(pgCheck.HostUID, pgCheck.UID)
+		reHostStatusCheck, err := c.cacheService.GetHostCheckStatus(change.HostUID, pgCheck.UID)
 		if err != nil {
 			c.log.Warnf("Error loading host status check: %s", err)
 

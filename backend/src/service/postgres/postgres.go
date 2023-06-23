@@ -55,6 +55,7 @@ type IService interface {
 	GetAgents(qctx context.Context, filter *GetAgentsFilter) ([]*model.PgAgentV1, error)
 
 	AddChecker(qctx context.Context, pgChecker *model.PgCheckerV1) error
+	UpdateChecker(qctx context.Context, checkerUID string, pgChecker *model.PgCheckerV1) error
 	GetCheckers(qctx context.Context, filter *GetCheckersFilter) ([]*model.PgCheckerV1, error)
 
 	AddCheck(qctx context.Context, pgCheck *model.PgCheckV1) error

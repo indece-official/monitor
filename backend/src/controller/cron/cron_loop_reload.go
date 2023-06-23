@@ -18,13 +18,136 @@ package cron
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
+	"github.com/go-co-op/gocron"
 	"github.com/indece-official/monitor/backend/src/model"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
 	"gopkg.in/guregu/null.v4"
 )
+
+const defaultInterval = 60 * time.Second
+
+func (c *Controller) reloadChecker(checkerUID string) error {
+	ctx := context.Background()
+
+	pgCheckers, err := c.postgresService.GetCheckers(
+		ctx,
+		&postgres.GetCheckersFilter{
+			CheckerUID: null.StringFrom(checkerUID),
+		},
+	)
+	if err != nil {
+		return fmt.Errorf("error loading checker: %s", err)
+	}
+
+	if len(pgCheckers) == 0 {
+		return fmt.Errorf("error loading checker - not found")
+	}
+
+	newPgChecker := pgCheckers[0]
+
+	c.mutexCheckers.Lock()
+	defer c.mutexCheckers.Unlock()
+
+	var oldPgChecker *model.PgCheckerV1
+
+	newPgCheckers := []*model.PgCheckerV1{}
+	for _, pgChecker := range c.checkers {
+		if pgChecker.UID == checkerUID {
+			oldPgChecker = pgChecker
+			continue
+		}
+
+		newPgCheckers = append(newPgCheckers, pgChecker)
+	}
+
+	newPgCheckers = append(newPgCheckers, newPgChecker)
+
+	c.checkers = newPgCheckers
+
+	if oldPgChecker != nil &&
+		!newPgChecker.Capabilities.DefaultSchedule.Equal(oldPgChecker.Capabilities.DefaultSchedule) {
+		// Reschedule affected checks
+
+		c.mutexChecks.Lock()
+		defer c.mutexChecks.Unlock()
+		for _, pgCheck := range c.checks {
+			if pgCheck.CheckerUID != checkerUID {
+				continue
+			}
+
+			if pgCheck.Schedule.Valid {
+				// Customized config, no need to reschedule
+				continue
+			}
+
+			err = c.rescheduleCheck(pgCheck, newPgChecker)
+			if err != nil {
+				c.log.Warnf("Error rescheduling check %s: %s", pgCheck.UID, err)
+
+				continue
+			}
+		}
+	}
+
+	return nil
+}
+
+func (c *Controller) rescheduleCheck(pgCheck *model.PgCheckV1, pgChecker *model.PgCheckerV1) error {
+	err := c.scheduler.RemoveByTag(fmt.Sprintf("check:%s", pgCheck.UID))
+	if err != nil && !errors.Is(err, gocron.ErrJobNotFoundWithTag) {
+		return fmt.Errorf("error unscheduling existing check: %s", err)
+	}
+
+	if pgCheck.Schedule.Valid {
+		_, err = c.scheduler.
+			CronWithSeconds(pgCheck.Schedule.String).
+			Tag(fmt.Sprintf("check:%s", pgCheck.UID)).
+			Tag(fmt.Sprintf("checker:%s", pgChecker.UID)).
+			Do(func() {
+				err := c.check(pgCheck.UID)
+				if err != nil {
+					c.log.Errorf("Error running check %s: %s", pgCheck.UID, err)
+				}
+			})
+		if err != nil {
+			return fmt.Errorf("error scheduling check %s with own schedule: %s", pgCheck.UID, err)
+		}
+	} else if pgChecker.Capabilities.DefaultSchedule.Valid {
+		_, err = c.scheduler.
+			CronWithSeconds(pgChecker.Capabilities.DefaultSchedule.String).
+			Tag(fmt.Sprintf("check:%s", pgCheck.UID)).
+			Tag(fmt.Sprintf("checker:%s", pgChecker.UID)).
+			Do(func() {
+				err := c.check(pgCheck.UID)
+				if err != nil {
+					c.log.Errorf("Error running check %s: %s", pgCheck.UID, err)
+				}
+			})
+		if err != nil {
+			return fmt.Errorf("error scheduling check %s with default checker schedule: %s", pgCheck.UID, err)
+		}
+	} else {
+		_, err = c.scheduler.
+			Every(defaultInterval).
+			Tag(fmt.Sprintf("check:%s", pgCheck.UID)).
+			Tag(fmt.Sprintf("checker:%s", pgChecker.UID)).
+			Do(func() {
+				err := c.check(pgCheck.UID)
+				if err != nil {
+					c.log.Errorf("Error running check %s: %s", pgCheck.UID, err)
+				}
+			})
+		if err != nil {
+			return fmt.Errorf("error scheduling check %s with default schedule: %s", pgCheck.UID, err)
+		}
+	}
+
+	return nil
+}
 
 func (c *Controller) reload() error {
 	ctx := context.Background()
@@ -115,16 +238,19 @@ func (c *Controller) reload() error {
 		return fmt.Errorf("error clearing host statuses: %s", err)
 	}
 
-	defaultInterval := 60 * time.Second
-
 	c.scheduler.Clear()
 
 	for _, pgCheck := range c.checks {
-		checkUID := pgCheck.UID
-
 		pgChecker, err := c.getChecker(pgCheck.CheckerUID)
 		if err != nil {
 			c.log.Warnf("Error loading checker for check %s: %s", pgCheck.UID, err)
+
+			continue
+		}
+
+		pgAgent, err := c.getAgent(pgChecker.AgentUID)
+		if err != nil {
+			c.log.Warnf("Error loading agent for checker %s: %s", pgChecker.UID, err)
 
 			continue
 		}
@@ -137,7 +263,7 @@ func (c *Controller) reload() error {
 		}
 
 		err = c.cacheService.UpsertHostCheckStatus(
-			pgCheck.HostUID,
+			pgAgent.HostUID,
 			&model.ReHostStatusV1Check{
 				CheckUID: pgCheck.UID,
 				Status:   checkStatus,
@@ -148,42 +274,11 @@ func (c *Controller) reload() error {
 			return fmt.Errorf("error caching check status: %s", err)
 		}
 
-		if pgCheck.Schedule.Valid {
-			_, err = c.scheduler.CronWithSeconds(pgCheck.Schedule.String).Do(func() {
-				err := c.check(checkUID)
-				if err != nil {
-					c.log.Errorf("Error running check %s: %s", checkUID, err)
-				}
-			})
-			if err != nil {
-				c.log.Warnf("Error scheduling check %s with own schedule: %s", pgCheck.UID, err)
+		err = c.rescheduleCheck(pgCheck, pgChecker)
+		if err != nil {
+			c.log.Warnf("Error scheduling check %s with own schedule: %s", pgCheck.UID, err)
 
-				continue
-			}
-		} else if pgChecker.Capabilities.DefaultSchedule.Valid {
-			_, err = c.scheduler.CronWithSeconds(pgChecker.Capabilities.DefaultSchedule.String).Do(func() {
-				err := c.check(checkUID)
-				if err != nil {
-					c.log.Errorf("Error running check %s: %s", checkUID, err)
-				}
-			})
-			if err != nil {
-				c.log.Warnf("Error scheduling check %s with default checker schedule: %s", pgCheck.UID, err)
-
-				continue
-			}
-		} else {
-			_, err = c.scheduler.Every(defaultInterval).Do(func() {
-				err := c.check(checkUID)
-				if err != nil {
-					c.log.Errorf("Error running check %s: %s", checkUID, err)
-				}
-			})
-			if err != nil {
-				c.log.Warnf("Error scheduling check %s with default schedule: %s", pgCheck.UID, err)
-
-				continue
-			}
+			continue
 		}
 	}
 
@@ -213,6 +308,7 @@ func (c *Controller) reloadLoop() error {
 			case model.ReSystemEventV1TypeCheckAdded,
 				model.ReSystemEventV1TypeCheckUpdated,
 				model.ReSystemEventV1TypeCheckDeleted,
+				model.ReSystemEventV1TypeCheckerDeleted,
 				model.ReSystemEventV1TypeHostAdded,
 				model.ReSystemEventV1TypeHostUpdated,
 				model.ReSystemEventV1TypeHostDeleted,
@@ -222,6 +318,34 @@ func (c *Controller) reloadLoop() error {
 				err := c.reload()
 				if err != nil {
 					c.log.Errorf("Error running reload: %s", err)
+
+					continue
+				}
+			case model.ReSystemEventV1TypeCheckerAdded:
+				payload, ok := reSystemEvent.Payload.(*model.ReSystemEventV1CheckerAddedPayload)
+				if !ok {
+					c.log.Errorf("Invalid payload for checker added event: %s", err)
+
+					continue
+				}
+
+				err := c.reloadChecker(payload.CheckerUID)
+				if err != nil {
+					c.log.Errorf("Error running reload checker: %s", err)
+
+					continue
+				}
+			case model.ReSystemEventV1TypeCheckerUpdated:
+				payload, ok := reSystemEvent.Payload.(*model.ReSystemEventV1CheckerUpdatedPayload)
+				if !ok {
+					c.log.Errorf("Invalid payload for checker updated event: %s", err)
+
+					continue
+				}
+
+				err := c.reloadChecker(payload.CheckerUID)
+				if err != nil {
+					c.log.Errorf("Error running reload checker: %s", err)
 
 					continue
 				}

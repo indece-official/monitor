@@ -65,7 +65,18 @@ func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*m
 	}
 
 	if filter.HostUID.Valid {
-		conditions = append(conditions, fmt.Sprintf("mo_check_v1.host_uid = $%d", len(conditionParams)+1))
+		conditions = append(conditions, fmt.Sprintf(`
+			EXISTS (
+				SELECT 1
+				FROM mo_checker_v1
+				INNER JOIN mo_agent_v1 ON
+					mo_agent_v1.uid = mo_checker_v1.agent_uid AND
+					mo_agent_v1.datetime_deleted IS NULL
+				WHERE
+					mo_checker_v1.uid = mo_check_v1.checker_uid AND
+					mo_checker_v1.datetime_deleted IS NULL AND
+					mo_agent_v1.host_uid = $%d
+		)`, len(conditionParams)+1))
 		conditionParams = append(conditionParams, filter.HostUID.String)
 	}
 
@@ -80,7 +91,6 @@ func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*m
 		qctx,
 		`SELECT
 			mo_check_v1.uid,
-			mo_check_v1.host_uid,
 			mo_check_v1.checker_uid,
 			mo_check_v1.name,
 			mo_check_v1.type,
@@ -131,7 +141,6 @@ func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*m
 
 		err = rows.Scan(
 			&pgCheck.UID,
-			&pgCheck.HostUID,
 			&pgCheck.CheckerUID,
 			&pgCheck.Name,
 			&pgCheck.Type,

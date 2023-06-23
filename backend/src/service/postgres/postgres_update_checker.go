@@ -24,7 +24,7 @@ import (
 	"github.com/indece-official/monitor/backend/src/model"
 )
 
-func (s *Service) AddChecker(qctx context.Context, pgChecker *model.PgCheckerV1) error {
+func (s *Service) UpdateChecker(qctx context.Context, checkerUID string, pgChecker *model.PgCheckerV1) error {
 	db, err := s.postgresService.GetDBSafe()
 	if err != nil {
 		return fmt.Errorf("error acquiring db connection: %s", err)
@@ -37,38 +37,26 @@ func (s *Service) AddChecker(qctx context.Context, pgChecker *model.PgCheckerV1)
 
 	_, err = db.ExecContext(
 		qctx,
-		`INSERT INTO mo_checker_v1 (
-			uid,
-			type,
-			agent_uid,
-			version,
-			name,
-			capabilities,
-			custom_checks,
-			datetime_created,
-			datetime_updated
-		)
-		VALUES(
-			$1,
-			$2,
-			$3,
-			$4,
-			$5,
-			$6,
-			$7,
-			NOW(),
-			NOW()
-		)`,
-		pgChecker.UID,
+		`UPDATE mo_checker_v1
+		SET
+			type = $2,
+			version = $3,
+			name = $4,
+			capabilities = $5,
+			custom_checks = $6,
+			datetime_updated = NOW()
+		WHERE
+			uid = $1 AND
+			datetime_deleted IS NULL`,
+		checkerUID,
 		pgChecker.Type,
-		pgChecker.AgentUID,
 		pgChecker.Version,
 		pgChecker.Name,
 		capabilitiesJSON,
 		pgChecker.CustomChecks,
 	)
 	if err != nil {
-		return fmt.Errorf("can't add checker '%s': %s", pgChecker.UID, err)
+		return fmt.Errorf("can't update checker '%s': %s", checkerUID, err)
 	}
 
 	return nil

@@ -198,6 +198,10 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
 
                 {this.state.host && isAdmin(this.state.user) ?
                     <div className='HostPage-actions'>
+                        <Button to={LinkUtils.make('host', this.state.host.uid, 'agent', 'add')}>
+                            <FontAwesomeIcon icon={faPlus} /> Add an agent
+                        </Button>
+
                         <Button to={LinkUtils.make('host', this.state.host.uid, 'check', 'add')}>
                             <FontAwesomeIcon icon={faPlus} /> Add a check
                         </Button>
@@ -260,7 +264,7 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                                 
                                 {isAdmin(this.state.user) && check.custom && this.state.host ?
                                     <ListItemHeaderAction
-                                        to={LinkUtils.make('host', this.state.host.uid,'host', check.uid, 'delete')}
+                                        to={LinkUtils.make('host', this.state.host.uid,'check', check.uid, 'delete')}
                                         icon={faTrash}
                                     />
                                 : null}

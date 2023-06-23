@@ -53,11 +53,11 @@ func (c *Controller) RegisterCheckV1(ctx context.Context, req *apiagent.Register
 
 	pgAgent := pgAgents[0]
 
-	pgCheckersByType := map[string]*model.PgCheckerV1{}
 	pgCheckers, err := c.postgresService.GetCheckers(
 		ctx,
 		&postgres.GetCheckersFilter{
-			AgentType: null.StringFrom(pgAgent.Type.String),
+			AgentUID: null.StringFrom(pgAgent.UID),
+			Type:     null.StringFrom(req.Check.CheckerType),
 		},
 	)
 	if err != nil {
@@ -66,22 +66,18 @@ func (c *Controller) RegisterCheckV1(ctx context.Context, req *apiagent.Register
 		return nil, fmt.Errorf("internal server error")
 	}
 
-	for _, pgChecker := range pgCheckers {
-		pgCheckersByType[pgChecker.Type] = pgChecker
-	}
-
-	pgChecker := pgCheckersByType[req.Check.CheckerType]
-	if pgChecker == nil {
+	if len(pgCheckers) == 0 {
 		c.log.Warnf("Missing checker for check")
 
 		return nil, fmt.Errorf("bad request")
 	}
 
+	pgChecker := pgCheckers[0]
+
 	pgExistingChecks, err := c.postgresService.GetChecks(
 		ctx,
 		&postgres.GetChecksFilter{
 			CheckerUID: null.StringFrom(pgChecker.UID),
-			HostUID:    null.StringFrom(pgAgent.HostUID),
 			Type:       null.StringFrom(req.Check.Type),
 		},
 	)
@@ -105,11 +101,9 @@ func (c *Controller) RegisterCheckV1(ctx context.Context, req *apiagent.Register
 
 		return nil, fmt.Errorf("internal server error")
 	}
-	pgCheck.HostUID = pgAgent.HostUID
 	pgCheck.CheckerUID = pgChecker.UID
 	pgCheck.Name = req.Check.Name
 	pgCheck.Type.Scan(req.Check.Type)
-	// TODO: Schedule
 	pgCheck.Config = &model.PgCheckV1Config{}
 	pgCheck.Config.Params = []*model.PgCheckV1Param{}
 
@@ -120,6 +114,18 @@ func (c *Controller) RegisterCheckV1(ctx context.Context, req *apiagent.Register
 		pgCheckParam.Value = reqCheckParam.Value
 
 		pgCheck.Config.Params = append(pgCheck.Config.Params, pgCheckParam)
+	}
+
+	if req.Check.Schedule != "" {
+		pgCheck.Schedule.Scan(req.Check.Schedule)
+	} else {
+		pgCheck.Schedule.Scan(nil)
+	}
+
+	if req.Check.Timeout != "" {
+		pgCheck.Config.Timeout.Scan(req.Check.Timeout)
+	} else {
+		pgCheck.Config.Timeout.Scan(nil)
 	}
 
 	pgCheck.Custom = false

@@ -8,10 +8,11 @@ export interface ListItemHeaderFieldProps
 {
     className?: string;
     grow?:      boolean;
-    text:       string;
+    text?:      string;
     subtext?:   string;
     to?:        To;
     onClick?:   ( evt: React.MouseEvent ) => any;
+    children?:  React.ReactNode | null;
 }
 
 
@@ -27,7 +28,7 @@ export class ListItemHeaderField extends React.Component<ListItemHeaderFieldProp
                     to={this.props.to}
                     onClick={this.props.onClick}>
                     <div className='ListItemHeaderField-text'>
-                        {this.props.text}
+                        {this.props.text} {this.props.children}
                     </div>
     
                     {this.props.subtext ?
@@ -44,7 +45,7 @@ export class ListItemHeaderField extends React.Component<ListItemHeaderFieldProp
                 className={`ListItemHeaderField ${this.props.grow ? 'grow': ''} ${this.props.onClick ? 'clickable': ''} ${this.props.className || ''}`}
                 onClick={this.props.onClick}>
                 <div className='ListItemHeaderField-text'>
-                    {this.props.text}
+                    {this.props.text} {this.props.children}
                 </div>
 
                 {this.props.subtext ?

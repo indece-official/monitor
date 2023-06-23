@@ -10,6 +10,7 @@ import { InputSelect } from '../../../Components/Input/InputSelect';
 
 export interface AddAgentStartStepProps
 {
+    hostUID?:   string;
     onFinish:   ( agentUID: string ) => any;
 }
 
@@ -31,7 +32,7 @@ interface AddAgentStartStepState
 
 export class AddAgentStartStep extends React.Component<AddAgentStartStepProps, AddAgentStartStepState>
 {
-    private readonly _hostService:      HostService;
+    private readonly _hostService:  HostService;
     private readonly _agentService: AgentService;
 
 
@@ -137,7 +138,28 @@ export class AddAgentStartStep extends React.Component<AddAgentStartStepProps, A
 
     public async componentDidMount ( ): Promise<void>
     {
+        this.setState({
+            initialFormData: {
+                ...this.state.initialFormData,
+                host_uid:   this.props.hostUID || ''
+            }
+        });
+
         await this._load();
+    }
+
+
+    public componentDidUpdate ( prevProps: AddAgentStartStepProps ): void
+    {
+        if ( this.props.hostUID !== prevProps.hostUID )
+        {
+            this.setState({
+                initialFormData: {
+                    ...this.state.initialFormData,
+                    host_uid:   this.props.hostUID || ''
+                }
+            });
+        }
     }
 
 

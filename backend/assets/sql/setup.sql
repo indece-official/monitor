@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS mo_dbinfo (
 
 INSERT INTO mo_dbinfo(name, value)
     VALUES
-        ('revision', 3)
+        ('revision', 4)
     ON CONFLICT DO NOTHING;
 
 --- Table for storing config properties
@@ -170,7 +170,7 @@ END $$;
 CREATE TABLE IF NOT EXISTS mo_checker (
     uid VARCHAR(36) NOT NULL,
     type VARCHAR(256) NOT NULL,
-    agent_type VARCHAR(256) NOT NULL,
+    agent_uid VARCHAR(36) NOT NULL REFERENCES mo_agent(uid),
     version VARCHAR(32) NULL,
     name VARCHAR(256) NOT NULL,
     custom_checks BOOLEAN NOT NULL,
@@ -199,7 +199,6 @@ END $$;
 --- Table for storing checks
 CREATE TABLE IF NOT EXISTS mo_check (
     uid VARCHAR(36) NOT NULL,
-    host_uid VARCHAR(36) NOT NULL REFERENCES mo_host(uid),
     checker_uid VARCHAR(36) NOT NULL REFERENCES mo_checker(uid),
     name VARCHAR(256) NOT NULL,
     type VARCHAR(256) NULL,

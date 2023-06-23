@@ -12,6 +12,7 @@ import { ListItem } from '../../Components/List/ListItem';
 import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { ListItemHeader } from '../../Components/List/ListItemHeader';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
+import { Tag } from '../../Components/Tag/Tag';
 
 
 export interface TagsPageProps
@@ -104,9 +105,11 @@ export class TagsPage extends React.Component<TagsPageProps, TagsPageState>
                             <ListItemHeader>
                                 <ListItemHeaderField
                                     to={LinkUtils.make('tag', tag.uid)}
-                                    grow={true}
-                                    text={tag.name}
-                                />
+                                    grow={true}>
+                                    <Tag color={tag.color}>
+                                        {tag.name}
+                                    </Tag>
+                                </ListItemHeaderField>
 
                                 <ListItemHeaderAction
                                     to={LinkUtils.make('tag', tag.uid, 'delete')}

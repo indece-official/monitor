@@ -104,6 +104,11 @@ func (c *Controller) addCheckStatus(
 		return fmt.Errorf("checker not found for check")
 	}
 
+	pgAgent, err := c.getAgent(pgChecker.AgentUID)
+	if err != nil {
+		return fmt.Errorf("agent not found for checker")
+	}
+
 	pgCheckStatus := &model.PgCheckStatusV1{}
 	pgCheckStatus.UID, err = utils.UUID()
 	if err != nil {
@@ -279,7 +284,7 @@ func (c *Controller) addCheckStatus(
 	}
 
 	err = c.cacheService.UpsertHostCheckStatus(
-		pgCheck.HostUID,
+		pgAgent.HostUID,
 		&model.ReHostStatusV1Check{
 			CheckUID: pgCheck.UID,
 			Status:   pgCheckStatus.Status,
@@ -297,7 +302,7 @@ func (c *Controller) addCheckStatus(
 	for _, pgNotifier := range c.notifiers {
 		err = c.cacheService.SetNotification(
 			&model.ReNotificationV1{
-				HostUID:         pgCheck.HostUID,
+				HostUID:         pgAgent.HostUID,
 				NotifierUID:     pgNotifier.UID,
 				CheckUID:        pgCheck.UID,
 				Status:          pgCheckStatus.Status,

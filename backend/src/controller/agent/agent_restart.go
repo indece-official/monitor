@@ -24,7 +24,6 @@ import (
 )
 
 func (c *Controller) restart() error {
-
 	err := c.stopServer()
 	if err != nil {
 		return fmt.Errorf("error stopping server for restart: %s", err)

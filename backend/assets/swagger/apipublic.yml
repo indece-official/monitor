@@ -355,14 +355,11 @@ paths:
               required:
                 - name
                 - checker_uid
-                - host_uid
                 - params
               properties:
                 name:
                   type: string
                 checker_uid:
-                  type: string
-                host_uid:
                   type: string
                 schedule:
                   type: string
@@ -1006,7 +1003,6 @@ components:
       required:
         - uid
         - name
-        - host_uid
         - checker_uid
         - custom
         - disabled
@@ -1014,8 +1010,6 @@ components:
         uid:
           type: string
         name:
-          type: string
-        host_uid:
           type: string
         checker_uid:
           type: string
@@ -1083,7 +1077,7 @@ components:
         - uid
         - name
         - type
-        - agent_type
+        - agent_uid
         - version
         - capabilities
         - custom_checks
@@ -1094,7 +1088,7 @@ components:
           type: string
         type:
           type: string
-        agent_type:
+        agent_uid:
           type: string
         version:
           type: string

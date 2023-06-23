@@ -30,7 +30,6 @@ func (c *Controller) mapPgCheckV1ToAPICheckV1(pgCheck *model.PgCheckV1, addParam
 
 	apiCheck.Uid = pgCheck.UID
 	apiCheck.Name = pgCheck.Name
-	apiCheck.HostUid = pgCheck.HostUID
 	apiCheck.CheckerUid = pgCheck.CheckerUID
 	apiCheck.Custom = pgCheck.Custom
 	apiCheck.Schedule = pgCheck.Schedule.Ptr()
@@ -112,7 +111,6 @@ func (c *Controller) mapAPIAddCheckV1RequestBodyToPgCheckV1(requestBody *apipubl
 	pgCheck := &model.PgCheckV1{}
 
 	pgCheck.Name = requestBody.Name
-	pgCheck.HostUID = requestBody.HostUid
 	pgCheck.CheckerUID = requestBody.CheckerUid
 	pgCheck.Config = &model.PgCheckV1Config{}
 	pgCheck.Config.Params = []*model.PgCheckV1Param{}
