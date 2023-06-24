@@ -20,6 +20,7 @@ import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction
 import { Formatter } from '../../utils/Formatter';
 
 import './HostPage.css';
+import { ListItemBody } from '../../Components/List/ListItemBody';
 
 
 export interface HostPageRouteParams
@@ -35,11 +36,12 @@ export interface HostPageProps extends RouteComponentProps<HostPageRouteParams>
 
 interface HostPageState
 {
-    host:       HostV1 | null;
-    user:       UserV1 | null;
-    checks:     Array<CheckV1>;
-    loading:    boolean;
-    error:      Error | null;
+    host:               HostV1 | null;
+    user:               UserV1 | null;
+    checks:             Array<CheckV1>;
+    expandedCheckUID:   string | null;
+    loading:            boolean;
+    error:              Error | null;
 }
 
 
@@ -56,11 +58,12 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
         super(props);
 
         this.state = {
-            host:       null,
-            user:       null,
-            checks:     [],
-            loading:    false,
-            error:      null
+            host:               null,
+            user:               null,
+            checks:             [],
+            expandedCheckUID:   null,
+            loading:            false,
+            error:              null
         };
 
         this._hostService  = HostService.getInstance();
@@ -152,6 +155,23 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
     }
 
 
+    private _toggleCheck ( checkUID: string ): void
+    {
+        if ( checkUID === this.state.expandedCheckUID )
+        {
+            this.setState({
+                expandedCheckUID:   null
+            });
+        }
+        else
+        {
+            this.setState({
+                expandedCheckUID: checkUID
+            });
+        }
+    }
+
+
     public async componentDidMount ( ): Promise<void>
     {
         this._userService.isLoggedIn().subscribe(this, ( user ) =>
@@ -238,11 +258,13 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                         <ListItem key={check.uid}>
                             <ListItemHeader>
                                 <ListItemHeaderField
+                                    onClick={ ( ) => this._toggleCheck(check.uid) }
                                     className={`HostPage-check-status status-${(check.status?.status || CheckStatusV1Status.Unknown).toLowerCase()}`}
                                     text={Formatter.checkStatus(check.status?.status || CheckStatusV1Status.Unknown)}
                                 />
                                 
                                 <ListItemHeaderField
+                                    onClick={ ( ) => this._toggleCheck(check.uid) }
                                     text={check.name}
                                     subtext={check.status?.message}
                                     grow={true}
@@ -269,6 +291,23 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                                     />
                                 : null}
                             </ListItemHeader>
+
+                            {this.state.expandedCheckUID === check.uid ?
+                                <ListItemBody>
+                                    {check.status ?
+                                        <div>
+                                            <div>Last checked: {check.status.datetime_created}</div>
+                                            {Object.entries(check.status.data).map( ( entry, i ) => (
+                                                <div key={i}>{entry[0]}: {entry[1]}</div>
+                                            ))}
+                                        </div>
+                                    :
+                                        <div>
+                                            No check results captured yet
+                                        </div>
+                                    }
+                                </ListItemBody>
+                            : null}
                         </ListItem>
                     ))}
                 </List>

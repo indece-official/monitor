@@ -49,6 +49,7 @@ func (c *Controller) mapPgCheckStatusV1ToAPICheckStatusV1(pgCheckStatus *model.P
 		return nil, fmt.Errorf("error mapping source: %s", err)
 	}
 	apiCheckStatus.Message = pgCheckStatus.Message
+	apiCheckStatus.Data = pgCheckStatus.Data
 	apiCheckStatus.DatetimeCreated = pgCheckStatus.DatetimeCreated
 
 	return apiCheckStatus, nil

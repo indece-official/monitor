@@ -10,11 +10,19 @@ export enum CheckStatusV1Status
 }
 
 
+export interface CheckStatusV1Value
+{
+    name:   string;
+    value:  string;
+}
+
+
 export interface CheckStatusV1
 {
     uid:                string;
     status:             CheckStatusV1Status;
     message:            string;
+    data:               Record<string, any>;
     datetime_created:   string;
 }
 
