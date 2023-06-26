@@ -285,3 +285,32 @@ BEGIN
         CREATE VIEW mo_notifier_v1 AS SELECT * FROM mo_notifier;
     END IF;
 END $$;
+
+--- Table for storing maintenance
+CREATE TABLE IF NOT EXISTS mo_maintenance (
+    uid VARCHAR(36) NOT NULL,
+    title VARCHAR(256) NOT NULL,
+    message TEXT NOT NULL,
+    details JSON NOT NULL,
+    datetime_created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    datetime_updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    datetime_start TIMESTAMP WITH TIME ZONE NOT NULL,
+    datetime_finish TIMESTAMP WITH TIME ZONE NULL DEFAULT NULL,
+    datetime_deleted TIMESTAMP WITH TIME ZONE NULL DEFAULT NULL
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS mo_maintenance_uid
+    ON mo_maintenance(uid);
+
+DO $$
+BEGIN
+   IF NOT EXISTS (
+        SELECT *
+        FROM information_schema.tables
+        WHERE table_type='VIEW' AND
+        table_schema='public'
+        AND table_catalog=current_database()
+        AND table_name='mo_maintenance_v1') THEN
+        CREATE VIEW mo_maintenance_v1 AS SELECT * FROM mo_maintenance;
+    END IF;
+END $$;

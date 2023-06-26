@@ -14,12 +14,15 @@ const (
 )
 
 type PgNotifierV1ConfigFilter struct {
-	TagUIDs     []string      `json:"tag_uids"`
-	Critical    bool          `json:"critical"`
-	Warning     bool          `json:"warning"`
-	Unknown     bool          `json:"unknown"`
-	Decline     bool          `json:"decline"`
-	MinDuration time.Duration `json:"min_duration"`
+	TagUIDs              []string      `json:"tag_uids"`
+	Critical             bool          `json:"critical"`
+	Warning              bool          `json:"warning"`
+	Unknown              bool          `json:"unknown"`
+	Decline              bool          `json:"decline"`
+	MinDuration          time.Duration `json:"min_duration"`
+	MaintenanceScheduled bool          `json:"maintenance_scheduled"`
+	MaintenanceStarted   bool          `json:"maintenance_started"`
+	MaintenanceFinished  bool          `json:"maintenance_finished"`
 }
 
 type PgNotifierV1ConfigParamsEmailSmtp struct {

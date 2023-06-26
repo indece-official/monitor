@@ -122,6 +122,12 @@ func (c *Controller) getRouter() chi.Router {
 	router.Delete("/api/v1/notifier/{notifierUID}", c.baseController.Wrap(c.reqV1DeleteNotifier))
 	router.Get("/api/v1/notifier/{notifierUID}", c.baseController.Wrap(c.reqV1GetNotifier))
 
+	router.Get("/api/v1/maintenance", c.baseController.Wrap(c.reqV1GetMaintenances))
+	router.Post("/api/v1/maintenance", c.baseController.Wrap(c.reqV1AddMaintenance))
+	router.Put("/api/v1/maintenance/{maintenanceUID}", c.baseController.Wrap(c.reqV1UpdateMaintenance))
+	router.Delete("/api/v1/maintenance/{maintenanceUID}", c.baseController.Wrap(c.reqV1DeleteMaintenance))
+	router.Get("/api/v1/maintenance/{maintenanceUID}", c.baseController.Wrap(c.reqV1GetMaintenance))
+
 	return router
 }
 

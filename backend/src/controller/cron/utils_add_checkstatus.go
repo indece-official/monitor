@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/indece-official/go-gousu/v2/gousu"
 	"github.com/indece-official/monitor/backend/src/model"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
 	"github.com/indece-official/monitor/backend/src/utils"
@@ -296,6 +297,49 @@ func (c *Controller) addCheckStatus(
 	}
 
 	if !notify {
+		return nil
+	}
+
+	// Check if maintenance active
+	pgMaintenances, err := c.postgresService.GetMaintenances(
+		ctx,
+		&postgres.GetMaintenancesFilter{
+			NowActive: true,
+		},
+	)
+	if err != nil {
+		return fmt.Errorf("error loading active maintenances: %s", err)
+	}
+
+	inMaintenance := false
+
+	for _, pgMaintenance := range pgMaintenances {
+		if len(pgMaintenance.Details.Affected.CheckUIDs) > 0 &&
+			gousu.ContainsString(pgMaintenance.Details.Affected.CheckUIDs, pgCheck.UID) {
+			inMaintenance = true
+			break
+		}
+
+		if len(pgMaintenance.Details.Affected.HostUIDs) > 0 &&
+			gousu.ContainsString(pgMaintenance.Details.Affected.HostUIDs, pgAgent.UID) {
+			inMaintenance = true
+			break
+		}
+
+		if len(pgMaintenance.Details.Affected.TagUIDs) > 0 {
+			pgHost, err := c.getHost(pgAgent.HostUID)
+			if err != nil {
+				return fmt.Errorf("error loading host: %s", err)
+			}
+
+			if utils.Intersects[string](pgMaintenance.Details.Affected.TagUIDs, pgHost.TagUIDs) {
+				inMaintenance = true
+				break
+			}
+		}
+	}
+
+	if inMaintenance {
 		return nil
 	}
 

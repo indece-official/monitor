@@ -37,6 +37,10 @@ import { NotifiersPage } from './Pages/NotifiersPage/NotifiersPage';
 import { AddNotifierPage } from './Pages/AddNotifierPage/AddNotifierPage';
 import { EditNotifierPage } from './Pages/EditNotifierPage/EditNotifierPage';
 import { DeleteNotifierPage } from './Pages/DeleteNotifierPage/DeleteNotifierPage';
+import { MaintenancesPage } from './Pages/MaintenancesPage/MaintenancesPage';
+import { AddMaintenancePage } from './Pages/AddMaintenancePage/AddMaintenancePage';
+import { DeleteMaintenancePage } from './Pages/DeleteMaintenancePage/DeleteMaintenancePage';
+import { MaintenancePage } from './Pages/MaintenancePage/MaintenancePage';
 
 import './App.css';
 
@@ -268,6 +272,37 @@ export class App extends React.Component
                                     path='/notifier/:notifierUID/delete'
                                     element={<RouteGuard
                                         element={<DeleteNotifierPage />}
+                                        roles={[UserV1Role.Admin]}
+                                    />}
+                                />
+
+                                <Route
+                                    path='/maintenances'
+                                    element={<RouteGuard
+                                        element={<MaintenancesPage />}
+                                    />}
+                                />
+
+                                <Route
+                                    path='/maintenance/add'
+                                    element={<RouteGuard
+                                        element={<AddMaintenancePage />}
+                                        roles={[UserV1Role.Admin]}
+                                    />}
+                                />
+
+                                <Route
+                                    path='/maintenance/:maintenanceUID'
+                                    element={<RouteGuard
+                                        element={<MaintenancePage />}
+                                        roles={[UserV1Role.Admin]}
+                                    />}
+                                />
+                               
+                                <Route
+                                    path='/maintenance/:maintenanceUID/delete'
+                                    element={<RouteGuard
+                                        element={<DeleteMaintenancePage />}
                                         roles={[UserV1Role.Admin]}
                                     />}
                                 />

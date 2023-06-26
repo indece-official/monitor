@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 import { LinkUtils } from '../../utils/LinkUtils';
 
 import './DashboardPage.css';
+import { MaintenanceService, MaintenanceV1 } from '../../Services/MaintenanceService';
+import { MaintenanceBox } from '../../Components/MaintenanceBox/MaintenanceBox';
 
 
 export interface DashboardPageProps
@@ -28,6 +30,7 @@ interface DashboardPageState
     user:           UserV1 | null;
     hosts:          Array<HostV1>;
     hostStatuses:   Record<string, HostStats>;
+    maintenances:   Array<MaintenanceV1>;
     loading:        boolean;
     error:          Error | null;
 }
@@ -37,6 +40,7 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
 {
     private readonly _userService:  UserService;
     private readonly _hostService:  HostService;
+    private readonly _maintenanceService:  MaintenanceService;
     private _intervalReloadChecks:  any | null;
 
 
@@ -48,12 +52,14 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
             user:           null,
             hosts:          [],
             hostStatuses:   {},
+            maintenances:   [],
             loading:        true,
             error:          null
         };
 
         this._userService = UserService.getInstance();
         this._hostService = HostService.getInstance();
+        this._maintenanceService = MaintenanceService.getInstance();
 
         this._intervalReloadChecks = null;
     }
@@ -98,10 +104,13 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                 }
             }
 
+            const maintenances = await this._maintenanceService.getMaintenances(true, 0, 10);
+
             this.setState({
                 loading:    false,
                 hosts,
-                hostStatuses
+                hostStatuses,
+                maintenances
             });
         }
         catch ( err )
@@ -158,6 +167,13 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                 <h1>Welcome</h1>
 
                 <ErrorBox error={this.state.error} />
+
+                {this.state.maintenances.map( ( maintenance ) => (
+                    <MaintenanceBox
+                        key={maintenance.uid}
+                        maintenance={maintenance}
+                    />
+                ))}
 
                 <div className='DashboardPage-hosts'>
                     {this.state.hosts.map( ( host ) => (

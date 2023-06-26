@@ -170,6 +170,12 @@ export class SideNav extends React.Component<SideNavProps, SideNavState>
                                 <Link to={LinkUtils.make('notifiers')}>Notifiers</Link>
                             </div>
                         : null}
+
+                        {this.state.user && !Environment.setup.enabled?
+                            <div className='SideNav-item'>
+                                <Link to={LinkUtils.make('maintenances')}>Maintenances</Link>
+                            </div>
+                        : null}
                         
                         {isAdmin(this.state.user) && !Environment.setup.enabled?
                             <div className='SideNav-item'>

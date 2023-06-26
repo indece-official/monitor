@@ -20,6 +20,9 @@ import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction
 import { Formatter } from '../../utils/Formatter';
 
 import './HostPage.css';
+import { MaintenanceService, MaintenanceV1 } from '../../Services/MaintenanceService';
+import { ListUtils } from '../../utils/ListUtils';
+import { MaintenanceBox } from '../../Components/MaintenanceBox/MaintenanceBox';
 
 
 export interface HostPageRouteParams
@@ -35,11 +38,12 @@ export interface HostPageProps extends RouteComponentProps<HostPageRouteParams>
 
 interface HostPageState
 {
-    host:       HostV1 | null;
-    user:       UserV1 | null;
-    checks:     Array<CheckV1>;
-    loading:    boolean;
-    error:      Error | null;
+    host:           HostV1 | null;
+    user:           UserV1 | null;
+    maintenances:   Array<MaintenanceV1>;
+    checks:         Array<CheckV1>;
+    loading:        boolean;
+    error:          Error | null;
 }
 
 
@@ -48,6 +52,7 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
     private readonly _hostService: HostService;
     private readonly _userService: UserService;
     private readonly _checkService: CheckService;
+    private readonly _maintenanceService: MaintenanceService;
     private _intervalReloadChecks:  any | null;
 
 
@@ -56,16 +61,18 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
         super(props);
 
         this.state = {
-            host:       null,
-            user:       null,
-            checks:     [],
-            loading:    false,
-            error:      null
+            host:           null,
+            user:           null,
+            maintenances:   [],
+            checks:         [],
+            loading:        false,
+            error:          null
         };
 
         this._hostService  = HostService.getInstance();
         this._userService  = UserService.getInstance();
         this._checkService = CheckService.getInstance();
+        this._maintenanceService = MaintenanceService.getInstance();
 
         this._intervalReloadChecks = null;
     }
@@ -83,10 +90,16 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
             const host = await this._hostService.getHost(
                 this.props.router.params.hostUID
             );
+            let maintenances = await this._maintenanceService.getMaintenances(true, 0, 10);
+
+            maintenances = maintenances.filter( ( o ) => 
+                o.affected.host_uids.includes(host.uid) || ListUtils.intersects(o.affected.tag_uids, host.tags.map( t => t.uid ))
+            );
 
             this.setState({
                 loading:    false,
-                host
+                host,
+                maintenances
             });
         }
         catch ( err )
@@ -215,6 +228,13 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                         </Button>
                     </div>
                 : null}
+
+                {this.state.maintenances.map( ( maintenance ) => (
+                    <MaintenanceBox
+                        key={maintenance.uid}
+                        maintenance={maintenance}
+                    />
+                ))}
 
                 {this.state.host ?
                     <LabelValueList>

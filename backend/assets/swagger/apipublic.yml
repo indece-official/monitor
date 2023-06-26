@@ -909,6 +909,156 @@ paths:
           content: {}
       x-codegen-request-body-name: body
 
+  /v1/maintenance:
+    post:
+      tags:
+        - maintenance
+      summary: Add a maintenance
+      operationId: v1AddMaintenance
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - message
+                - affected
+                - datetime_start
+              properties:
+                title:
+                  type: string
+                message:
+                  type: string
+                affected:
+                  $ref: '#/components/schemas/MaintenanceV1Affected'
+                datetime_start: 
+                  type: string
+                  format: date-time
+                datetime_finish: 
+                  type: string
+                  format: date-time
+        required: true
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1AddMaintenanceJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    get:
+      tags:
+      - maintenance
+      summary: Get maintenances
+      operationId: v1GetMaintenances
+      parameters:
+      - name: active
+        in: query
+        required: false
+        schema:
+          type: boolean
+      - name: from
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetMaintenancesJSONResponseBody'
+      x-codegen-request-body-name: body
+  
+  /v1/maintenance/{maintenanceUID}:
+    get:
+      tags:
+      - maintenance
+      summary: Get maintenance
+      operationId: v1GetMaintenance
+      parameters:
+      - name: maintenanceUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/v1GetMaintenanceJSONResponseBody'
+      x-codegen-request-body-name: body
+
+    put:
+      tags:
+        - maintenance
+      summary: Update a maintenance
+      operationId: v1UpdateMaintenance
+      parameters:
+      - name: maintenanceUID
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - message
+                - affected
+                - datetime_start
+              properties:
+                title:
+                  type: string
+                message:
+                  type: string
+                affected:
+                  $ref: '#/components/schemas/MaintenanceV1Affected'
+                datetime_start: 
+                  type: string
+                  format: date-time
+                datetime_finish: 
+                  type: string
+                  format: date-time
+        required: true
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
+    delete:
+      tags:
+        - maintenance
+      summary: Delete a maintenance
+      operationId: v1DeleteMaintenance
+      parameters:
+      - name: maintenanceUID
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content: {}
+      x-codegen-request-body-name: body
+
 components:
   schemas:
     TagV1:
@@ -1197,6 +1347,9 @@ components:
         - unknown
         - decline
         - min_duration
+        - maintenance_created
+        - maintenance_started
+        - maintenance_finished
       properties:
         tag_uids:
           type: array
@@ -1212,6 +1365,12 @@ components:
           type: boolean
         min_duration:
           type: string
+        maintenance_created:
+          type: boolean
+        maintenance_started:
+          type: boolean
+        maintenance_finished:
+          type: boolean
 
     NotifierV1ConfigParamsEmailSmtp:
       type: object
@@ -1277,6 +1436,58 @@ components:
           $ref: '#/components/schemas/NotifierV1Type'
         config: 
           $ref: '#/components/schemas/NotifierV1Config'
+    
+    MaintenanceV1Affected:
+      type: object
+      required:
+        - host_uids
+        - check_uids
+        - tag_uids
+      properties:
+        host_uids:
+          type: array
+          items:
+            type: string
+        check_uids:
+          type: array
+          items:
+            type: string
+        tag_uids:
+          type: array
+          items:
+            type: string
+
+    MaintenanceV1:
+      type: object
+      required:
+        - uid
+        - title
+        - message
+        - affected
+        - datetime_created
+        - datetime_updated
+        - datetime_start
+      properties:
+        uid:
+          type: string
+        title:
+          type: string
+        message:
+          type: string
+        affected:
+          $ref: '#/components/schemas/MaintenanceV1Affected'
+        datetime_created:
+          type: string
+          format: date-time
+        datetime_updated:
+          type: string
+          format: date-time
+        datetime_start:
+          type: string
+          format: date-time
+        datetime_finish:
+          type: string
+          format: date-time
 
     v1AddTagJSONResponseBody:
       type: object
@@ -1482,3 +1693,29 @@ components:
       properties:
         notifier:
           $ref: '#/components/schemas/NotifierV1'
+
+    v1AddMaintenanceJSONResponseBody:
+      type: object
+      required:
+        - maintenance_uid
+      properties:
+        maintenance_uid:
+          type: string
+    
+    v1GetMaintenancesJSONResponseBody:
+      type: object
+      required:
+        - maintenances
+      properties:
+        maintenances:
+          type: array
+          items:
+            $ref: '#/components/schemas/MaintenanceV1'
+
+    v1GetMaintenanceJSONResponseBody:
+      type: object
+      required:
+        - maintenance
+      properties:
+        maintenance:
+          $ref: '#/components/schemas/MaintenanceV1'

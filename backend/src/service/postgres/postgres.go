@@ -74,6 +74,11 @@ type IService interface {
 	UpdateNotifier(qctx context.Context, notifierUID string, pgNotifier *model.PgNotifierV1) error
 	DeleteNotifier(qctx context.Context, notifierUID string) error
 	GetNotifiers(qctx context.Context, filter *GetNotifiersFilter) ([]*model.PgNotifierV1, error)
+
+	AddMaintenance(qctx context.Context, pgMaintenance *model.PgMaintenanceV1) error
+	UpdateMaintenance(qctx context.Context, maintenanceUID string, pgMaintenance *model.PgMaintenanceV1) error
+	DeleteMaintenance(qctx context.Context, maintenanceUID string) error
+	GetMaintenances(qctx context.Context, filter *GetMaintenancesFilter) ([]*model.PgMaintenanceV1, error)
 }
 
 // Service provides the interaction with the postgresql database
