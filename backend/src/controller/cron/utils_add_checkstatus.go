@@ -311,7 +311,27 @@ func (c *Controller) addCheckStatus(
 		return nil
 	}
 
+	existingPgNotifications, err := c.cacheService.GetNotifications()
+	if err != nil {
+		return fmt.Errorf("error loading existing notifications: %s", err)
+	}
+
 	for _, pgNotifier := range c.notifiers {
+		exists := false
+
+		for _, existingPgNotification := range existingPgNotifications {
+			if existingPgNotification.CheckUID == pgCheck.UID &&
+				existingPgNotification.NotifierUID == pgNotifier.UID {
+				exists = true
+				break
+			}
+		}
+
+		if exists {
+			// Don't override previous notification
+			continue
+		}
+
 		err = c.cacheService.SetNotification(
 			&model.ReNotificationV1{
 				HostUID:         pgAgent.HostUID,
