@@ -2,6 +2,7 @@
 .InputTextarea-field,
 .InputDateTime,
 .InputSelect-field,
+.InputMultiSelect-field,
 .InputFile,
 .InputSelectFile,
 .InputSelectEventLocation {
@@ -29,6 +30,7 @@
 .InputDateTime:not(.empty),
 .InputDateTime.focussed,
 .InputSelect:not(.empty) .InputText-field,
+.InputMultiSelect:not(.empty) .InputText-field,
 .InputFile:not(.empty),
 .InputSelectFile:not(.empty),
 .InputSelectEventLocation:not(.empty) {
@@ -39,6 +41,7 @@
 .InputTextarea-label,
 .InputDateTime-label,
 .InputSelect-label,
+.InputMultiSelect-label,
 .InputFile-label,
 .InputSelectFile-label,
 .InputSelectEventLocation-label {
@@ -60,6 +63,7 @@
 .InputDateTime:not(.empty) .InputDateTime-label,
 .InputDateTime.focussed .InputDateTime-label,
 .InputSelect:not(.empty) .InputSelect-label,
+.InputMultiSelect:not(.empty) .InputMultiSelect-label,
 .InputFile:not(.empty) .InputFile-label,
 .InputSelectFile:not(.empty) .InputSelectFile-label,
 .InputSelectEventLocation:not(.empty) .InputSelectEventLocation-label {
@@ -76,7 +80,8 @@
 .InputText-error,
 .InputTextarea-error,
 .InputCheckbox-error,
-.InputSelect-error {
+.InputSelect-error,
+.InputMultiSelect-error {
     margin-top: 12px;
     margin-bottom: 15px;
     color: #ff0000;
@@ -91,7 +96,8 @@
 .InputText-error::after,
 .InputTextarea-error::after,
 .InputCheckbox-error::after,
-.InputSelect-error::after {
+.InputSelect-error::after,
+.InputMultiSelect-error::after {
     position: absolute;
     content: '';
     display: block;
@@ -236,4 +242,84 @@
     border-color: var(--color-primary);
     background-color: var(--color-primary);
     color: #fff;
+}
+
+.InputMultiSelect-field {
+    overflow: unset;
+}
+
+.InputMultiSelect-input {
+    display: flex;
+    flex-direction: row;
+    padding-left: 20px;
+    padding-right: 30px;
+    padding-top: 18px;
+    padding-bottom: 12px;
+    align-items: center;
+}
+
+.InputMultiSelect-input-value {
+    border: 1px solid #ccc;
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    cursor: default;
+    margin-right: 5px;
+}
+
+.InputMultiSelect-input-value-label {
+    padding: 3px 7px;
+}
+
+.InputMultiSelect-input-value-action {
+    cursor: pointer;
+    padding: 3px 7px;
+}
+
+.InputMultiSelect-input-select {
+    position: relative;
+}
+
+.InputMultiSelect-input-select input {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    font-size: 17px;
+}
+
+.InputMultiSelect-dropdown {
+    display: none;
+}
+
+.InputMultiSelect:active .InputMultiSelect-dropdown,
+.InputMultiSelect-input-select input:focus + .InputMultiSelect-dropdown {
+    display: block;
+}
+
+.InputMultiSelect-dropdown {
+    display: none;
+    position: absolute;
+    top: calc(1em + 15px);
+    background: #fff;
+    border: 1px solid #ccc;
+    min-width: 150px;
+}
+
+.InputMultiSelect-dropdown-option {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.InputMultiSelect-dropdown-option:hover {
+    background: #eee;
+}
+
+.InputMultiSelect-dropdown-empty {
+    padding: 10px 20px;
+    color: #888;
+    font-style: italic;
 }
