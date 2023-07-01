@@ -119,6 +119,7 @@ func (c *Controller) addCheckStatus(
 	}
 	pgCheckStatus.CheckUID = checkUID
 	pgCheckStatus.Data = map[string]interface{}{}
+	pgCheckStatus.DatetimeCreated = time.Now()
 
 	// Evaluate status
 
@@ -300,6 +301,7 @@ func (c *Controller) addCheckStatus(
 			HostUID:         pgAgent.HostUID,
 			Status:          pgCheckStatus.Status,
 			Message:         pgCheckStatus.Message,
+			Data:            pgCheckStatus.Data,
 			DatetimeCreated: pgCheckStatus.DatetimeCreated,
 		},
 	)

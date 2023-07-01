@@ -969,12 +969,17 @@ components:
         - CRITICAL
         - UNKNOWN
 
+    CheckStatusV1Data:
+      type: object
+      additionalProperties: {}
+
     CheckStatusV1:
       type: object
       required:
         - uid
         - status
         - message
+        - data
         - datetime_created
       properties:
         uid:
@@ -983,6 +988,8 @@ components:
           $ref: '#/components/schemas/CheckStatusV1Status'
         message:
           type: string
+        data:
+          $ref: '#/components/schemas/CheckStatusV1Data'
         datetime_created:
           type: string
           format: date-time

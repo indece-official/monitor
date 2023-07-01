@@ -49,6 +49,7 @@ func (c *Controller) mapReCheckStatusV1ToAPICheckStatusV1(reCheckStatus *model.R
 		return nil, fmt.Errorf("error mapping source: %s", err)
 	}
 	apiCheckStatus.Message = reCheckStatus.Message
+	apiCheckStatus.Data = reCheckStatus.Data
 	apiCheckStatus.DatetimeCreated = reCheckStatus.DatetimeCreated
 
 	return apiCheckStatus, nil

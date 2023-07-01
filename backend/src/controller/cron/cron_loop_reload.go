@@ -270,11 +270,13 @@ func (c *Controller) reload() error {
 		checkStatusUID := ""
 		checkStatus := model.PgCheckStatusV1StatusUnkn
 		checkMessage := ""
+		checkData := map[string]interface{}{}
 		checkDatetimeCreated := time.Now()
 		if len(pgCheckStatuses) > 0 {
 			checkStatusUID = pgCheckStatuses[0].UID
 			checkStatus = pgCheckStatuses[0].Status
 			checkMessage = pgCheckStatuses[0].Message
+			checkData = pgCheckStatuses[0].Data
 			checkDatetimeCreated = pgCheckStatuses[0].DatetimeCreated
 		}
 
@@ -286,6 +288,7 @@ func (c *Controller) reload() error {
 				HostUID:         pgAgent.HostUID,
 				Status:          checkStatus,
 				Message:         checkMessage,
+				Data:            checkData,
 				DatetimeCreated: checkDatetimeCreated,
 			},
 		)
