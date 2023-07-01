@@ -38,18 +38,21 @@ func (c *Controller) reqV1GetHosts(w http.ResponseWriter, r *http.Request) gousu
 		return gousuchi.InternalServerError(r, "Error loading hosts: %s", err)
 	}
 
-	reHostStatuses := map[string]*model.ReHostStatusV1{}
-
-	for _, pgHost := range pgHosts {
-		reHostStatus, err := c.cacheService.GetHostStatus(pgHost.UID)
-		if err != nil {
-			return gousuchi.InternalServerError(r, "Error loading host status: %s", err)
-		}
-
-		reHostStatuses[pgHost.UID] = reHostStatus
+	reCheckStatuses, err := c.cacheService.GetAllCheckStatuses()
+	if err != nil {
+		return gousuchi.InternalServerError(r, "Error loading check status: %s", err)
 	}
 
-	respData, err := c.mapPgHostV1ToAPIGetHostsV1ResponseBody(pgHosts, reHostStatuses)
+	reCheckStatusesByHost := map[string][]*model.ReCheckStatusV1{}
+	for _, reCheckStatus := range reCheckStatuses {
+		if reCheckStatusesByHost[reCheckStatus.HostUID] == nil {
+			reCheckStatusesByHost[reCheckStatus.HostUID] = []*model.ReCheckStatusV1{}
+		}
+
+		reCheckStatusesByHost[reCheckStatus.HostUID] = append(reCheckStatusesByHost[reCheckStatus.HostUID], reCheckStatus)
+	}
+
+	respData, err := c.mapPgHostV1ToAPIGetHostsV1ResponseBody(pgHosts, reCheckStatusesByHost)
 	if err != nil {
 		return gousuchi.InternalServerError(r, "Error mapping response: %s", err)
 	}

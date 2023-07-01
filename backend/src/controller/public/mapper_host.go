@@ -21,7 +21,7 @@ import (
 	"github.com/indece-official/monitor/backend/src/model"
 )
 
-func (c *Controller) mapReHostStatusV1ToAPIHostV1Status(reHostStatus *model.ReHostStatusV1) (*apipublic.HostV1Status, error) {
+func (c *Controller) mapReCheckStatusV1ToAPIHostV1Status(reCheckStatuses []*model.ReCheckStatusV1) (*apipublic.HostV1Status, error) {
 	apiHostStatus := &apipublic.HostV1Status{}
 
 	apiHostStatus.CountCritical = 0
@@ -29,27 +29,25 @@ func (c *Controller) mapReHostStatusV1ToAPIHostV1Status(reHostStatus *model.ReHo
 	apiHostStatus.CountOk = 0
 	apiHostStatus.CountUnknown = 0
 
-	if reHostStatus != nil {
-		for _, checkStatus := range reHostStatus.Checks {
-			switch checkStatus.Status {
-			case model.PgCheckStatusV1StatusCrit:
-				apiHostStatus.CountCritical++
-			case model.PgCheckStatusV1StatusWarn:
-				apiHostStatus.CountWarning++
-			case model.PgCheckStatusV1StatusOK:
-				apiHostStatus.CountOk++
-			case model.PgCheckStatusV1StatusUnkn:
-				apiHostStatus.CountUnknown++
-			default:
-				apiHostStatus.CountUnknown++
-			}
+	for _, reCheckStatus := range reCheckStatuses {
+		switch reCheckStatus.Status {
+		case model.PgCheckStatusV1StatusCrit:
+			apiHostStatus.CountCritical++
+		case model.PgCheckStatusV1StatusWarn:
+			apiHostStatus.CountWarning++
+		case model.PgCheckStatusV1StatusOK:
+			apiHostStatus.CountOk++
+		case model.PgCheckStatusV1StatusUnkn:
+			apiHostStatus.CountUnknown++
+		default:
+			apiHostStatus.CountUnknown++
 		}
 	}
 
 	return apiHostStatus, nil
 }
 
-func (c *Controller) mapPgHostV1ToAPIHostV1(pgHost *model.PgHostV1, reHostStatus *model.ReHostStatusV1) (*apipublic.HostV1, error) {
+func (c *Controller) mapPgHostV1ToAPIHostV1(pgHost *model.PgHostV1, reCheckStatuses []*model.ReCheckStatusV1) (*apipublic.HostV1, error) {
 	apiHost := &apipublic.HostV1{}
 
 	apiHost.Uid = pgHost.UID
@@ -65,7 +63,7 @@ func (c *Controller) mapPgHostV1ToAPIHostV1(pgHost *model.PgHostV1, reHostStatus
 		apiHost.Tags = append(apiHost.Tags, *apiTag)
 	}
 
-	apiHostStatus, err := c.mapReHostStatusV1ToAPIHostV1Status(reHostStatus)
+	apiHostStatus, err := c.mapReCheckStatusV1ToAPIHostV1Status(reCheckStatuses)
 	if err != nil {
 		return nil, err
 	}
@@ -75,13 +73,13 @@ func (c *Controller) mapPgHostV1ToAPIHostV1(pgHost *model.PgHostV1, reHostStatus
 	return apiHost, nil
 }
 
-func (c *Controller) mapPgHostV1ToAPIGetHostsV1ResponseBody(pgHosts []*model.PgHostV1, reHostStatuses map[string]*model.ReHostStatusV1) (*apipublic.V1GetHostsJSONResponseBody, error) {
+func (c *Controller) mapPgHostV1ToAPIGetHostsV1ResponseBody(pgHosts []*model.PgHostV1, reCheckStatuses map[string][]*model.ReCheckStatusV1) (*apipublic.V1GetHostsJSONResponseBody, error) {
 	resp := &apipublic.V1GetHostsJSONResponseBody{}
 
 	resp.Hosts = []apipublic.HostV1{}
 
 	for _, pgHost := range pgHosts {
-		apiHost, err := c.mapPgHostV1ToAPIHostV1(pgHost, reHostStatuses[pgHost.UID])
+		apiHost, err := c.mapPgHostV1ToAPIHostV1(pgHost, reCheckStatuses[pgHost.UID])
 		if err != nil {
 			return nil, err
 		}
@@ -92,10 +90,10 @@ func (c *Controller) mapPgHostV1ToAPIGetHostsV1ResponseBody(pgHosts []*model.PgH
 	return resp, nil
 }
 
-func (c *Controller) mapPgHostV1ToAPIGetHostV1ResponseBody(pgHost *model.PgHostV1, reHostStatus *model.ReHostStatusV1) (*apipublic.V1GetHostJSONResponseBody, error) {
+func (c *Controller) mapPgHostV1ToAPIGetHostV1ResponseBody(pgHost *model.PgHostV1, reCheckStatuses []*model.ReCheckStatusV1) (*apipublic.V1GetHostJSONResponseBody, error) {
 	resp := &apipublic.V1GetHostJSONResponseBody{}
 
-	apiHost, err := c.mapPgHostV1ToAPIHostV1(pgHost, reHostStatus)
+	apiHost, err := c.mapPgHostV1ToAPIHostV1(pgHost, reCheckStatuses)
 	if err != nil {
 		return nil, err
 	}

@@ -155,8 +155,7 @@ func (c *Controller) reload() error {
 	pgChecks, err := c.postgresService.GetChecks(
 		ctx,
 		&postgres.GetChecksFilter{
-			Disabled:    null.BoolFrom(false),
-			CountStatus: 1,
+			Disabled: null.BoolFrom(false),
 		},
 	)
 	if err != nil {
@@ -233,7 +232,7 @@ func (c *Controller) reload() error {
 	c.mutexNotifier.Lock()
 	defer c.mutexNotifier.Unlock()
 	defer c.mutexChecks.Unlock()
-	err = c.cacheService.DeleteAllHostStatuses()
+	err = c.cacheService.DeleteAllCheckStatuses()
 	if err != nil {
 		return fmt.Errorf("error clearing host statuses: %s", err)
 	}
@@ -255,19 +254,39 @@ func (c *Controller) reload() error {
 			continue
 		}
 
-		checkStatus := model.PgCheckStatusV1StatusUnkn
-		checkMessage := ""
-		if len(pgCheck.Statuses) > 0 {
-			checkStatus = pgCheck.Statuses[0].Status
-			checkMessage = pgCheck.Statuses[0].Message
+		pgCheckStatuses, err := c.postgresService.GetCheckStatuses(
+			ctx,
+			&postgres.GetCheckStatusesFilter{
+				CheckUID:    pgCheck.UID,
+				CountStatus: 1,
+			},
+		)
+		if err != nil {
+			c.log.Warnf("Error loading check statuses for check %s: %s", pgCheck.UID, err)
+
+			continue
 		}
 
-		err = c.cacheService.UpsertHostCheckStatus(
-			pgAgent.HostUID,
-			&model.ReHostStatusV1Check{
-				CheckUID: pgCheck.UID,
-				Status:   checkStatus,
-				Message:  checkMessage,
+		checkStatusUID := ""
+		checkStatus := model.PgCheckStatusV1StatusUnkn
+		checkMessage := ""
+		checkDatetimeCreated := time.Now()
+		if len(pgCheckStatuses) > 0 {
+			checkStatusUID = pgCheckStatuses[0].UID
+			checkStatus = pgCheckStatuses[0].Status
+			checkMessage = pgCheckStatuses[0].Message
+			checkDatetimeCreated = pgCheckStatuses[0].DatetimeCreated
+		}
+
+		err = c.cacheService.SetCheckStatus(
+			pgCheck.UID,
+			&model.ReCheckStatusV1{
+				CheckStatusUID:  checkStatusUID,
+				CheckUID:        pgCheck.UID,
+				HostUID:         pgAgent.HostUID,
+				Status:          checkStatus,
+				Message:         checkMessage,
+				DatetimeCreated: checkDatetimeCreated,
 			},
 		)
 		if err != nil {

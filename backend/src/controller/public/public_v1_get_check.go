@@ -51,7 +51,12 @@ func (c *Controller) reqV1GetCheck(w http.ResponseWriter, r *http.Request) gousu
 
 	pgCheck := pgChecks[0]
 
-	respData, err := c.mapPgCheckV1ToAPIGetCheckV1ResponseBody(pgCheck)
+	reCheckStatus, err := c.cacheService.GetCheckStatus(pgCheck.UID)
+	if err != nil {
+		return gousuchi.InternalServerError(r, "Error loading check status: %s", err)
+	}
+
+	respData, err := c.mapPgCheckV1ToAPIGetCheckV1ResponseBody(pgCheck, reCheckStatus)
 	if err != nil {
 		return gousuchi.InternalServerError(r, "Error mapping response: %s", err)
 	}

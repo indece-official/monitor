@@ -41,8 +41,7 @@ func (c *Controller) getHostStats(
 	pgChecks, err := c.postgresService.GetChecks(
 		ctx,
 		&postgres.GetChecksFilter{
-			HostUID:     null.StringFrom(hostUID),
-			CountStatus: 1,
+			HostUID: null.StringFrom(hostUID),
 		},
 	)
 	if err != nil {
@@ -52,13 +51,18 @@ func (c *Controller) getHostStats(
 	hostStats := &HostStats{}
 
 	for _, pgCheck := range pgChecks {
-		if len(pgCheck.Statuses) == 0 {
+		reCheckStatus, err := c.cacheService.GetCheckStatus(pgCheck.UID)
+		if err != nil {
+			return nil, fmt.Errorf("error loading check status for host: %s", err)
+		}
+
+		if reCheckStatus == nil {
 			hostStats.CountUnknown++
 
 			continue
 		}
 
-		switch pgCheck.Statuses[0].Status {
+		switch reCheckStatus.Status {
 		case model.PgCheckStatusV1StatusCrit:
 			hostStats.CountCritical++
 		case model.PgCheckStatusV1StatusWarn:
@@ -85,8 +89,7 @@ func (c *Controller) addCheckStatus(
 	pgChecks, err := c.postgresService.GetChecks(
 		ctx,
 		&postgres.GetChecksFilter{
-			CheckUID:    null.StringFrom(checkUID),
-			CountStatus: 1,
+			CheckUID: null.StringFrom(checkUID),
 		},
 	)
 	if err != nil {
@@ -269,9 +272,15 @@ func (c *Controller) addCheckStatus(
 	}
 
 	notify := false
+
+	currReCheckStatus, err := c.cacheService.GetCheckStatus(pgCheck.UID)
+	if err != nil {
+		return fmt.Errorf("error loading check status for host: %s", err)
+	}
+
 	prevStatus := model.PgCheckStatusV1StatusUnkn
-	if len(pgCheck.Statuses) > 0 {
-		prevStatus = pgCheck.Statuses[0].Status
+	if currReCheckStatus != nil {
+		prevStatus = currReCheckStatus.Status
 	}
 
 	if pgCheckStatus.Status != prevStatus {
@@ -283,12 +292,15 @@ func (c *Controller) addCheckStatus(
 		return fmt.Errorf("error adding check status: %s", err)
 	}
 
-	err = c.cacheService.UpsertHostCheckStatus(
-		pgAgent.HostUID,
-		&model.ReHostStatusV1Check{
-			CheckUID: pgCheck.UID,
-			Status:   pgCheckStatus.Status,
-			Message:  pgCheckStatus.Message,
+	err = c.cacheService.SetCheckStatus(
+		pgCheck.UID,
+		&model.ReCheckStatusV1{
+			CheckStatusUID:  pgCheckStatus.UID,
+			CheckUID:        pgCheck.UID,
+			HostUID:         pgAgent.HostUID,
+			Status:          pgCheckStatus.Status,
+			Message:         pgCheckStatus.Message,
+			DatetimeCreated: pgCheckStatus.DatetimeCreated,
 		},
 	)
 	if err != nil {

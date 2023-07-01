@@ -27,12 +27,11 @@ import (
 )
 
 type GetChecksFilter struct {
-	CheckUID    null.String
-	CheckerUID  null.String
-	Type        null.String
-	HostUID     null.String
-	Disabled    null.Bool
-	CountStatus int
+	CheckUID   null.String
+	CheckerUID null.String
+	Type       null.String
+	HostUID    null.String
+	Disabled   null.Bool
 }
 
 func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*model.PgCheckV1, error) {
@@ -43,9 +42,6 @@ func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*m
 
 	conditions := []string{}
 	conditionParams := []interface{}{}
-
-	limitStatus := fmt.Sprintf("LIMIT $%d", len(conditionParams)+1)
-	conditionParams = append(conditionParams, filter.CountStatus)
 
 	conditions = append(conditions, "mo_check_v1.datetime_deleted IS NULL")
 
@@ -97,25 +93,8 @@ func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*m
 			mo_check_v1.schedule,
 			mo_check_v1.config,
 			mo_check_v1.custom,
-			mo_check_v1.datetime_disabled,
-			mo_checkstatus_v1.uid,
-			mo_checkstatus_v1.check_uid,
-			mo_checkstatus_v1.status,
-			mo_checkstatus_v1.message,
-			mo_checkstatus_v1.data,
-			mo_checkstatus_v1.datetime_created
+			mo_check_v1.datetime_disabled
 		FROM mo_check_v1
-		LEFT JOIN mo_checkstatus_v1 ON
-			mo_checkstatus_v1.check_uid = mo_check_v1.uid AND
-			mo_checkstatus_v1.datetime_created = ANY(
-				SELECT
-					mo_checkstatus_v1.datetime_created
-				FROM mo_checkstatus_v1
-				WHERE
-					mo_checkstatus_v1.check_uid = mo_check_v1.uid
-				ORDER BY mo_checkstatus_v1.datetime_created DESC
-				`+limitStatus+`
-			)
 		WHERE `+strings.Join(conditions, " AND ")+`
 		ORDER BY mo_check_v1.name ASC`,
 		conditionParams...,
@@ -126,18 +105,11 @@ func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*m
 	defer rows.Close()
 
 	pgChecks := []*model.PgCheckV1{}
-	var pgLastCheck *model.PgCheckV1
 
 	for rows.Next() {
 		pgCheck := &model.PgCheckV1{}
 		pgCheck.Config = &model.PgCheckV1Config{}
 		configJSON := []byte{}
-		pgCheckStatusUID := null.String{}
-		pgCheckStatusCheckUID := null.String{}
-		pgCheckStatusStatus := null.String{}
-		pgCheckStatusMessage := null.String{}
-		checkStatusDataJSON := []byte{}
-		pgCheckStatusDatetimeCreated := null.Time{}
 
 		err = rows.Scan(
 			&pgCheck.UID,
@@ -148,12 +120,6 @@ func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*m
 			&configJSON,
 			&pgCheck.Custom,
 			&pgCheck.DatetimeDisabled,
-			&pgCheckStatusUID,
-			&pgCheckStatusCheckUID,
-			&pgCheckStatusStatus,
-			&pgCheckStatusMessage,
-			&checkStatusDataJSON,
-			&pgCheckStatusDatetimeCreated,
 		)
 		if err != nil {
 			return nil, err
@@ -164,28 +130,7 @@ func (s *Service) GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*m
 			return nil, fmt.Errorf("can't decode config for check %s: %s", pgCheck.UID, err)
 		}
 
-		if pgLastCheck == nil || pgLastCheck.UID != pgCheck.UID {
-			pgChecks = append(pgChecks, pgCheck)
-			pgLastCheck = pgCheck
-		}
-
-		if pgCheckStatusUID.Valid {
-			pgCheckStatus := &model.PgCheckStatusV1{}
-
-			pgCheckStatus.UID = pgCheckStatusUID.String
-			pgCheckStatus.CheckUID = pgCheckStatusCheckUID.String
-			pgCheckStatus.Status = model.PgCheckStatusV1Status(pgCheckStatusStatus.String)
-			pgCheckStatus.Message = pgCheckStatusMessage.String
-			pgCheckStatus.Data = map[string]interface{}{}
-			err = json.Unmarshal(checkStatusDataJSON, &pgCheckStatus.Data)
-			if err != nil {
-				return nil, fmt.Errorf("can't decode data for check status %s: %s", pgCheckStatus.UID, err)
-			}
-
-			pgCheckStatus.DatetimeCreated = pgCheckStatusDatetimeCreated.Time
-
-			pgLastCheck.Statuses = append(pgLastCheck.Statuses, pgCheckStatus)
-		}
+		pgChecks = append(pgChecks, pgCheck)
 	}
 
 	return pgChecks, nil

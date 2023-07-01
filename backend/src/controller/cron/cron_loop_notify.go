@@ -33,14 +33,14 @@ func (c *Controller) sendNotifications(
 			return fmt.Errorf("error loading check: %s", err)
 		}
 
-		reHostStatusCheck, err := c.cacheService.GetHostCheckStatus(change.HostUID, pgCheck.UID)
+		reCheckStatus, err := c.cacheService.GetCheckStatus(pgCheck.UID)
 		if err != nil {
 			c.log.Warnf("Error loading host status check: %s", err)
 
 			continue
 		}
 
-		if reHostStatusCheck == nil {
+		if reCheckStatus == nil {
 			c.log.Warnf("Error no host status check found")
 
 			continue
@@ -48,8 +48,8 @@ func (c *Controller) sendNotifications(
 
 		templateParamChecks = append(templateParamChecks, map[string]string{
 			"check_name":          pgCheck.Name,
-			"checkstatus_status":  string(reHostStatusCheck.Status),
-			"checkstatus_message": reHostStatusCheck.Message,
+			"checkstatus_status":  string(reCheckStatus.Status),
+			"checkstatus_message": reCheckStatus.Message,
 		})
 	}
 
@@ -233,21 +233,21 @@ func (c *Controller) notify(ctx context.Context) error {
 			return fmt.Errorf("error deleting sent notification: %s", err)
 		}
 
-		reHostStatusCheck, err := c.cacheService.GetHostCheckStatus(reNotification.HostUID, reNotification.CheckUID)
+		reCheckStatus, err := c.cacheService.GetCheckStatus(reNotification.CheckUID)
 		if err != nil {
 			c.log.Warnf("Error loading host status: %s", err)
 
 			continue
 		}
 
-		if reHostStatusCheck == nil {
+		if reCheckStatus == nil {
 			c.log.Warnf("Error no host status found: %s", err)
 
 			continue
 		}
 
 		for _, pgFilter := range matchingPgFilters {
-			if c.filterStatus(pgFilter, reNotification.PreviousStatus, reHostStatusCheck.Status) {
+			if c.filterStatus(pgFilter, reNotification.PreviousStatus, reCheckStatus.Status) {
 				relevantReNotifications = append(relevantReNotifications, reNotification)
 				break
 			}

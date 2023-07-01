@@ -23,7 +23,7 @@ import (
 	"github.com/indece-official/monitor/backend/src/model"
 )
 
-func (c *Controller) mapPgCheckV1ToAPICheckV1(pgCheck *model.PgCheckV1, addParams bool) (*apipublic.CheckV1, error) {
+func (c *Controller) mapPgCheckV1ToAPICheckV1(pgCheck *model.PgCheckV1, reCheckStatus *model.ReCheckStatusV1, addParams bool) (*apipublic.CheckV1, error) {
 	var err error
 
 	apiCheck := &apipublic.CheckV1{}
@@ -50,8 +50,8 @@ func (c *Controller) mapPgCheckV1ToAPICheckV1(pgCheck *model.PgCheckV1, addParam
 		apiCheck.Params = &apiCheckParams
 	}
 
-	if len(pgCheck.Statuses) > 0 {
-		apiCheck.Status, err = c.mapPgCheckStatusV1ToAPICheckStatusV1(pgCheck.Statuses[0])
+	if reCheckStatus != nil {
+		apiCheck.Status, err = c.mapReCheckStatusV1ToAPICheckStatusV1(reCheckStatus)
 		if err != nil {
 			return nil, fmt.Errorf("error mapping check status: %s", err)
 		}
@@ -60,13 +60,13 @@ func (c *Controller) mapPgCheckV1ToAPICheckV1(pgCheck *model.PgCheckV1, addParam
 	return apiCheck, nil
 }
 
-func (c *Controller) mapPgCheckV1ToAPIGetChecksV1ResponseBody(pgChecks []*model.PgCheckV1) (*apipublic.V1GetChecksJSONResponseBody, error) {
+func (c *Controller) mapPgCheckV1ToAPIGetChecksV1ResponseBody(pgChecks []*model.PgCheckV1, reCheckStatuses map[string]*model.ReCheckStatusV1) (*apipublic.V1GetChecksJSONResponseBody, error) {
 	resp := &apipublic.V1GetChecksJSONResponseBody{}
 
 	resp.Checks = []apipublic.CheckV1{}
 
 	for _, pgCheck := range pgChecks {
-		apiCheck, err := c.mapPgCheckV1ToAPICheckV1(pgCheck, false)
+		apiCheck, err := c.mapPgCheckV1ToAPICheckV1(pgCheck, reCheckStatuses[pgCheck.UID], false)
 		if err != nil {
 			return nil, err
 		}
@@ -77,13 +77,13 @@ func (c *Controller) mapPgCheckV1ToAPIGetChecksV1ResponseBody(pgChecks []*model.
 	return resp, nil
 }
 
-func (c *Controller) mapPgCheckV1ToAPIGetHostChecksV1ResponseBody(pgChecks []*model.PgCheckV1) (*apipublic.V1GetHostChecksJSONResponseBody, error) {
+func (c *Controller) mapPgCheckV1ToAPIGetHostChecksV1ResponseBody(pgChecks []*model.PgCheckV1, reCheckStatuses map[string]*model.ReCheckStatusV1) (*apipublic.V1GetHostChecksJSONResponseBody, error) {
 	resp := &apipublic.V1GetHostChecksJSONResponseBody{}
 
 	resp.Checks = []apipublic.CheckV1{}
 
 	for _, pgCheck := range pgChecks {
-		apiCheck, err := c.mapPgCheckV1ToAPICheckV1(pgCheck, false)
+		apiCheck, err := c.mapPgCheckV1ToAPICheckV1(pgCheck, reCheckStatuses[pgCheck.UID], false)
 		if err != nil {
 			return nil, err
 		}
@@ -94,10 +94,10 @@ func (c *Controller) mapPgCheckV1ToAPIGetHostChecksV1ResponseBody(pgChecks []*mo
 	return resp, nil
 }
 
-func (c *Controller) mapPgCheckV1ToAPIGetCheckV1ResponseBody(pgCheck *model.PgCheckV1) (*apipublic.V1GetCheckJSONResponseBody, error) {
+func (c *Controller) mapPgCheckV1ToAPIGetCheckV1ResponseBody(pgCheck *model.PgCheckV1, reCheckStatus *model.ReCheckStatusV1) (*apipublic.V1GetCheckJSONResponseBody, error) {
 	resp := &apipublic.V1GetCheckJSONResponseBody{}
 
-	apiCheck, err := c.mapPgCheckV1ToAPICheckV1(pgCheck, true)
+	apiCheck, err := c.mapPgCheckV1ToAPICheckV1(pgCheck, reCheckStatus, true)
 	if err != nil {
 		return nil, err
 	}

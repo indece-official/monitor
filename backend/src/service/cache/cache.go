@@ -46,11 +46,11 @@ type IService interface {
 	GetAgentStatus(agentUID string) (*model.ReAgentStatusV1, error)
 	DeleteAgentStatus(agentUID string) error
 
-	UpsertHostCheckStatus(hostUID string, reStatusCheck *model.ReHostStatusV1Check) error
-	GetHostStatus(hostUID string) (*model.ReHostStatusV1, error)
-	GetHostCheckStatus(hostUID string, checkUID string) (*model.ReHostStatusV1Check, error)
-	DeleteHostStatus(hostUID string) error
-	DeleteAllHostStatuses() error
+	SetCheckStatus(checkUID string, reStatus *model.ReCheckStatusV1) error
+	GetCheckStatus(checkUID string) (*model.ReCheckStatusV1, error)
+	GetAllCheckStatuses() ([]*model.ReCheckStatusV1, error)
+	DeleteCheckStatus(checkUID string) error
+	DeleteAllCheckStatuses() error
 
 	SubscribeForSystemEvents() (chan *model.ReSystemEventV1, *Subscription, error)
 	PublishSystemEvent(reSystemEvent *model.ReSystemEventV1) error
@@ -74,13 +74,13 @@ type Service struct {
 	openAgentActions     map[string]map[string]*model.ReAgentActionV1
 	agentEvents          map[string]chan *model.ReAgentEventV1
 	agentStatus          map[string]*model.ReAgentStatusV1
-	hostStatus           map[string]*model.ReHostStatusV1
+	checkStatus          map[string]*model.ReCheckStatusV1
 	systemEvents         map[string]chan *model.ReSystemEventV1
 	userSessions         map[string]*model.ReUserSessionV1
 	notifications        map[string]*model.ReNotificationV1
 	mutexOpenAgentAction sync.Mutex
 	mutexAgentStatus     sync.Mutex
-	mutexHostStatus      sync.Mutex
+	mutexCheckStatus     sync.Mutex
 	mutexNotifications   sync.Mutex
 	setupToken           *SetupToken
 }
@@ -110,7 +110,7 @@ func NewService(ctx gousu.IContext) gousu.IService {
 		openAgentActions: map[string]map[string]*model.ReAgentActionV1{},
 		agentEvents:      map[string]chan *model.ReAgentEventV1{},
 		agentStatus:      map[string]*model.ReAgentStatusV1{},
-		hostStatus:       map[string]*model.ReHostStatusV1{},
+		checkStatus:      map[string]*model.ReCheckStatusV1{},
 		systemEvents:     map[string]chan *model.ReSystemEventV1{},
 		userSessions:     map[string]*model.ReUserSessionV1{},
 		notifications:    map[string]*model.ReNotificationV1{},

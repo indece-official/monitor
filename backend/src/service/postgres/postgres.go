@@ -64,6 +64,7 @@ type IService interface {
 	GetChecks(qctx context.Context, filter *GetChecksFilter) ([]*model.PgCheckV1, error)
 
 	AddCheckStatus(qctx context.Context, pgCheckStatus *model.PgCheckStatusV1) error
+	GetCheckStatuses(qctx context.Context, filter *GetCheckStatusesFilter) ([]*model.PgCheckStatusV1, error)
 
 	AddTag(qctx context.Context, pgTag *model.PgTagV1) error
 	UpdateTag(qctx context.Context, tagUID string, pgTag *model.PgTagV1) error

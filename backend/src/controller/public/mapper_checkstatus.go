@@ -38,18 +38,18 @@ func (c *Controller) mapPgCheckStatusV1StatusToAPICheckStatusV1Status(pgCheckSta
 	}
 }
 
-func (c *Controller) mapPgCheckStatusV1ToAPICheckStatusV1(pgCheckStatus *model.PgCheckStatusV1) (*apipublic.CheckStatusV1, error) {
+func (c *Controller) mapReCheckStatusV1ToAPICheckStatusV1(reCheckStatus *model.ReCheckStatusV1) (*apipublic.CheckStatusV1, error) {
 	var err error
 
 	apiCheckStatus := &apipublic.CheckStatusV1{}
 
-	apiCheckStatus.Uid = pgCheckStatus.UID
-	apiCheckStatus.Status, err = c.mapPgCheckStatusV1StatusToAPICheckStatusV1Status(pgCheckStatus.Status)
+	apiCheckStatus.Uid = reCheckStatus.CheckStatusUID
+	apiCheckStatus.Status, err = c.mapPgCheckStatusV1StatusToAPICheckStatusV1Status(reCheckStatus.Status)
 	if err != nil {
 		return nil, fmt.Errorf("error mapping source: %s", err)
 	}
-	apiCheckStatus.Message = pgCheckStatus.Message
-	apiCheckStatus.DatetimeCreated = pgCheckStatus.DatetimeCreated
+	apiCheckStatus.Message = reCheckStatus.Message
+	apiCheckStatus.DatetimeCreated = reCheckStatus.DatetimeCreated
 
 	return apiCheckStatus, nil
 }

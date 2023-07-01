@@ -37,6 +37,4 @@ type PgCheckV1 struct {
 	Config           *PgCheckV1Config
 	Custom           bool
 	DatetimeDisabled null.Time
-
-	Statuses []*PgCheckStatusV1
 }

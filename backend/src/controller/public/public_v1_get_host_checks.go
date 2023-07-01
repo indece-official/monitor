@@ -20,6 +20,7 @@ import (
 	"net/http"
 
 	"github.com/indece-official/go-gousu/gousuchi/v2"
+	"github.com/indece-official/monitor/backend/src/model"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
 	"gopkg.in/guregu/null.v4"
 )
@@ -38,15 +39,26 @@ func (c *Controller) reqV1GetHostChecks(w http.ResponseWriter, r *http.Request) 
 	pgChecks, err := c.postgresService.GetChecks(
 		r.Context(),
 		&postgres.GetChecksFilter{
-			HostUID:     null.StringFrom(hostUID),
-			CountStatus: 1,
+			HostUID: null.StringFrom(hostUID),
 		},
 	)
 	if err != nil {
 		return gousuchi.InternalServerError(r, "Error loading checks: %s", err)
 	}
 
-	respData, err := c.mapPgCheckV1ToAPIGetHostChecksV1ResponseBody(pgChecks)
+	reCheckStatuses := map[string]*model.ReCheckStatusV1{}
+	for _, pgCheck := range pgChecks {
+		reCheckStatus, err := c.cacheService.GetCheckStatus(pgCheck.UID)
+		if err != nil {
+			return gousuchi.InternalServerError(r, "Error loading check status: %s", err)
+		}
+
+		if reCheckStatus != nil {
+			reCheckStatuses[pgCheck.UID] = reCheckStatus
+		}
+	}
+
+	respData, err := c.mapPgCheckV1ToAPIGetHostChecksV1ResponseBody(pgChecks, reCheckStatuses)
 	if err != nil {
 		return gousuchi.InternalServerError(r, "Error mapping response: %s", err)
 	}
