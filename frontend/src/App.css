@@ -16,9 +16,9 @@
   flex-basis: 0;
   flex-shrink: 1;
   text-align: left;
-  padding: 10px 20px;
   position: relative;
   overflow: hidden;
+  min-height: 100vh;
 }
 
 .App-content-main a {

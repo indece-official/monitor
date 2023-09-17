@@ -101,27 +101,26 @@ export class AddTagStartStep extends React.Component<AddTagStartStepProps, AddTa
                     initialValues={this.state.initialFormData}
                     onSubmit={this._submit}
                     enableReinitialize={true}>
-                    {({ values }) => (
-                        <Form>
-                            <InputText
-                                name='name'
-                                label='Name'
-                                required={true}
-                            />
-                           
-                            <InputText
-                                name='color'
-                                label='Color'
-                                required={true}
-                            />
+                    <Form>
+                        <InputText
+                            name='name'
+                            label='Name'
+                            required={true}
+                        />
+                        
+                        <InputText
+                            name='color'
+                            type='color'
+                            label='Color'
+                            required={true}
+                        />
 
-                            <Button
-                                type='submit'
-                                disabled={this.state.loading}>
-                                Create
-                            </Button>
-                        </Form>
-                    )}
+                        <Button
+                            type='submit'
+                            disabled={this.state.loading}>
+                            Create
+                        </Button>
+                    </Form>
                 </Formik>
 
                 <Spinner active={this.state.loading} />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { AddHostStartStep } from './AddHostStartStep/AddHostStartStep';
 import { AddHostSuccessStep } from './AddHostSuccessStep/AddHostSuccessStep';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface AddHostPageProps
@@ -49,7 +50,7 @@ export class AddHostPage extends React.Component<AddHostPageProps, AddHostPageSt
     public render ( )
     {
         return (
-            <div className='AddHostPage'>
+            <PageContent>
                 {this.state.step === AddHostStep.Start ?
                     <AddHostStartStep
                         onFinish={this._finishStart}
@@ -61,7 +62,7 @@ export class AddHostPage extends React.Component<AddHostPageProps, AddHostPageSt
                         hostUID={this.state.hostUID}
                     />
                 : null}
-            </div>
+            </PageContent>
         );
     }
 }

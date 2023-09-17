@@ -143,7 +143,7 @@ export class SideNav extends React.Component<SideNavProps, SideNavState>
                         
                         {this.state.user && !Environment.setup.enabled?
                             <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('dashboard')}>Dashboard</Link>
+                                <Link to={LinkUtils.make()}>Dashboard</Link>
                             </div>
                         : null}
                         

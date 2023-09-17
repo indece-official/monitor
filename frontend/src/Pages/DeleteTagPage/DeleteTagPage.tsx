@@ -5,6 +5,9 @@ import { Button } from '../../Components/Button/Button';
 import { Spinner } from '../../Components/Spinner/Spinner';
 import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { sleep } from 'ts-delay';
+import { LinkUtils } from '../../utils/LinkUtils';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface DeleteTagPageRouteParams
@@ -97,6 +100,10 @@ class $DeleteTagPage extends React.Component<DeleteTagPageProps, DeleteTagPageSt
                 loading:    false,
                 success:    'The tag was successfully deleted.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(LinkUtils.make('tags'));
         }
         catch ( err )
         {
@@ -119,7 +126,7 @@ class $DeleteTagPage extends React.Component<DeleteTagPageProps, DeleteTagPageSt
     public render ( )
     {
         return (
-            <div className='AddTagStartStep'>
+            <PageContent>
                 <h1>Delete tag</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -135,7 +142,7 @@ class $DeleteTagPage extends React.Component<DeleteTagPageProps, DeleteTagPageSt
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

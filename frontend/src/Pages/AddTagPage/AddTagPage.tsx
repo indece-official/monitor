@@ -1,6 +1,7 @@
 import React from 'react';
 import { AddTagStartStep } from './AddTagStartStep/AddTagStartStep';
 import { AddTagSuccessStep } from './AddTagSuccessStep/AddTagSuccessStep';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface AddTagPageProps
@@ -49,7 +50,7 @@ export class AddTagPage extends React.Component<AddTagPageProps, AddTagPageState
     public render ( )
     {
         return (
-            <div className='AddTagPage'>
+            <PageContent>
                 {this.state.step === AddTagStep.Start ?
                     <AddTagStartStep
                         onFinish={this._finishStart}
@@ -61,7 +62,7 @@ export class AddTagPage extends React.Component<AddTagPageProps, AddTagPageState
                         tagUID={this.state.tagUID}
                     />
                 : null}
-            </div>
+            </PageContent>
         );
     }
 }

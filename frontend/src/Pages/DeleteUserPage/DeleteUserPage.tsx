@@ -5,6 +5,9 @@ import { Button } from '../../Components/Button/Button';
 import { Spinner } from '../../Components/Spinner/Spinner';
 import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { sleep } from 'ts-delay';
+import { LinkUtils } from '../../utils/LinkUtils';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface DeleteUserPageRouteParams
@@ -97,6 +100,10 @@ class $DeleteUserPage extends React.Component<DeleteUserPageProps, DeleteUserPag
                 loading:    false,
                 success:    'The user was successfully deleted.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(LinkUtils.make('users'));
         }
         catch ( err )
         {
@@ -119,7 +126,7 @@ class $DeleteUserPage extends React.Component<DeleteUserPageProps, DeleteUserPag
     public render ( )
     {
         return (
-            <div className='AddUserStartStep'>
+            <PageContent>
                 <h1>Delete user</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -135,7 +142,7 @@ class $DeleteUserPage extends React.Component<DeleteUserPageProps, DeleteUserPag
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

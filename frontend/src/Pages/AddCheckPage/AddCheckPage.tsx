@@ -2,6 +2,7 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 import { AddCheckStartStep } from './AddCheckStartStep/AddCheckStartStep';
 import { AddCheckSuccessStep } from './AddCheckSuccessStep/AddCheckSuccessStep';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 
@@ -42,6 +43,7 @@ class $AddCheckPage extends React.Component<AddCheckPageProps, AddCheckPageState
         };
 
         this._finishStart = this._finishStart.bind(this);
+        this._addOther = this._addOther.bind(this);
     }
 
 
@@ -54,10 +56,19 @@ class $AddCheckPage extends React.Component<AddCheckPageProps, AddCheckPageState
     }
 
 
+    private _addOther ( ): void
+    {
+        this.setState({
+            step:       AddCheckStep.Start,
+            checkUID:   null
+        });
+    }
+
+
     public render ( )
     {
         return (
-            <div className='AddCheckPage'>
+            <PageContent>
                 {this.state.step === AddCheckStep.Start ?
                     <AddCheckStartStep
                         onFinish={this._finishStart}
@@ -67,10 +78,12 @@ class $AddCheckPage extends React.Component<AddCheckPageProps, AddCheckPageState
                 
                 {this.state.step === AddCheckStep.Success && this.state.checkUID ?
                     <AddCheckSuccessStep
+                        hostUID={this.props.router.params.hostUID}
                         checkUID={this.state.checkUID}
+                        onAddOther={this._addOther}
                     />
                 : null}
-            </div>
+            </PageContent>
         );
     }
 }

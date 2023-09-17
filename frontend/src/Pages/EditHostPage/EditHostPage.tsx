@@ -9,6 +9,8 @@ import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 import { TagService, TagV1 } from '../../Services/TagService';
 import { InputMultiSelect } from '../../Components/Input/InputMultiSelect';
+import { PageContent } from '../../Components/PageContent/PageContent';
+import { sleep } from 'ts-delay';
 
 
 export interface EditHostPageRouteParams
@@ -129,6 +131,10 @@ class $EditHostPage extends React.Component<EditHostPageProps, EditHostPageState
                 loading:    false,
                 success:    'The host was successfully updated.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(-1);
         }
         catch ( err )
         {
@@ -151,7 +157,7 @@ class $EditHostPage extends React.Component<EditHostPageProps, EditHostPageState
     public render ( )
     {
         return (
-            <div className='AddHostStartStep'>
+            <PageContent>
                 <h1>Edit host</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -187,7 +193,7 @@ class $EditHostPage extends React.Component<EditHostPageProps, EditHostPageState
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

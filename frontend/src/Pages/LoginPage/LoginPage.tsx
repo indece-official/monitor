@@ -6,6 +6,11 @@ import { InputText } from '../../Components/Input/InputText';
 import { Button } from '../../Components/Button/Button';
 import { Spinner } from '../../Components/Spinner/Spinner';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { PageContent, PageContentSize } from '../../Components/PageContent/PageContent';
+import { Box } from '../../Components/Box/Box';
+
+import './LoginPage.css';
+import { LinkUtils } from '../../utils/LinkUtils';
 
 
 export interface LoginPageProps extends RouteComponentProps
@@ -75,7 +80,7 @@ class $LoginPage extends React.Component<LoginPageProps, LoginPageState>
                 loading:    false
             });
 
-            this.props.router.navigate('/dashboard');
+            this.props.router.navigate(LinkUtils.make());
         }
         catch ( err )
         {
@@ -92,39 +97,44 @@ class $LoginPage extends React.Component<LoginPageProps, LoginPageState>
     public render ( )
     {
         return (
-            <div className='LoginPage'>
-                <h1>Login</h1>
+            <PageContent
+                size={PageContentSize.Small}
+                centered={true}
+                className='LoginPage'>
+                <Box className='LoginPage-login'>
+                    <h1>Login</h1>
 
-                <ErrorBox error={this.state.error} />
+                    <ErrorBox error={this.state.error} />
 
-                <Formik
-                    initialValues={this.state.initialFormData}
-                    onSubmit={this._submit}
-                    enableReinitialize={true}>
-                    <Form>
-                        <InputText
-                            name='username'
-                            label='Username'
-                            required={true}
-                        />
+                    <Formik
+                        initialValues={this.state.initialFormData}
+                        onSubmit={this._submit}
+                        enableReinitialize={true}>
+                        <Form>
+                            <InputText
+                                name='username'
+                                label='Username'
+                                required={true}
+                            />
 
-                        <InputText
-                            name='password'
-                            label='Password'
-                            type='password'
-                            required={true}
-                        />
+                            <InputText
+                                name='password'
+                                label='Password'
+                                type='password'
+                                required={true}
+                            />
 
-                        <Button
-                            type='submit'
-                            disabled={this.state.loading}>
-                            Login
-                        </Button>
-                    </Form>
-                </Formik>
+                            <Button
+                                type='submit'
+                                disabled={this.state.loading}>
+                                Login
+                            </Button>
+                        </Form>
+                    </Formik>
+                </Box>
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

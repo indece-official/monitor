@@ -5,6 +5,7 @@ import { AddNotifierV1Request, NotifierV1ConfigParams, NotifierV1Filter, Notifie
 import { AddNotifierCreateStep } from './AddNotifierCreateStep/AddNotifierCreateStep';
 import { AddNotifierFiltersStep } from './AddNotifierFiltersStep/AddNotifierFiltersStep';
 import { AddNotifierParamsStep } from './AddNotifierParamsStep/AddNotifierParamsStep';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface AddNotifierPageProps
@@ -103,7 +104,7 @@ export class AddNotifierPage extends React.Component<AddNotifierPageProps, AddNo
     public render ( )
     {
         return (
-            <div className='AddNotifierPage'>
+            <PageContent>
                 {this.state.step === AddNotifierStep.NameType ?
                     <AddNotifierNameTypeStep
                         onFinish={this._finishNameType}
@@ -135,7 +136,7 @@ export class AddNotifierPage extends React.Component<AddNotifierPageProps, AddNo
                         notifierUID={this.state.notifierUID}
                     />
                 : null}
-            </div>
+            </PageContent>
         );
     }
 }

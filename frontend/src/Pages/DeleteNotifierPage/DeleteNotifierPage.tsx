@@ -5,6 +5,9 @@ import { Button } from '../../Components/Button/Button';
 import { Spinner } from '../../Components/Spinner/Spinner';
 import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { sleep } from 'ts-delay';
+import { LinkUtils } from '../../utils/LinkUtils';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface DeleteNotifierPageRouteParams
@@ -97,6 +100,10 @@ class $DeleteNotifierPage extends React.Component<DeleteNotifierPageProps, Delet
                 loading:    false,
                 success:    'The notifier was successfully deleted.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(LinkUtils.make('notifiers'));
         }
         catch ( err )
         {
@@ -119,7 +126,7 @@ class $DeleteNotifierPage extends React.Component<DeleteNotifierPageProps, Delet
     public render ( )
     {
         return (
-            <div className='AddNotifierStartStep'>
+            <PageContent>
                 <h1>Delete notifier</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -135,7 +142,7 @@ class $DeleteNotifierPage extends React.Component<DeleteNotifierPageProps, Delet
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

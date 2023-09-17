@@ -5,6 +5,9 @@ import { Button } from '../../Components/Button/Button';
 import { Spinner } from '../../Components/Spinner/Spinner';
 import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { sleep } from 'ts-delay';
+import { LinkUtils } from '../../utils/LinkUtils';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface DeleteHostPageRouteParams
@@ -20,7 +23,7 @@ export interface DeleteHostPageProps extends RouteComponentProps<DeleteHostPageR
 
 interface DeleteHostPageState
 {
-    host:   HostV1 | null;
+    host:       HostV1 | null;
     loading:    boolean;
     error:      Error | null;
     success:    string | null;
@@ -37,7 +40,7 @@ class $DeleteHostPage extends React.Component<DeleteHostPageProps, DeleteHostPag
         super(props);
 
         this.state = {
-            host:   null,
+            host:       null,
             loading:    false,
             error:      null,
             success:    null
@@ -97,6 +100,10 @@ class $DeleteHostPage extends React.Component<DeleteHostPageProps, DeleteHostPag
                 loading:    false,
                 success:    'The host was successfully deleted.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(LinkUtils.make('hosts'));
         }
         catch ( err )
         {
@@ -119,7 +126,7 @@ class $DeleteHostPage extends React.Component<DeleteHostPageProps, DeleteHostPag
     public render ( )
     {
         return (
-            <div className='DeleteHostPage'>
+            <PageContent>
                 <h1>Delete host</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -135,7 +142,7 @@ class $DeleteHostPage extends React.Component<DeleteHostPageProps, DeleteHostPag
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

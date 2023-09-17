@@ -13,6 +13,7 @@ import { ListItemHeader } from '../../Components/List/ListItemHeader';
 import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
 import { Formatter } from '../../utils/Formatter';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface UsersPageProps
@@ -22,7 +23,7 @@ export interface UsersPageProps
 
 interface UsersPageState
 {
-    users:  Array<UserV1>;
+    users:      Array<UserV1>;
     loading:    boolean;
     error:      Error | null;
 }
@@ -38,9 +39,9 @@ export class UsersPage extends React.Component<UsersPageProps, UsersPageState>
         super(props);
 
         this.state = {
-            users:     [],
-            loading:        false,
-            error:          null
+            users:      [],
+            loading:    false,
+            error:      null
         };
 
         this._userService  = UserService.getInstance();
@@ -84,7 +85,7 @@ export class UsersPage extends React.Component<UsersPageProps, UsersPageState>
     public render ( )
     {
         return (
-            <div className='UsersPage'>
+            <PageContent>
                 <h1>Users</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -131,7 +132,7 @@ export class UsersPage extends React.Component<UsersPageProps, UsersPageState>
                 </List>
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

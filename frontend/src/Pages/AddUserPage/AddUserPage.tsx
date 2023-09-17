@@ -1,6 +1,7 @@
 import React from 'react';
 import { AddUserStartStep } from './AddUserStartStep/AddUserStartStep';
 import { AddUserSuccessStep } from './AddUserSuccessStep/AddUserSuccessStep';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface AddUserPageProps
@@ -17,7 +18,7 @@ enum AddUserStep
 
 interface AddUserPageState
 {
-    step:           AddUserStep;
+    step:       AddUserStep;
     userUID:    string | null;
 }
 
@@ -49,7 +50,7 @@ export class AddUserPage extends React.Component<AddUserPageProps, AddUserPageSt
     public render ( )
     {
         return (
-            <div className='AddUserPage'>
+            <PageContent>
                 {this.state.step === AddUserStep.Start ?
                     <AddUserStartStep
                         onFinish={this._finishStart}
@@ -61,7 +62,7 @@ export class AddUserPage extends React.Component<AddUserPageProps, AddUserPageSt
                         userUID={this.state.userUID}
                     />
                 : null}
-            </div>
+            </PageContent>
         );
     }
 }

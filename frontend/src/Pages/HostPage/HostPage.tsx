@@ -18,9 +18,10 @@ import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { isAdmin, UserService, UserV1 } from '../../Services/UserService';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
 import { Formatter } from '../../utils/Formatter';
+import { ListItemBody } from '../../Components/List/ListItemBody';
 
 import './HostPage.css';
-import { ListItemBody } from '../../Components/List/ListItemBody';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface HostPageRouteParams
@@ -211,7 +212,7 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
     public render ( )
     {
         return (
-            <div className='HostPage'>
+            <PageContent className='HostPage'>
                 <h1>Host</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -284,7 +285,7 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                                     />
                                 : null}
                                 
-                                {isAdmin(this.state.user) && check.custom && this.state.host ?
+                                {isAdmin(this.state.user) && this.state.host ?
                                     <ListItemHeaderAction
                                         to={LinkUtils.make('host', this.state.host.uid,'check', check.uid, 'delete')}
                                         icon={faTrash}
@@ -313,7 +314,7 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                 </List>
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

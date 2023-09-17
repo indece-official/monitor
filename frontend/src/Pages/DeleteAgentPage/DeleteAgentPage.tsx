@@ -5,6 +5,9 @@ import { Button } from '../../Components/Button/Button';
 import { Spinner } from '../../Components/Spinner/Spinner';
 import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { LinkUtils } from '../../utils/LinkUtils';
+import { sleep } from 'ts-delay';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface DeleteAgentPageRouteParams
@@ -97,6 +100,10 @@ class $DeleteAgentPage extends React.Component<DeleteAgentPageProps, DeleteAgent
                 loading:    false,
                 success:    'The agent was successfully deleted.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(LinkUtils.make('agents'));
         }
         catch ( err )
         {
@@ -119,7 +126,7 @@ class $DeleteAgentPage extends React.Component<DeleteAgentPageProps, DeleteAgent
     public render ( )
     {
         return (
-            <div className='AddAgentStartStep'>
+            <PageContent>
                 <h1>Delete agent</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -135,7 +142,7 @@ class $DeleteAgentPage extends React.Component<DeleteAgentPageProps, DeleteAgent
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

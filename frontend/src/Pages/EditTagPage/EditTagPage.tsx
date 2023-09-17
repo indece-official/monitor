@@ -7,6 +7,8 @@ import { Spinner } from '../../Components/Spinner/Spinner';
 import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 import { TagService, TagV1 } from '../../Services/TagService';
+import { sleep } from 'ts-delay';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface EditTagPageRouteParams
@@ -121,6 +123,10 @@ class $EditTagPage extends React.Component<EditTagPageProps, EditTagPageState>
                 loading:    false,
                 success:    'The tag was successfully updated.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(-1);
         }
         catch ( err )
         {
@@ -143,7 +149,7 @@ class $EditTagPage extends React.Component<EditTagPageProps, EditTagPageState>
     public render ( )
     {
         return (
-            <div className='AddTagStartStep'>
+            <PageContent>
                 <h1>Edit tag</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -176,7 +182,7 @@ class $EditTagPage extends React.Component<EditTagPageProps, EditTagPageState>
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

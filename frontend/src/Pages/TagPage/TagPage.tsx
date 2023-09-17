@@ -9,6 +9,7 @@ import { faPen, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 import { LabelValueList } from '../../Components/LabelValueList/LabelValueList';
 import { LabelValue } from '../../Components/LabelValueList/LabelValue';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface TagPageRouteParams
@@ -88,7 +89,7 @@ class $TagPage extends React.Component<TagPageProps, TagPageState>
     public render ( )
     {
         return (
-            <div className='TagPage'>
+            <PageContent>
                 <h1>Tag</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -120,7 +121,7 @@ class $TagPage extends React.Component<TagPageProps, TagPageState>
                 : null}
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

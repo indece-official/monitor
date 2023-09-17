@@ -7,6 +7,8 @@ import { Button } from '../../Components/Button/Button';
 import { Spinner } from '../../Components/Spinner/Spinner';
 import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { sleep } from 'ts-delay';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface EditUserPageRouteParams
@@ -126,6 +128,10 @@ class $EditUserPage extends React.Component<EditUserPageProps, EditUserPageState
                 loading:    false,
                 success:    'The user was successfully updated.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(-1);
         }
         catch ( err )
         {
@@ -148,7 +154,7 @@ class $EditUserPage extends React.Component<EditUserPageProps, EditUserPageState
     public render ( )
     {
         return (
-            <div className='AddUserStartStep'>
+            <PageContent>
                 <h1>Edit user</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -185,7 +191,7 @@ class $EditUserPage extends React.Component<EditUserPageProps, EditUserPageState
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

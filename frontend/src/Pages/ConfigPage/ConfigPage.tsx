@@ -7,6 +7,8 @@ import { ListEmpty } from '../../Components/List/ListEmpty';
 import { ListItem } from '../../Components/List/ListItem';
 import { ListItemHeader } from '../../Components/List/ListItemHeader';
 import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
+import { PageContent } from '../../Components/PageContent/PageContent';
+import { ListItemBody } from '../../Components/List/ListItemBody';
 
 
 export interface ConfigPageProps
@@ -78,7 +80,7 @@ export class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState
     public render ( )
     {
         return (
-            <div className='ConfigPage'>
+            <PageContent>
                 <h1>Configuration</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -98,16 +100,24 @@ export class ConfigPage extends React.Component<ConfigPageProps, ConfigPageState
                                     text={configProperty.key}
                                 />
 
-                                <ListItemHeaderField
-                                    text={configProperty.value}
-                                />
+                                {configProperty.value.length <= 100 ?
+                                    <ListItemHeaderField
+                                        text={configProperty.value}
+                                    />
+                                : null}
                             </ListItemHeader>
+
+                            {configProperty.value.length > 100 ?
+                                <ListItemBody>
+                                    {configProperty.value}
+                                </ListItemBody>
+                            : null}
                         </ListItem>
                     ))}
                 </List>
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

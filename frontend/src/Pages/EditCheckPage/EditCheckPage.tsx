@@ -10,6 +10,7 @@ import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 import { CheckerService, CheckerV1 } from '../../Services/CheckerService';
 import { HostService, HostV1 } from '../../Services/HostService';
 import { AgentService, AgentV1 } from '../../Services/AgentService';
+import { sleep } from 'ts-delay';
 
 
 export interface EditCheckPageRouteParams
@@ -156,6 +157,10 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
                 loading:    false,
                 success:    'The check was successfully updated.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(-1);
         }
         catch ( err )
         {
@@ -178,7 +183,7 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
     public render ( )
     {
         return (
-            <div className='AddCheckStartStep'>
+            <div className='EditCheckPage'>
                 <h1>Edit check</h1>
 
                 <ErrorBox error={this.state.error} />

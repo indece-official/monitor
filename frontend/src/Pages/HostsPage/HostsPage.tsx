@@ -13,6 +13,7 @@ import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { ListItemHeader } from '../../Components/List/ListItemHeader';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
 import { isAdmin, UserService, UserV1 } from '../../Services/UserService';
+import { PageContent, PageContentSize } from '../../Components/PageContent/PageContent';
 
 
 export interface HostsPageProps
@@ -106,7 +107,7 @@ export class HostsPage extends React.Component<HostsPageProps, HostsPageState>
     public render ( )
     {
         return (
-            <div className='HostsPage'>
+            <PageContent>
                 <h1>Hosts</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -152,7 +153,7 @@ export class HostsPage extends React.Component<HostsPageProps, HostsPageState>
                 </List>
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

@@ -1,10 +1,10 @@
 import React from 'react';
 import { AddAgentStartStep } from './AddAgentStartStep/AddAgentStartStep';
 import { AddAgentSuccessStep } from './AddAgentSuccessStep/AddAgentSuccessStep';
-import { AddAgentConnectStep } from './AddAgentConnectStep/AddAgentConnectStep';
 import { AddAgentWaitRegisteredStep } from './AddAgentWaitRegisteredStep/AddAgentWaitRegisteredStep';
 import { AddAgentFailedStep } from './AddAgentFailedStep/AddAgentFailedStep';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface AddAgentPageRouteParams
@@ -21,7 +21,6 @@ export interface AddAgentPageProps extends RouteComponentProps<AddAgentPageRoute
 enum AddAgentStep
 {
     Start           = 'start',
-    Connect         = 'connect',
     WaitRegistered  = 'wait_registered',
     Success         = 'success',
     Failed          = 'failed'
@@ -30,7 +29,7 @@ enum AddAgentStep
 
 interface AddAgentPageState
 {
-    step:           AddAgentStep;
+    step:       AddAgentStep;
     agentUID:   string | null;
 }
 
@@ -47,7 +46,6 @@ class $AddAgentPage extends React.Component<AddAgentPageProps, AddAgentPageState
         };
 
         this._finishStart = this._finishStart.bind(this);
-        this._finishConnect = this._finishConnect.bind(this);
         this._finishWaitRegistered = this._finishWaitRegistered.bind(this);
         this._fail = this._fail.bind(this);
     }
@@ -56,19 +54,11 @@ class $AddAgentPage extends React.Component<AddAgentPageProps, AddAgentPageState
     private _finishStart ( agentUID: string ): void
     {
         this.setState({
-            step:   AddAgentStep.Connect,
+            step:   AddAgentStep.WaitRegistered,
             agentUID
         });
     }
-    
-    
-    private _finishConnect ( ): void
-    {
-        this.setState({
-            step:   AddAgentStep.WaitRegistered
-        });
-    }
-   
+
    
     private _finishWaitRegistered ( ): void
     {
@@ -89,21 +79,14 @@ class $AddAgentPage extends React.Component<AddAgentPageProps, AddAgentPageState
     public render ( )
     {
         return (
-            <div className='AddAgentPage'>
+            <PageContent>
                 {this.state.step === AddAgentStep.Start ?
                     <AddAgentStartStep
                         hostUID={this.props.router.params.hostUID}
                         onFinish={this._finishStart}
                     />
                 : null}
-                
-                {this.state.step === AddAgentStep.Connect && this.state.agentUID ?
-                    <AddAgentConnectStep
-                        agentUID={this.state.agentUID}
-                        onFinish={this._finishConnect}
-                    />
-                : null}
-                
+
                 {this.state.step === AddAgentStep.WaitRegistered && this.state.agentUID ?
                     <AddAgentWaitRegisteredStep
                         agentUID={this.state.agentUID}
@@ -123,7 +106,7 @@ class $AddAgentPage extends React.Component<AddAgentPageProps, AddAgentPageState
                         agentUID={this.state.agentUID}
                     />
                 : null}
-            </div>
+            </PageContent>
         );
     }
 }

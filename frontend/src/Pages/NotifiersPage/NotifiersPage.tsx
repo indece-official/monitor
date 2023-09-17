@@ -13,6 +13,7 @@ import { ListItem } from '../../Components/List/ListItem';
 import { ListItemHeader } from '../../Components/List/ListItemHeader';
 import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface NotifiersPageProps
@@ -105,7 +106,7 @@ export class NotifiersPage extends React.Component<NotifiersPageProps, Notifiers
     public render ( )
     {
         return (
-            <div className='NotifiersPage'>
+            <PageContent>
                 <h1>Notifiers</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -151,7 +152,7 @@ export class NotifiersPage extends React.Component<NotifiersPageProps, Notifiers
                 </List>
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

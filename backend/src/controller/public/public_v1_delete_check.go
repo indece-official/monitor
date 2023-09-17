@@ -50,12 +50,6 @@ func (c *Controller) reqV1DeleteCheck(w http.ResponseWriter, r *http.Request) go
 		return gousuchi.NotFound(r, "Check not found")
 	}
 
-	oldPgCheck := oldPgChecks[0]
-
-	if !oldPgCheck.Custom {
-		return gousuchi.BadRequest(r, "Check is not a custom check")
-	}
-
 	err = c.postgresService.DeleteCheck(r.Context(), checkUID)
 	if err != nil {
 		return gousuchi.InternalServerError(r, "Error updating check in postgres: %s", err)

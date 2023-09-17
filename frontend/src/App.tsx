@@ -1,6 +1,5 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { HomePage } from './Pages/HomePage/HomePage';
 import { SideNav } from './Components/SideNav/SideNav';
 import { AgentsPage } from './Pages/AgentsPage/AgentsPage';
 import { AddAgentPage } from './Pages/AddAgentPage/AddAgentPage';
@@ -53,8 +52,6 @@ export class App extends React.Component
 
                         <div className='App-content-main'>
                             <Routes>
-                                <Route path='/' element={<HomePage />} />
-
                                 <Route path='/login' element={<LoginPage />} />
                                 
                                 {Environment.setup.enabled ?
@@ -62,7 +59,7 @@ export class App extends React.Component
                                 : null}
                                 
                                 <Route
-                                    path='/dashboard'
+                                    path='/'
                                     element={<RouteGuard element={<DashboardPage />} />}
                                 />
 

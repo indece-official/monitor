@@ -16,6 +16,7 @@ import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
 import { ListItemBody } from '../../Components/List/ListItemBody';
 import { HostService, HostV1 } from '../../Services/HostService';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface AgentsPageProps
@@ -132,7 +133,7 @@ export class AgentsPage extends React.Component<AgentsPageProps, AgentsPageState
     public render ( )
     {
         return (
-            <div className='AgentsPage'>
+            <PageContent>
                 <h1>Agents</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -190,7 +191,7 @@ export class AgentsPage extends React.Component<AgentsPageProps, AgentsPageState
                 </List>
 
                 <Spinner active={this.state.initialLoading} />
-            </div>
+            </PageContent>
         );
     }
 }

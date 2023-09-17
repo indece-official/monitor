@@ -13,6 +13,7 @@ import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { ListItemHeader } from '../../Components/List/ListItemHeader';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
 import { Tag } from '../../Components/Tag/Tag';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface TagsPageProps
@@ -84,7 +85,7 @@ export class TagsPage extends React.Component<TagsPageProps, TagsPageState>
     public render ( )
     {
         return (
-            <div className='TagsPage'>
+            <PageContent>
                 <h1>Tags</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -121,7 +122,7 @@ export class TagsPage extends React.Component<TagsPageProps, TagsPageState>
                 </List>
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

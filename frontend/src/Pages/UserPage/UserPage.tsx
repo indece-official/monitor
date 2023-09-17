@@ -10,6 +10,7 @@ import { RouteComponentProps, withRouter } from '../../utils/withRouter';
 import { LabelValueList } from '../../Components/LabelValueList/LabelValueList';
 import { LabelValue } from '../../Components/LabelValueList/LabelValue';
 import { Formatter } from '../../utils/Formatter';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface UserPageRouteParams
@@ -89,7 +90,7 @@ class $UserPage extends React.Component<UserPageProps, UserPageState>
     public render ( )
     {
         return (
-            <div className='UserPage'>
+            <PageContent>
                 <h1>User</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -138,7 +139,7 @@ class $UserPage extends React.Component<UserPageProps, UserPageState>
                 : null}
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

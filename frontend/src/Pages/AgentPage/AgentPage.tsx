@@ -12,6 +12,7 @@ import { LabelValue } from '../../Components/LabelValueList/LabelValue';
 import { Formatter } from '../../utils/Formatter';
 import { UserService, UserV1 } from '../../Services/UserService';
 import { HostService, HostV1 } from '../../Services/HostService';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface AgentPageRouteParams
@@ -131,7 +132,7 @@ class $AgentPage extends React.Component<AgentPageProps, AgentPageState>
     public render ( )
     {
         return (
-            <div className='AgentPage'>
+            <PageContent>
                 <h1>Agent</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -180,7 +181,7 @@ class $AgentPage extends React.Component<AgentPageProps, AgentPageState>
                 : null}
 
                 <Spinner active={this.state.initialLoading} />
-            </div>
+            </PageContent>
         );
     }
 }

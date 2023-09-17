@@ -12,6 +12,8 @@ import { faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { InputMultiSelect } from '../../Components/Input/InputMultiSelect';
 import { InputCheckbox } from '../../Components/Input/InputCheckbox';
 import { TagService, TagV1 } from '../../Services/TagService';
+import { sleep } from 'ts-delay';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface EditNotifierPageRouteParams
@@ -217,6 +219,10 @@ class $EditNotifierPage extends React.Component<EditNotifierPageProps, EditNotif
                 loading:    false,
                 success:    'The notifier was successfully updated.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(-1);
         }
         catch ( err )
         {
@@ -239,7 +245,7 @@ class $EditNotifierPage extends React.Component<EditNotifierPageProps, EditNotif
     public render ( )
     {
         return (
-            <div className='AddNotifierStartStep'>
+            <PageContent>
                 <h1>Edit notifier</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -415,7 +421,7 @@ class $EditNotifierPage extends React.Component<EditNotifierPageProps, EditNotif
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

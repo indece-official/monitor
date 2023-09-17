@@ -8,7 +8,7 @@ export interface InputTextProps
 {
     label:      string;
     name:       string;
-    type?:      'text' | 'password' | 'email';
+    type?:      'text' | 'password' | 'email' | 'color';
     disabled?:  boolean;
     required?:  boolean;
 }

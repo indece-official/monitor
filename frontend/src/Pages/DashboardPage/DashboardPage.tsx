@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 import { LinkUtils } from '../../utils/LinkUtils';
 
 import './DashboardPage.css';
+import { PageContent, PageContentSize } from '../../Components/PageContent/PageContent';
 
 
 export interface DashboardPageProps
@@ -154,7 +155,9 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
     public render ( )
     {
         return (
-            <div className='DashboardPage'>
+            <PageContent
+                size={PageContentSize.Full}
+                className='DashboardPage'>
                 <h1>Welcome</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -192,7 +195,7 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                 </div>
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

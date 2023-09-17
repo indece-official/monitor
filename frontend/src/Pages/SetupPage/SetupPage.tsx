@@ -4,6 +4,7 @@ import { SetupSuccessStep } from './SetupSuccessStep/SetupSuccessStep';
 import { SetupAddHostsStep } from './SetupAddHosts/SetupAddHosts';
 import { SetupServerInfoStep } from './SetupServerInfoStep/SetupServerInfoStep';
 import { SetupAddTagsStep } from './SetupAddTags/SetupAddTags';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface SetupPageProps
@@ -82,7 +83,7 @@ export class SetupPage extends React.Component<SetupPageProps, SetupPageState>
     public render ( )
     {
         return (
-            <div className='SetupPage'>
+            <PageContent>
                 {this.state.step === SetupStep.AddUser ?
                     <SetupAddUserStep
                         onFinish={this._finishAddUser}
@@ -110,7 +111,7 @@ export class SetupPage extends React.Component<SetupPageProps, SetupPageState>
                 {this.state.step === SetupStep.Success ?
                     <SetupSuccessStep />
                 : null}
-            </div>
+            </PageContent>
         );
     }
 }

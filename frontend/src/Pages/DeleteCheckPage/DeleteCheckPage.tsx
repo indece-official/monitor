@@ -5,6 +5,8 @@ import { Button } from '../../Components/Button/Button';
 import { Spinner } from '../../Components/Spinner/Spinner';
 import { SuccessBox } from '../../Components/SuccessBox/SuccessBox';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
+import { sleep } from 'ts-delay';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface DeleteCheckPageRouteParams
@@ -98,6 +100,10 @@ class $DeleteCheckPage extends React.Component<DeleteCheckPageProps, DeleteCheck
                 loading:    false,
                 success:    'The check was successfully deleted.'
             });
+
+            await sleep(1000);
+
+            this.props.router.navigate(-1);
         }
         catch ( err )
         {
@@ -120,7 +126,7 @@ class $DeleteCheckPage extends React.Component<DeleteCheckPageProps, DeleteCheck
     public render ( )
     {
         return (
-            <div className='AddCheckStartStep'>
+            <PageContent>
                 <h1>Delete check</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -136,7 +142,7 @@ class $DeleteCheckPage extends React.Component<DeleteCheckPageProps, DeleteCheck
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }
