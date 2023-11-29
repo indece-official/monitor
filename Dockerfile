@@ -33,7 +33,7 @@ RUN npm run lint
 #RUN npm run test
 RUN npm run build
 
-FROM golang:1.20.4-alpine3.17 as buildbackend
+FROM golang:1.21.4-alpine3.18 as buildbackend
 
 USER root
 
@@ -65,7 +65,7 @@ RUN make --always-make copy_frontend && \
 
 USER nobody
 
-FROM alpine:3.17.0
+FROM alpine:3.18.0
 
 USER nobody
 

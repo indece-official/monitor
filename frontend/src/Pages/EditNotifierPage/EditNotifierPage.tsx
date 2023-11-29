@@ -1,5 +1,5 @@
 import React from 'react';
-import { NotifierService, NotifierV1, NotifierV1ConfigParams, NotifierV1Filter, NotifierV1Type } from '../../Services/NotifierService';
+import { NotifierService, NotifierV1, NotifierV1ConfigParams, NotifierV1ConfigParamsHttpMethod, NotifierV1ConfigParamsHttpMethods, NotifierV1Filter, NotifierV1Type } from '../../Services/NotifierService';
 import { ErrorBox } from '../../Components/ErrorBox/ErrorBox';
 import { FieldArray, Form, Formik } from 'formik';
 import { InputText } from '../../Components/Input/InputText';
@@ -14,6 +14,8 @@ import { InputCheckbox } from '../../Components/Input/InputCheckbox';
 import { TagService, TagV1 } from '../../Services/TagService';
 import { sleep } from 'ts-delay';
 import { PageContent } from '../../Components/PageContent/PageContent';
+import { InputTextarea } from '../../Components/Input/InputTextarea';
+import { InputSelect } from '../../Components/Input/InputSelect';
 
 
 export interface EditNotifierPageRouteParams
@@ -38,9 +40,34 @@ interface EditNotifierPageFormDataParamsEmailSmtp
 }
 
 
+interface EditNotifierParamsStepFormDataHttpHeader
+{
+    name:   string;
+    value:  string;
+}
+
+
+interface EditNotifierParamsStepFormDataHttp
+{
+    url:        string;
+    method:     string;
+    headers:    Array<EditNotifierParamsStepFormDataHttpHeader>;
+    body:       string;
+}
+
+
+interface EditNotifierParamsStepFormDataMicrosoftTeams
+{
+    webhook_url:    string;
+}
+
+
+
 interface EditNotifierPageFormDataParams
 {
-    email_smtp:     EditNotifierPageFormDataParamsEmailSmtp;
+    email_smtp:         EditNotifierPageFormDataParamsEmailSmtp;
+    http:               EditNotifierParamsStepFormDataHttp;
+    microsoft_teams:    EditNotifierParamsStepFormDataMicrosoftTeams;
 }
 
 
@@ -95,6 +122,15 @@ class $EditNotifierPage extends React.Component<EditNotifierPageProps, EditNotif
                         password:   '',
                         from:       '',
                         to:         []
+                    },
+                    http: {
+                        url:        '',
+                        method:     '',
+                        headers:    [],
+                        body:       ''
+                    },
+                    microsoft_teams: {
+                        webhook_url:    ''
                     }
                 },
                 filters:    []
@@ -139,6 +175,18 @@ class $EditNotifierPage extends React.Component<EditNotifierPageProps, EditNotif
                             password:   notifier.config?.params.email_smtp?.password || '',
                             from:       notifier.config?.params.email_smtp?.from || '',
                             to:         notifier.config?.params.email_smtp?.to || [],
+                        },
+                        http: {
+                            url:        notifier.config?.params.http?.url || '',
+                            method:     notifier.config?.params.http?.method || '',
+                            headers:    (notifier.config?.params.http?.headers || []).map( ( o ) =>({
+                                name:   o.name,
+                                value:  o.value
+                            })),
+                            body:       notifier.config?.params.http?.body || '',
+                        },
+                        microsoft_teams: {
+                            webhook_url:        notifier.config?.params.microsoft_teams?.webhook_url || '',
                         }
                     },
                     filters: (notifier.config?.filters || []).map( ( filter ) => ({
@@ -190,6 +238,19 @@ class $EditNotifierPage extends React.Component<EditNotifierPageProps, EditNotif
                         password:   values.params.email_smtp.password.trim(),
                         from:       values.params.email_smtp.from.trim(),
                         to:         values.params.email_smtp.to.map( s => s.trim() ).filter( s => !!s ),
+                    };
+                    break;
+                case NotifierV1Type.Http:
+                    params.http = {
+                        url:        values.params.http.url.trim(),
+                        method:     values.params.http.method as NotifierV1ConfigParamsHttpMethod,
+                        headers:    values.params.http.headers.map( o => ({name: o.name.trim(), value: o.value.trim()})).filter( o => !!o.name && !!o.value ),
+                        body:       values.params.http.body.trim() || null
+                    };
+                    break;
+                case NotifierV1Type.MicrosoftTeams:
+                    params.microsoft_teams = {
+                        webhook_url:        values.params.microsoft_teams.webhook_url.trim()
                     };
                     break;
                 // TODO: Error on default
@@ -332,6 +393,85 @@ class $EditNotifierPage extends React.Component<EditNotifierPageProps, EditNotif
                                             </div>
                                         )}
                                     </FieldArray>
+                                </>
+                            : null}
+
+                            {this.state.notifier?.type === NotifierV1Type.Http ?
+                                <>
+                                    <InputText
+                                        name='params.http.url'
+                                        label='URL'
+                                        required={true}
+                                    />
+
+                                    <InputSelect
+                                        name='params.http.method'
+                                        label='Method'
+                                        required={true}
+                                        options={NotifierV1ConfigParamsHttpMethods.map( ( method ) => ({
+                                            label:  method,
+                                            value:  method
+                                        }))}
+                                    />
+
+                                    <FieldArray name='params.http.headers'>
+                                        {( arrayHelpers ) => (
+                                            <div className='SetupAddHostsStep-hosts'>
+                                                <Button
+                                                    type='button'
+                                                    onClick={() => arrayHelpers.push({name: '', value: ''})}>
+                                                    <FontAwesomeIcon icon={faPlus} />
+                                                    Add a header
+                                                </Button>
+
+                                                <div className='SetupAddHostsStep-hosts-list'>
+                                                    {values.params.http.headers.length === 0 ?
+                                                        <div className='SetupAddHostsStep-hosts-empty'>
+                                                            No headers added yet
+                                                        </div>
+                                                    : null}
+                                                </div>
+
+                                                {values.params.http.headers.map( ( header, index ) => (
+                                                    <div key={index} className='AdminAddEventPage-host'>
+                                                        <InputText
+                                                            name={`params.http.headers.${index}.name`}
+                                                            label='Name'
+                                                            required={true}
+                                                        />
+
+                                                        <InputText
+                                                            name={`params.http.headers.${index}.value`}
+                                                            label='Value'
+                                                            required={true}
+                                                        />
+
+                                                        <Button
+                                                            title='Delete header'
+                                                            type='button'
+                                                            onClick={() => arrayHelpers.remove(index)}>
+                                                            <FontAwesomeIcon icon={faTimes} />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </FieldArray>
+
+                                    <InputTextarea
+                                        name='params.http.body'
+                                        label='Request-Body'
+                                    />
+                                </>
+                            : null}
+
+                            {this.state.notifier?.type === NotifierV1Type.MicrosoftTeams ?
+                                <>
+                                    <InputText
+                                        name='params.microsoft_teams.webhook_url'
+                                        label='Webhook-URL'
+                                        required={true}
+                                    />
                                 </>
                             : null}
 

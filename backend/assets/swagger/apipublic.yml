@@ -1245,11 +1245,59 @@ components:
           items:
             type: string
 
+    NotifierV1ConfigParamsHttpMethod:
+      type: string
+      enum:
+        - GET
+        - POST
+        - PUT
+
+    NotifierV1ConfigParamsHttpHeader:
+      type: object
+      required:
+        - name
+        - value
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+
+    NotifierV1ConfigParamsHttp:
+      type: object
+      required:
+        - url
+        - method
+        - headers
+      properties:
+        url:
+          type: string
+        method:
+          $ref: '#/components/schemas/NotifierV1ConfigParamsHttpMethod'
+        headers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NotifierV1ConfigParamsHttpHeader'
+        body:
+          type: string
+
+    NotifierV1ConfigParamsMicrosoftTeams:
+      type: object
+      required:
+        - webhook_url
+      properties:
+        webhook_url:
+          type: string
+
     NotifierV1ConfigParams:
       type: object
       properties:
         email_smtp:
           $ref: '#/components/schemas/NotifierV1ConfigParamsEmailSmtp'
+        http:
+          $ref: '#/components/schemas/NotifierV1ConfigParamsHttp'
+        microsoft_teams:
+          $ref: '#/components/schemas/NotifierV1ConfigParamsMicrosoftTeams'
 
     NotifierV1Config:
       type: object
@@ -1268,6 +1316,8 @@ components:
       type: string
       enum:
         - EMAIL_SMTP
+        - HTTP
+        - MICROSOFT_TEAMS
 
     NotifierV1:
       type: object

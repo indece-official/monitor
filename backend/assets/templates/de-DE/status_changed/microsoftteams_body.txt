@@ -1,0 +1,5 @@
+Status changes on host {{ .Data.host_name }}:
+
+{{ range .Data.checks }}
+{{ .checkstatus_status }} - {{ .check_name }} - {{ .checkstatus_message }}
+{{ end }}

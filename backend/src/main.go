@@ -30,6 +30,8 @@ import (
 	"github.com/indece-official/monitor/backend/src/controller/public"
 	"github.com/indece-official/monitor/backend/src/service/cache"
 	"github.com/indece-official/monitor/backend/src/service/cert"
+	"github.com/indece-official/monitor/backend/src/service/http"
+	"github.com/indece-official/monitor/backend/src/service/microsoftteams"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
 	"github.com/indece-official/monitor/backend/src/service/smtp"
 	"github.com/indece-official/monitor/backend/src/service/template"
@@ -45,6 +47,8 @@ func main() {
 	runner.CreateService(cache.NewService)
 	runner.CreateService(template.NewService)
 	runner.CreateService(cert.NewService)
+	runner.CreateService(microsoftteams.NewService)
+	runner.CreateService(http.NewService)
 	runner.CreateController(initializer.NewController)
 	runner.CreateController(public.NewController)
 	runner.CreateController(agent.NewController)

@@ -52,15 +52,19 @@ var TemplateTypes = []TemplateType{
 type TemplatePart string
 
 const (
-	TemplatePartEmailBodyHTML TemplatePart = "email_body.html"
-	TemplatePartEmailBodyText TemplatePart = "email_body.txt"
-	TemplatePartEmailSubject  TemplatePart = "email_subject.txt"
+	TemplatePartEmailBodyHTML       TemplatePart = "email_body.html"
+	TemplatePartEmailBodyText       TemplatePart = "email_body.txt"
+	TemplatePartEmailSubject        TemplatePart = "email_subject.txt"
+	TemplatePartMicrosoftTeamsTitle TemplatePart = "microsoftteams_title.txt"
+	TemplatePartMicrosoftTeamsBody  TemplatePart = "microsoftteams_body.txt"
 )
 
-var TemplatePartsEmail = []TemplatePart{
+var TemplateParts = []TemplatePart{
 	TemplatePartEmailBodyHTML,
 	TemplatePartEmailBodyText,
 	TemplatePartEmailSubject,
+	TemplatePartMicrosoftTeamsTitle,
+	TemplatePartMicrosoftTeamsBody,
 }
 
 type IService interface {
@@ -131,7 +135,7 @@ func (s *Service) Start() error {
 
 	for _, locale := range model.Locales {
 		for _, templateType := range TemplateTypes {
-			for _, templatePart := range TemplatePartsEmail {
+			for _, templatePart := range TemplateParts {
 				err := s.loadTemplate(locale, templateType, templatePart)
 				if err != nil {
 					return fmt.Errorf("error loading template %s:%s:%s: %s", locale, templateType, templatePart, err)

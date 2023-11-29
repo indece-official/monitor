@@ -67,24 +67,53 @@ func (c *Controller) sendNotifications(
 	templateParams["count_unknown"] = fmt.Sprintf("%d", hostStats.CountUnknown)
 	templateParams["checks"] = templateParamChecks
 
-	sender := c.smtpService.Open(pgNotifier.Config.Params.EmailSmtp)
-	defer sender.Close()
+	switch pgNotifier.Type {
+	case model.PgNotifierV1TypeEmailSmtp:
+		sender := c.smtpService.Open(pgNotifier.Config.Params.EmailSmtp)
+		defer sender.Close()
 
-	for _, pgUser := range c.users {
-		if !pgUser.Email.Valid {
-			continue
+		for _, pgUser := range c.users {
+			if !pgUser.Email.Valid {
+				continue
+			}
+
+			err = c.sendEmail(
+				ctx,
+				sender,
+				model.LocaleEnUs,
+				template.TemplateTypeStatusChanged,
+				pgUser.Email.String,
+				templateParams,
+			)
+			if err != nil {
+				return fmt.Errorf("error sending email: %s", err)
+			}
 		}
-
-		err = c.sendEmail(
+	case model.PgNotifierV1TypeHttp:
+		err = c.sendHttpQuery(
 			ctx,
-			sender,
 			model.LocaleEnUs,
 			template.TemplateTypeStatusChanged,
-			pgUser.Email.String,
+			templateParams,
+			pgNotifier.Config.Params.Http.Method,
+			pgNotifier.Config.Params.Http.URL,
+			pgNotifier.Config.Params.Http.Headers,
+			pgNotifier.Config.Params.Http.Body,
+		)
+		if err != nil {
+			return fmt.Errorf("error sending teams notification: %s", err)
+		}
+
+	case model.PgNotifierV1TypeMicrosoftTeams:
+		err = c.sendTeamsNotification(
+			ctx,
+			model.LocaleEnUs,
+			pgNotifier.Config.Params.MicrosoftTeams.WebhookURL,
+			template.TemplateTypeStatusChanged,
 			templateParams,
 		)
 		if err != nil {
-			return fmt.Errorf("error sending email: %s", err)
+			return fmt.Errorf("error sending teams notification: %s", err)
 		}
 	}
 

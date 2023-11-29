@@ -1,0 +1,1 @@
+Host {{ .Data.host_name }} - {{ .Data.count_critical }} CRIT, {{ .Data.count_warning }} WARN, {{ .Data.count_ok }} OK, {{ .Data.count_unknown }} UNKNOWN

@@ -26,6 +26,8 @@ import (
 	"github.com/indece-official/go-gousu/v2/gousu/logger"
 	"github.com/indece-official/monitor/backend/src/model"
 	"github.com/indece-official/monitor/backend/src/service/cache"
+	"github.com/indece-official/monitor/backend/src/service/http"
+	"github.com/indece-official/monitor/backend/src/service/microsoftteams"
 	"github.com/indece-official/monitor/backend/src/service/postgres"
 	"github.com/indece-official/monitor/backend/src/service/smtp"
 	"github.com/indece-official/monitor/backend/src/service/template"
@@ -38,28 +40,30 @@ type IController interface {
 }
 
 type Controller struct {
-	log             *logger.Log
-	postgresService postgres.IService
-	cacheService    cache.IService
-	templateService template.IService
-	smtpService     smtp.IService
-	checks          []*model.PgCheckV1
-	checkers        []*model.PgCheckerV1
-	agents          []*model.PgAgentV1
-	hosts           []*model.PgHostV1
-	users           []*model.PgUserV1
-	notifiers       []*model.PgNotifierV1
-	scheduler       *gocron.Scheduler
-	mutexChecks     sync.Mutex
-	mutexCheckers   sync.Mutex
-	mutexAgents     sync.Mutex
-	mutexHosts      sync.Mutex
-	mutexUsers      sync.Mutex
-	mutexNotifiers  sync.Mutex
-	mutexNotifier   sync.Mutex
-	stop            bool
-	error           error
-	waitGroupStop   sync.WaitGroup
+	log                   *logger.Log
+	postgresService       postgres.IService
+	cacheService          cache.IService
+	templateService       template.IService
+	smtpService           smtp.IService
+	microsoftteamsService microsoftteams.IService
+	httpService           http.IService
+	checks                []*model.PgCheckV1
+	checkers              []*model.PgCheckerV1
+	agents                []*model.PgAgentV1
+	hosts                 []*model.PgHostV1
+	users                 []*model.PgUserV1
+	notifiers             []*model.PgNotifierV1
+	scheduler             *gocron.Scheduler
+	mutexChecks           sync.Mutex
+	mutexCheckers         sync.Mutex
+	mutexAgents           sync.Mutex
+	mutexHosts            sync.Mutex
+	mutexUsers            sync.Mutex
+	mutexNotifiers        sync.Mutex
+	mutexNotifier         sync.Mutex
+	stop                  bool
+	error                 error
+	waitGroupStop         sync.WaitGroup
 }
 
 var _ IController = (*Controller)(nil)
@@ -175,11 +179,13 @@ func NewController(ctx gousu.IContext) gousu.IController {
 	log := logger.GetLogger(fmt.Sprintf("controller.%s", ControllerName))
 
 	return &Controller{
-		log:             log,
-		postgresService: ctx.GetService(postgres.ServiceName).(postgres.IService),
-		cacheService:    ctx.GetService(cache.ServiceName).(cache.IService),
-		templateService: ctx.GetService(template.ServiceName).(template.IService),
-		smtpService:     ctx.GetService(smtp.ServiceName).(smtp.IService),
+		log:                   log,
+		postgresService:       ctx.GetService(postgres.ServiceName).(postgres.IService),
+		cacheService:          ctx.GetService(cache.ServiceName).(cache.IService),
+		templateService:       ctx.GetService(template.ServiceName).(template.IService),
+		smtpService:           ctx.GetService(smtp.ServiceName).(smtp.IService),
+		microsoftteamsService: ctx.GetService(microsoftteams.ServiceName).(microsoftteams.IService),
+		httpService:           ctx.GetService(http.ServiceName).(http.IService),
 	}
 }
 

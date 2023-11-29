@@ -23,9 +23,48 @@ export interface NotifierV1ConfigParamsEmailSmtp
 }
 
 
+export enum NotifierV1ConfigParamsHttpMethod
+{
+    Get     = 'GET',
+    Post    = 'POST',
+    Put     = 'PUT'
+}
+
+
+export const NotifierV1ConfigParamsHttpMethods: Array<NotifierV1ConfigParamsHttpMethod> = [
+    NotifierV1ConfigParamsHttpMethod.Get,
+    NotifierV1ConfigParamsHttpMethod.Post,
+    NotifierV1ConfigParamsHttpMethod.Put
+];
+
+
+export interface NotifierV1ConfigParamsHttpHeader
+{
+    name:   string;
+    value:  string;
+}
+
+
+export interface NotifierV1ConfigParamsHttp
+{
+    url:        string;
+    method:     NotifierV1ConfigParamsHttpMethod;
+    headers:    Array<NotifierV1ConfigParamsHttpHeader>;
+    body:       string | null;
+}
+
+
+export interface NotifierV1ConfigParamsMicrosoftTeams
+{
+    webhook_url:    string;
+}
+
+
 export interface NotifierV1ConfigParams
 {
-    email_smtp?:    NotifierV1ConfigParamsEmailSmtp | null;
+    email_smtp?:        NotifierV1ConfigParamsEmailSmtp | null;
+    http?:              NotifierV1ConfigParamsHttp | null;
+    microsoft_teams?:   NotifierV1ConfigParamsMicrosoftTeams | null;
 }
 
 
@@ -38,12 +77,16 @@ export interface NotifierV1Config
 
 export enum NotifierV1Type
 {
-    EmailSmtp   = 'EMAIL_SMTP'
+    EmailSmtp       = 'EMAIL_SMTP',
+    Http            = 'HTTP',
+    MicrosoftTeams  = 'MICROSOFT_TEAMS'
 }
 
 
 export const NotifierV1Types: Array<NotifierV1Type> = [
-    NotifierV1Type.EmailSmtp
+    NotifierV1Type.EmailSmtp,
+    NotifierV1Type.Http,
+    NotifierV1Type.MicrosoftTeams
 ];
 
 

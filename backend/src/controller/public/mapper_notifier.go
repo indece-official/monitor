@@ -28,6 +28,10 @@ func (c *Controller) mapPgNotifierV1TypeToAPINotifierV1Type(pgNotifierType model
 	switch pgNotifierType {
 	case model.PgNotifierV1TypeEmailSmtp:
 		return apipublic.EMAILSMTP, nil
+	case model.PgNotifierV1TypeHttp:
+		return apipublic.HTTP, nil
+	case model.PgNotifierV1TypeMicrosoftTeams:
+		return apipublic.MICROSOFTTEAMS, nil
 	default:
 		return "", fmt.Errorf("invalid notifier type: %s", pgNotifierType)
 	}
@@ -37,6 +41,10 @@ func (c *Controller) mapAPINotifierV1TypeToPgNotifierV1Type(apiNotifierType apip
 	switch apiNotifierType {
 	case apipublic.EMAILSMTP:
 		return model.PgNotifierV1TypeEmailSmtp, nil
+	case apipublic.HTTP:
+		return model.PgNotifierV1TypeHttp, nil
+	case apipublic.MICROSOFTTEAMS:
+		return model.PgNotifierV1TypeMicrosoftTeams, nil
 	default:
 		return "", fmt.Errorf("invalid notifier type: %s", apiNotifierType)
 	}
@@ -99,6 +107,122 @@ func (c *Controller) mapAPINotifierV1ConfigParamsEmailSmtpToPgNotifierV1ConfigPa
 	return pgNotifierConfigParamsEmailSmtp, nil
 }
 
+func (c *Controller) mapPgNotifierV1ConfigParamsHttpMethodToAPINotifierV1ConfigParamsHttpMethod(pgHttpMethod model.PgNotifierV1ConfigParamsHttpMethod) (apipublic.NotifierV1ConfigParamsHttpMethod, error) {
+	switch pgHttpMethod {
+	case model.PgNotifierV1ConfigParamsHttpMethodGet:
+		return apipublic.GET, nil
+	case model.PgNotifierV1ConfigParamsHttpMethodPost:
+		return apipublic.POST, nil
+	case model.PgNotifierV1ConfigParamsHttpMethodPut:
+		return apipublic.PUT, nil
+	default:
+		return "", fmt.Errorf("invalid http method: %s", pgHttpMethod)
+	}
+}
+
+func (c *Controller) mapAPINotifierV1ConfigParamsHttpMethodToPgNotifierV1ConfigParamsHttpMethod(apiHttpMethod apipublic.NotifierV1ConfigParamsHttpMethod) (model.PgNotifierV1ConfigParamsHttpMethod, error) {
+	switch apiHttpMethod {
+	case apipublic.GET:
+		return model.PgNotifierV1ConfigParamsHttpMethodGet, nil
+	case apipublic.POST:
+		return model.PgNotifierV1ConfigParamsHttpMethodPost, nil
+	case apipublic.PUT:
+		return model.PgNotifierV1ConfigParamsHttpMethodPut, nil
+	default:
+		return "", fmt.Errorf("invalid http method: %s", apiHttpMethod)
+	}
+}
+
+func (c *Controller) mapPgNotifierV1ConfigParamsHttpHeaderToAPINotifierV1ConfigParamsHttpHeader(pgNotifierConfigParamsHttpHeader *model.PgNotifierV1ConfigParamsHttpHeader) (*apipublic.NotifierV1ConfigParamsHttpHeader, error) {
+	apiNotifierConfigParamsHttpHeader := &apipublic.NotifierV1ConfigParamsHttpHeader{}
+
+	apiNotifierConfigParamsHttpHeader.Name = pgNotifierConfigParamsHttpHeader.Name
+	apiNotifierConfigParamsHttpHeader.Value = pgNotifierConfigParamsHttpHeader.Value
+
+	return apiNotifierConfigParamsHttpHeader, nil
+}
+
+func (c *Controller) mapAPINotifierV1ConfigParamsHttpHeaderToPgNotifierV1ConfigParamsHttpHeader(apiNotifierConfigParamsHttpHeader *apipublic.NotifierV1ConfigParamsHttpHeader) (*model.PgNotifierV1ConfigParamsHttpHeader, error) {
+	pgNotifierConfigParamsHttpHeader := &model.PgNotifierV1ConfigParamsHttpHeader{}
+
+	pgNotifierConfigParamsHttpHeader.Name = apiNotifierConfigParamsHttpHeader.Name
+	pgNotifierConfigParamsHttpHeader.Value = apiNotifierConfigParamsHttpHeader.Value
+
+	return pgNotifierConfigParamsHttpHeader, nil
+}
+
+func (c *Controller) mapPgNotifierV1ConfigParamsHttpToAPINotifierV1ConfigParamsHttp(pgNotifierConfigParamsHttp *model.PgNotifierV1ConfigParamsHttp) (*apipublic.NotifierV1ConfigParamsHttp, error) {
+	var err error
+
+	apiNotifierConfigParamsHttp := &apipublic.NotifierV1ConfigParamsHttp{}
+
+	apiNotifierConfigParamsHttp.Url = pgNotifierConfigParamsHttp.URL
+	apiNotifierConfigParamsHttp.Method, err = c.mapPgNotifierV1ConfigParamsHttpMethodToAPINotifierV1ConfigParamsHttpMethod(pgNotifierConfigParamsHttp.Method)
+	if err != nil {
+		return nil, fmt.Errorf("error mapping http method: %s", err)
+	}
+
+	apiNotifierConfigParamsHttp.Headers = []apipublic.NotifierV1ConfigParamsHttpHeader{}
+	for _, pgHeader := range pgNotifierConfigParamsHttp.Headers {
+		apiHeader, err := c.mapPgNotifierV1ConfigParamsHttpHeaderToAPINotifierV1ConfigParamsHttpHeader(pgHeader)
+		if err != nil {
+			return nil, fmt.Errorf("error mapping http header: %s", err)
+		}
+
+		apiNotifierConfigParamsHttp.Headers = append(apiNotifierConfigParamsHttp.Headers, *apiHeader)
+	}
+
+	apiNotifierConfigParamsHttp.Body = pgNotifierConfigParamsHttp.Body.Ptr()
+
+	return apiNotifierConfigParamsHttp, nil
+}
+
+func (c *Controller) mapAPINotifierV1ConfigParamsHttpToPgNotifierV1ConfigParamsHttp(apiNotifierConfigParamsHttp *apipublic.NotifierV1ConfigParamsHttp) (*model.PgNotifierV1ConfigParamsHttp, error) {
+	var err error
+
+	pgNotifierConfigParamsHttp := &model.PgNotifierV1ConfigParamsHttp{}
+
+	pgNotifierConfigParamsHttp.URL = apiNotifierConfigParamsHttp.Url
+	pgNotifierConfigParamsHttp.Method, err = c.mapAPINotifierV1ConfigParamsHttpMethodToPgNotifierV1ConfigParamsHttpMethod(apiNotifierConfigParamsHttp.Method)
+	if err != nil {
+		return nil, fmt.Errorf("error mapping http method: %s", err)
+	}
+
+	pgNotifierConfigParamsHttp.Headers = []*model.PgNotifierV1ConfigParamsHttpHeader{}
+	for _, apiHeader := range apiNotifierConfigParamsHttp.Headers {
+		apiHeaderCpy := apiHeader
+
+		pgHeader, err := c.mapAPINotifierV1ConfigParamsHttpHeaderToPgNotifierV1ConfigParamsHttpHeader(&apiHeaderCpy)
+		if err != nil {
+			return nil, fmt.Errorf("error mapping http header: %s", err)
+		}
+
+		pgNotifierConfigParamsHttp.Headers = append(pgNotifierConfigParamsHttp.Headers, pgHeader)
+	}
+
+	if apiNotifierConfigParamsHttp.Body != nil && *apiNotifierConfigParamsHttp.Body != "" {
+		pgNotifierConfigParamsHttp.Body.Scan(*apiNotifierConfigParamsHttp.Body)
+	}
+
+	return pgNotifierConfigParamsHttp, nil
+}
+
+func (c *Controller) mapPgNotifierV1ConfigParamsMicrosoftTeamsToAPINotifierV1ConfigParamsMicrosoftTeams(pgNotifierConfigParamsMicrosoftTeams *model.PgNotifierV1ConfigParamsMicrosoftTeams) (*apipublic.NotifierV1ConfigParamsMicrosoftTeams, error) {
+	apiNotifierConfigParamsMicrosoftTeams := &apipublic.NotifierV1ConfigParamsMicrosoftTeams{}
+
+	apiNotifierConfigParamsMicrosoftTeams.WebhookUrl = pgNotifierConfigParamsMicrosoftTeams.WebhookURL
+
+	return apiNotifierConfigParamsMicrosoftTeams, nil
+}
+
+func (c *Controller) mapAPINotifierV1ConfigParamsMicrosoftTeamsToPgNotifierV1ConfigParamsMicrosoftTeams(apiNotifierConfigParamsMicrosoftTeams *apipublic.NotifierV1ConfigParamsMicrosoftTeams) (*model.PgNotifierV1ConfigParamsMicrosoftTeams, error) {
+	pgNotifierConfigParamsMicrosoftTeams := &model.PgNotifierV1ConfigParamsMicrosoftTeams{}
+
+	pgNotifierConfigParamsMicrosoftTeams.WebhookURL = apiNotifierConfigParamsMicrosoftTeams.WebhookUrl
+
+	return pgNotifierConfigParamsMicrosoftTeams, nil
+}
+
 func (c *Controller) mapPgNotifierV1ConfigParamsToAPINotifierV1ConfigParams(pgNotifierConfigParams *model.PgNotifierV1ConfigParams) (*apipublic.NotifierV1ConfigParams, error) {
 	var err error
 
@@ -108,6 +232,20 @@ func (c *Controller) mapPgNotifierV1ConfigParamsToAPINotifierV1ConfigParams(pgNo
 		apiNotifierConfigParams.EmailSmtp, err = c.mapPgNotifierV1ConfigParamsEmailSmtpToAPINotifierV1ConfigParamsEmailSmtp(pgNotifierConfigParams.EmailSmtp)
 		if err != nil {
 			return nil, fmt.Errorf("error mapping email_smtp params: %s", err)
+		}
+	}
+
+	if pgNotifierConfigParams.Http != nil {
+		apiNotifierConfigParams.Http, err = c.mapPgNotifierV1ConfigParamsHttpToAPINotifierV1ConfigParamsHttp(pgNotifierConfigParams.Http)
+		if err != nil {
+			return nil, fmt.Errorf("error mapping http params: %s", err)
+		}
+	}
+
+	if pgNotifierConfigParams.MicrosoftTeams != nil {
+		apiNotifierConfigParams.MicrosoftTeams, err = c.mapPgNotifierV1ConfigParamsMicrosoftTeamsToAPINotifierV1ConfigParamsMicrosoftTeams(pgNotifierConfigParams.MicrosoftTeams)
+		if err != nil {
+			return nil, fmt.Errorf("error mapping microsoft_teams params: %s", err)
 		}
 	}
 
@@ -123,6 +261,20 @@ func (c *Controller) mapAPINotifierV1ConfigParamsToPgNotifierV1ConfigParams(apiN
 		pgNotifierConfigParams.EmailSmtp, err = c.mapAPINotifierV1ConfigParamsEmailSmtpToPgNotifierV1ConfigParamsEmailSmtp(apiNotifierConfigParams.EmailSmtp)
 		if err != nil {
 			return nil, fmt.Errorf("error mapping email_smtp params: %s", err)
+		}
+	}
+
+	if apiNotifierConfigParams.Http != nil {
+		pgNotifierConfigParams.Http, err = c.mapAPINotifierV1ConfigParamsHttpToPgNotifierV1ConfigParamsHttp(apiNotifierConfigParams.Http)
+		if err != nil {
+			return nil, fmt.Errorf("error mapping http params: %s", err)
+		}
+	}
+
+	if apiNotifierConfigParams.MicrosoftTeams != nil {
+		pgNotifierConfigParams.MicrosoftTeams, err = c.mapAPINotifierV1ConfigParamsMicrosoftTeamsToPgNotifierV1ConfigParamsMicrosoftTeams(apiNotifierConfigParams.MicrosoftTeams)
+		if err != nil {
+			return nil, fmt.Errorf("error mapping microsoft_teams params: %s", err)
 		}
 	}
 
