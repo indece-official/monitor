@@ -184,10 +184,7 @@ export class DashboardPage extends React.Component<DashboardPageProps, Dashboard
                                 </div>
 
                                 <div className='DashboardPage-host-message'>
-                                    {Formatter.checkStatus(CheckStatusV1Status.Critical)}: {host.status.count_critical}, 
-                                    {Formatter.checkStatus(CheckStatusV1Status.Warning)}: {host.status.count_warning}, 
-                                    {Formatter.checkStatus(CheckStatusV1Status.Ok)}: {host.status.count_ok}, 
-                                    {Formatter.checkStatus(CheckStatusV1Status.Unknown)}: {host.status.count_unknown}
+                                    {`${Formatter.checkStatus(CheckStatusV1Status.Critical)}: ${host.status.count_critical}, ${Formatter.checkStatus(CheckStatusV1Status.Warning)}: ${host.status.count_warning}, ${Formatter.checkStatus(CheckStatusV1Status.Ok)}: ${host.status.count_ok}, ${Formatter.checkStatus(CheckStatusV1Status.Unknown)}: ${host.status.count_unknown}`}
                                 </div>
                             </div>
                         </Link>

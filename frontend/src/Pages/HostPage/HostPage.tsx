@@ -7,8 +7,6 @@ import { LinkUtils } from '../../utils/LinkUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faPlus, faRefresh, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { RouteComponentProps, withRouter } from '../../utils/withRouter';
-import { LabelValueList } from '../../Components/LabelValueList/LabelValueList';
-import { LabelValue } from '../../Components/LabelValueList/LabelValue';
 import { Tag } from '../../Components/Tag/Tag';
 import { CheckService, CheckStatusV1Status, CheckV1 } from '../../Services/CheckService';
 import { List } from '../../Components/List/List';
@@ -19,9 +17,9 @@ import { isAdmin, UserService, UserV1 } from '../../Services/UserService';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
 import { Formatter } from '../../utils/Formatter';
 import { ListItemBody } from '../../Components/List/ListItemBody';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 import './HostPage.css';
-import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface HostPageRouteParams
@@ -213,7 +211,15 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
     {
         return (
             <PageContent className='HostPage'>
-                <h1>Host</h1>
+                <h1>{this.state.host?.name || '-'}</h1>
+                
+                {this.state.host && this.state.host.tags.length > 0 ?
+                    <div className='HostPage-tags'>
+                        {this.state.host.tags.map( ( tag ) => (
+                            <Tag key={tag.name} color={tag.color}>{tag.name}</Tag>
+                        ))}
+                    </div>
+                : null}
 
                 <ErrorBox error={this.state.error} />
 
@@ -235,21 +241,6 @@ class $HostPage extends React.Component<HostPageProps, HostPageState>
                             <FontAwesomeIcon icon={faTrash} /> Delete
                         </Button>
                     </div>
-                : null}
-
-                {this.state.host ?
-                    <LabelValueList>
-                        <LabelValue
-                            label='Name'
-                            value={this.state.host.name || '-'}
-                        />
-
-                        <LabelValue label='Tags'>
-                            {this.state.host.tags.map( ( tag ) => (
-                                <Tag key={tag.name} color={tag.color}>{tag.name}</Tag>
-                            ))}
-                        </LabelValue>
-                    </LabelValueList>
                 : null}
 
                 <br />

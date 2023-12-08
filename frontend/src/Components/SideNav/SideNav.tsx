@@ -1,7 +1,7 @@
 import React from 'react';
 import DayJS from 'dayjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faSignOut, faTimes, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCircleUser, faEnvelope, faGear, faGrip, faLandmark, faSignOut, faSpaghettiMonsterFlying, faTags, faTimes, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { UserService, UserV1, isAdmin } from '../../Services/UserService';
 import { Link } from 'react-router-dom';
 import { LinkUtils } from '../../utils/LinkUtils';
@@ -117,6 +117,11 @@ export class SideNav extends React.Component<SideNavProps, SideNavState>
 
     public render ( )
     {
+        if ( Environment.setup.enabled || (!this.state.user && !Environment.setup.enabled) )
+        {
+            return null;
+        }
+
         return (
             <div className='SideNav'>
                 <div className='SideNav-menubutton' onClickCapture={this._toggle}>
@@ -129,58 +134,85 @@ export class SideNav extends React.Component<SideNavProps, SideNavState>
                     </div>
 
                     <div className='SideNav-items'>
-                        {Environment.setup.enabled ?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('setup')}>Setup</Link>
+                        <Link
+                            className='SideNav-item'
+                            to={LinkUtils.make('')}>
+                            <div className='SideNav-item-icon'>
+                                <FontAwesomeIcon icon={faGrip} />
                             </div>
-                        : null}
-                        
-                        {!this.state.user && !Environment.setup.enabled ?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('login')}>Login</Link>
+                            <div className='SideNav-item-label'>
+                                Dashboard
                             </div>
-                        : null}
-                        
-                        {this.state.user && !Environment.setup.enabled?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make()}>Dashboard</Link>
-                            </div>
-                        : null}
-                        
-                        {this.state.user && !Environment.setup.enabled?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('hosts')}>Hosts</Link>
-                            </div>
-                        : null}
+                        </Link>
 
-                        {this.state.user && !Environment.setup.enabled?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('agents')}>Agents</Link>
+                        <Link
+                            className='SideNav-item'
+                            to={LinkUtils.make('hosts')}>
+                            <div className='SideNav-item-icon'>
+                                <FontAwesomeIcon icon={faLandmark} />
                             </div>
-                        : null}
-                        
-                        {this.state.user && !Environment.setup.enabled?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('tags')}>Tags</Link>
+                            <div className='SideNav-item-label'>
+                                Hosts
                             </div>
-                        : null}
-                        
-                        {this.state.user && !Environment.setup.enabled?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('notifiers')}>Notifiers</Link>
+                        </Link>
+
+                        <Link
+                            className='SideNav-item'
+                            to={LinkUtils.make('agents')}>
+                            <div className='SideNav-item-icon'>
+                                <FontAwesomeIcon icon={faSpaghettiMonsterFlying} />
                             </div>
+                            <div className='SideNav-item-label'>
+                                Agents
+                            </div>
+                        </Link>
+                    
+                        <Link
+                            className='SideNav-item'
+                            to={LinkUtils.make('tags')}>
+                            <div className='SideNav-item-icon'>
+                                <FontAwesomeIcon icon={faTags} />
+                            </div>
+                            <div className='SideNav-item-label'>
+                                Tags
+                            </div>
+                        </Link>
+                    
+                        <Link
+                            className='SideNav-item'
+                            to={LinkUtils.make('notifiers')}>
+                            <div className='SideNav-item-icon'>
+                                <FontAwesomeIcon icon={faEnvelope} />
+                            </div>
+                            <div className='SideNav-item-label'>
+                                Notifiers
+                            </div>
+                        </Link>
+
+                        {isAdmin(this.state.user) ?
+                            <Link
+                                className='SideNav-item'
+                                to={LinkUtils.make('users')}>
+                                <div className='SideNav-item-icon'>
+                                    <FontAwesomeIcon icon={faCircleUser} />
+                                </div>
+                                <div className='SideNav-item-label'>
+                                    Users
+                                </div>
+                            </Link>
                         : null}
                         
                         {isAdmin(this.state.user) && !Environment.setup.enabled?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('users')}>Users</Link>
-                            </div>
-                        : null}
-                        
-                        {isAdmin(this.state.user) && !Environment.setup.enabled?
-                            <div className='SideNav-item'>
-                                <Link to={LinkUtils.make('config')}>Config</Link>
-                            </div>
+                            <Link
+                                className='SideNav-item'
+                                to={LinkUtils.make('config')}>
+                                <div className='SideNav-item-icon'>
+                                    <FontAwesomeIcon icon={faGear} />
+                                </div>
+                                <div className='SideNav-item-label'>
+                                    Config
+                                </div>
+                            </Link>
                         : null}
                     </div>
 
@@ -199,7 +231,9 @@ export class SideNav extends React.Component<SideNavProps, SideNavState>
                             </Link>
                             
                             <div className='SideNav-user-actions'>
-                                <FontAwesomeIcon icon={faSignOut} onClick={this._logout} />
+                                <div className='SideNav-user-action'>
+                                    <FontAwesomeIcon icon={faSignOut} onClick={this._logout} />
+                                </div>
                             </div>
                         </div>
                     : null}

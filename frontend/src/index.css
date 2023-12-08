@@ -14,7 +14,10 @@ code {
 
 * {
   --color-primary: #675999;  
-  --color-error: #DE7D75;
-  --color-warning: #B4B441;
-  --color-ok: #A9DC96;
+  --color-error: #f44f3b;
+  --color-error-light: #fec5b6;
+  --color-warning: #b3b34f;
+  --color-warning-light: #fff5cb;
+  --color-ok: #4fb391;
+  --color-ok-light: #83fffe;
 }

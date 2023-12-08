@@ -1,23 +1,34 @@
+.HostPage-tags {
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.HostPage-actions {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 .HostPage-check-status {
     padding: 10px 10px;
     color: #333;
     width: 60px;
     text-align: center;
-    height: 45px;
-    line-height: 45px;
+    height: 58px;
+    line-height: 58px;
 }
 
 .HostPage-check-status.status-ok {
     background: var(--color-ok);
-    color: #333;
+    color: var(--color-ok-light);
 }
 
 .HostPage-check-status.status-warning {
     background: var(--color-warning);
-    color: #fff;
+    color: var(--color-warning-light);
 }
 
 .HostPage-check-status.status-critical {
     background: var(--color-error);
-    color: #fff;
+    color: var(--color-error-light);
 }

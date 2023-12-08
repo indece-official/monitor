@@ -31,5 +31,223 @@
     },
     "/v1/setup/finish": {
         "post": {}
+    },
+    "/v1/host": {
+        "get": {
+            "hosts": [
+                {
+                    "name": "hst-01.example.com",
+                    "status": {
+                        "count_critical": 0,
+                        "count_ok": 11,
+                        "count_unknown": 0,
+                        "count_warning": 1
+                    },
+                    "tags": [
+                        {
+                            "color": "#f00",
+                            "name": "production",
+                            "uid": "uid-tag-01"
+                        }
+                    ],
+                    "uid": "uid-hst-01"
+                },
+                {
+                    "name": "hst-02.example.com",
+                    "status": {
+                        "count_critical": 0,
+                        "count_ok": 9,
+                        "count_unknown": 0,
+                        "count_warning": 4
+                    },
+                    "tags": [
+                        {
+                            "color": "#f00",
+                            "name": "production",
+                            "uid": "uid-tag-01"
+                        }
+                    ],
+                    "uid": "uid-hst-02"
+                },
+                {
+                    "name": "hst-03.example.com",
+                    "status": {
+                        "count_critical": 0,
+                        "count_ok": 7,
+                        "count_unknown": 1,
+                        "count_warning": 1
+                    },
+                    "tags": [
+                        {
+                            "color": "#f00",
+                            "name": "production",
+                            "uid": "uid-tag-01"
+                        }
+                    ],
+                    "uid": "uid-hst-03"
+                },
+                {
+                    "name": "hst-04.example.com",
+                    "status": {
+                        "count_critical": 1,
+                        "count_ok": 5,
+                        "count_unknown": 0,
+                        "count_warning": 1
+                    },
+                    "tags": [],
+                    "uid": "uid-hst-04"
+                },
+                {
+                    "name": "hst-05.example.com",
+                    "status": {
+                        "count_critical": 0,
+                        "count_ok": 10,
+                        "count_unknown": 0,
+                        "count_warning": 0
+                    },
+                    "tags": [
+                        {
+                            "color": "#f00",
+                            "name": "production",
+                            "uid": "uid-tag-01"
+                        }
+                    ],
+                    "uid": "uid-hst-05"
+                },
+                {
+                    "name": "hst-06.example.com",
+                    "status": {
+                        "count_critical": 0,
+                        "count_ok": 10,
+                        "count_unknown": 0,
+                        "count_warning": 1
+                    },
+                    "tags": [
+                        {
+                            "color": "#f00",
+                            "name": "production",
+                            "uid": "uid-tag-01"
+                        }
+                    ],
+                    "uid": "uid-hst-06"
+                }
+            ]
+        }
+    },
+    "/v1/host/*/check": {
+        "get": {
+            "checks": [
+                {
+                    "checker_uid": "uid-ckr-01",
+                    "custom": false,
+                    "disabled": false,
+                    "name": "APT-Updates",
+                    "status": {
+                        "data": {
+                            "count_available": 12,
+                            "count_security": 7
+                        },
+                        "datetime_created": "2023-12-08T01:04:05.038957715Z",
+                        "message": "12 update(s) are available (including 7 security updates)",
+                        "status": "CRITICAL",
+                        "uid": "uid-sta-01"
+                    },
+                    "uid": "uid-chk-01"
+                },
+                {
+                    "checker_uid": "uid-ckr-02",
+                    "custom": false,
+                    "disabled": false,
+                    "name": "CPU",
+                    "status": {
+                        "data": {
+                            "count": 2,
+                            "load_1": 0.05,
+                            "load_15": 0.03,
+                            "load_15_percent": 1.5,
+                            "load_1_percent": 2.5,
+                            "load_5": 0.1,
+                            "load_5_percent": 5
+                        },
+                        "datetime_created": "2023-12-08T18:54:07.529261851Z",
+                        "message": "Load(1) = 0.05, Load(5) = 0.10, Load(15) = 0.03 for 2 cores",
+                        "status": "WARNING",
+                        "uid": "uid-sta-02"
+                    },
+                    "uid": "uid-chk-02"
+                },
+                {
+                    "checker_uid": "uid-ckr-03",
+                    "custom": false,
+                    "disabled": false,
+                    "name": "Disk /",
+                    "status": {
+                        "data": {
+                            "total": 100594069504,
+                            "used": 29352157184,
+                            "used_percent": 31
+                        },
+                        "datetime_created": "2023-12-08T18:54:07.780550265Z",
+                        "message": "30.7% (29.4 GB of 100.6 GB) used of filesystem /dev/sda1 mounted on / (ext2/ext3)",
+                        "status": "OK",
+                        "uid": "uid-sta-03"
+                    },
+                    "uid": "uid-chk-03"
+                },
+                {
+                    "checker_uid": "uid-ckr-03",
+                    "custom": false,
+                    "disabled": false,
+                    "name": "Disk /mnt/volume-nbg1-1",
+                    "status": {
+                        "data": {
+                            "total": 211182620672,
+                            "used": 91888402432,
+                            "used_percent": 46
+                        },
+                        "datetime_created": "2023-12-08T18:54:08.268771718Z",
+                        "message": "45.8% (91.9 GB of 211.2 GB) used of filesystem /dev/sdb mounted on /mnt/volume-nbg1-1 (ext2/ext3)",
+                        "status": "UNKNOWN",
+                        "uid": "uid-sta-04"
+                    },
+                    "uid": "uid-chk-04"
+                },
+                {
+                    "checker_uid": "uid-ckr-04",
+                    "custom": true,
+                    "disabled": false,
+                    "name": "Docker-Container testcontainer",
+                    "status": {
+                        "data": {},
+                        "datetime_created": "2023-12-08T18:54:08.463783009Z",
+                        "message": "Docker container testcontainer (aabbccddeeff) is running (postgres:latest)",
+                        "status": "OK",
+                        "uid": "uid-sta-05"
+                    },
+                    "uid": "uid-chk-05"
+                }
+            ]
+        }
+    },
+    "/v1/host/*": {
+        "get": {
+            "host": {
+                "name": "hst-01.example.com",
+                "status": {
+                    "count_critical": 0,
+                    "count_ok": 11,
+                    "count_unknown": 0,
+                    "count_warning": 1
+                },
+                "tags": [
+                    {
+                        "color": "#f00",
+                        "name": "production",
+                        "uid": "uid-tag-01"
+                    }
+                ],
+                "uid": "uid-hst-01"
+            }
+        }
     }
 }

@@ -1,5 +1,8 @@
 .ListEmpty {
     border: 1px solid #666;
+    border: none;
+    background: #fff;
+    border-radius: 10px;
     color: #777;
     margin-bottom: 20px;
     text-align: center;
@@ -8,10 +11,15 @@
 
 .ListItem {
     border: 1px solid #333;
+    border: none;
+    background: #fff;
+    border-radius: 10px;
     margin-bottom: 20px;
     text-decoration: none;
     color: inherit;
     display: block;
+    overflow: hidden;
+    box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
 }
 
 .ListItem.color-red {
@@ -61,6 +69,7 @@
     border-left: 1px solid #333;
     padding: 2px 10px;
     height: 100%;
+    margin: 12px 0;
     text-decoration: none;
     color: inherit;
 }

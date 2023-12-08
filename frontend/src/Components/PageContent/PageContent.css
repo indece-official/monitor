@@ -1,8 +1,7 @@
 .PageContent .PageContent-inner {
-    margin: 0 auto;
+    margin-left: calc(max((100% - 1300px) / 2, 10px));
     width: 900px;
     max-width: calc(100vw - 20px);
-    padding: 20px;
     min-height: 100vh;
 }
 
@@ -11,7 +10,7 @@
 }
 
 .PageContent.full .PageContent-inner {
-    width: 100%;
+    width: 1300px;
 }
 
 .PageContent.centered .PageContent-inner {

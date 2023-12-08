@@ -74,7 +74,7 @@
 
 .InputText.error .InputText-label,
 .InputTextarea.error .InputTextarea-label {
-    color: #ff0000;
+    color:  var(--color-error);
 }
 
 .InputText-error,
@@ -84,10 +84,10 @@
 .InputMultiSelect-error {
     margin-top: 12px;
     margin-bottom: 15px;
-    color: #ff0000;
+    color:  var(--color-error);
     text-align: left;
     display: block;
-    background: #ffcccc;
+    background:  var(--color-error-light);
     padding: 5px 20px;
     border-radius: 2px;
     position: relative;
@@ -107,7 +107,7 @@
     height: 0;
     border-style: solid;
     border-width: 0 10px 10px 10px;
-    border-color: transparent transparent #ffcccc transparent;
+    border-color: transparent transparent var(--color-error-light) transparent;
 }
 
 .InputText input[type=text],
@@ -204,7 +204,7 @@
 }
 
 .InputCheckbox.error .InputCheckbox-field {
-    color: #ff0000;
+    color: var(--color-error);
 }
 
 .InputCheckbox input[type=checkbox] {

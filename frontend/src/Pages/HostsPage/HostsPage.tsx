@@ -13,7 +13,7 @@ import { ListItemHeaderField } from '../../Components/List/ListItemHeaderField';
 import { ListItemHeader } from '../../Components/List/ListItemHeader';
 import { ListItemHeaderAction } from '../../Components/List/ListItemHeaderAction';
 import { isAdmin, UserService, UserV1 } from '../../Services/UserService';
-import { PageContent, PageContentSize } from '../../Components/PageContent/PageContent';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface HostsPageProps

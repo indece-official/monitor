@@ -4,6 +4,7 @@
   flex-wrap: nowrap;
   min-height: calc(100vh - 50px);
   width: 100%;
+  background: #556266;
 }
 
 .App-content .SideNav {

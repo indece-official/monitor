@@ -1,13 +1,14 @@
 
 .DashboardPage-hosts {
     display: grid;
-    grid-template-columns: 33% 33% 33%;
+    grid-template-columns: 350px 350px 350px;
+    grid-gap: 30px;
+    justify-content: space-between;
 }
 
 .DashboardPage-host {
-    max-width: 300px;
-    border-radius: 3px;
-    margin: 5px;
+    max-width: 350px;
+    border-radius: 10px;
     box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
     display: flex;
     flex-wrap: nowrap;
@@ -18,7 +19,8 @@
     position: relative;
     border: 1px solid #eee;
     cursor: pointer;
-    height: 100px;
+    background: #fff;
+    border: none;
 }
 
 .DashboardPage-host.status-ok {
@@ -36,11 +38,12 @@
 .DashboardPage-host-status {
     flex-grow: 0;
     flex-shrink: 0;
-    width: 50px;
+    width: 70px;
     align-self: stretch;
     border-top-left-radius: 3px;
     border-bottom-left-radius: 3px;
     display: flex;
+    letter-spacing: 1px;
 }
 
 .DashboardPage-host-status > div {
@@ -52,24 +55,26 @@
 }
 
 .DashboardPage-host.status-ok .DashboardPage-host-status > div {
-    color: #333;
+    color: var(--color-ok-light);
 }
 
 .DashboardPage-host.status-warning .DashboardPage-host-status > div {
-    color: #fff;
+    color: var(--color-warning-light);
 }
 
 .DashboardPage-host.status-critical .DashboardPage-host-status > div {
-    color: #fff;
+    color: var(--color-error-light);
 }
 
 .DashboardPage-host-details {
     border-left: 1px solid #333;
     flex-grow: 1;
-    padding: 5px 10px;
+    padding: 0 10px;
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
+    height: 70px;
+    margin: 20px 0;
 }
 
 .DashboardPage-host.status-ok .DashboardPage-host-details {
@@ -77,11 +82,11 @@
 }
 
 .DashboardPage-host.status-warning .DashboardPage-host-details {
-    border-left-color: #fff;
+    border-left-color: #333;
 }
 
 .DashboardPage-host.status-critical .DashboardPage-host-details {
-    border-left-color: #fff;
+    border-left-color: #333;
 }
 
 .DashboardPage-host-name {
@@ -91,13 +96,13 @@
 }
 
 .DashboardPage-host-tags {
-    flex-grow: 0;
-    flex-shrink: 0;
+    flex-grow: 1;
+    flex-shrink: 1;
 }
 
 .DashboardPage-host-message {
     margin-top: 5px;
-    flex-grow: 1;
+    flex-grow: 0;
     flex-shrink: 0;
 }
 

@@ -1,10 +1,10 @@
 .Button {
-    background: #fff;
-    color: #2b2b2b;
-    border: 2px solid #2b2b2b;
-    border-radius: 0;
+    background: #b6b63f;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
     letter-spacing: 1px;
-    padding: 10px 20px;
+    padding: 15px 20px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color ease 0.3s, border-color ease 0.3s, color ease 0.3s;
@@ -13,7 +13,9 @@
     box-sizing: border-box;
     font-family: 'Muli', sans-serif;
     text-transform: uppercase;
-    margin: 10px 0;
+    margin-bottom: 20px;
+    margin-right: 20px;
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.1);
 }
 
 .Button.disabled {
@@ -24,11 +26,11 @@
 
 .Button:not(.disabled):hover,
 .Button:not(.disabled).active {
-    background-color: #336068;
+    background: #96961f;
     color: #fff;
     border-color: #336068;
 }
 
 .Button svg {
-    padding: 0 10px;
+    padding-right: 10px;
 }
