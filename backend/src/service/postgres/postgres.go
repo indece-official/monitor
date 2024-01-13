@@ -19,6 +19,7 @@ package postgres
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/indece-official/go-gousu/gousupostgres/v2"
 	"github.com/indece-official/go-gousu/v2/gousu"
@@ -65,6 +66,7 @@ type IService interface {
 
 	AddCheckStatus(qctx context.Context, pgCheckStatus *model.PgCheckStatusV1) error
 	GetCheckStatuses(qctx context.Context, filter *GetCheckStatusesFilter) ([]*model.PgCheckStatusV1, error)
+	DeleteCheckStatusByAge(qctx context.Context, maxAge time.Duration) error
 
 	AddTag(qctx context.Context, pgTag *model.PgTagV1) error
 	UpdateTag(qctx context.Context, tagUID string, pgTag *model.PgTagV1) error

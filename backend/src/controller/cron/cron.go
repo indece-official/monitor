@@ -154,6 +154,24 @@ func (c *Controller) Start() error {
 		c.waitGroupStop.Done()
 	}()
 
+	c.waitGroupStop.Add(1)
+	go func() {
+		for !c.stop {
+			c.error = nil
+
+			err := c.cleanupLoop()
+			if err != nil {
+				c.error = err
+
+				c.log.Errorf("Error in cleanup loop: %s", err)
+			}
+
+			time.Sleep(5 * time.Second)
+		}
+
+		c.waitGroupStop.Done()
+	}()
+
 	c.scheduler.StartAsync()
 
 	return nil

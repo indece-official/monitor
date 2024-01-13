@@ -11,6 +11,7 @@ import { CheckerService, CheckerV1 } from '../../Services/CheckerService';
 import { HostService, HostV1 } from '../../Services/HostService';
 import { AgentService, AgentV1 } from '../../Services/AgentService';
 import { sleep } from 'ts-delay';
+import { PageContent } from '../../Components/PageContent/PageContent';
 
 
 export interface EditCheckPageRouteParams
@@ -183,7 +184,7 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
     public render ( )
     {
         return (
-            <div className='EditCheckPage'>
+            <PageContent>
                 <h1>Edit check</h1>
 
                 <ErrorBox error={this.state.error} />
@@ -229,7 +230,7 @@ class $EditCheckPage extends React.Component<EditCheckPageProps, EditCheckPageSt
                 <SuccessBox message={this.state.success} />
 
                 <Spinner active={this.state.loading} />
-            </div>
+            </PageContent>
         );
     }
 }

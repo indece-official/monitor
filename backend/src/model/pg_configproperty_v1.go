@@ -27,6 +27,7 @@ const (
 	PgConfigPropertyV1KeyTLSServerKey  PgConfigPropertyV1Key = "tls_server_key"
 	PgConfigPropertyV1KeyAgentHost     PgConfigPropertyV1Key = "agent_host"
 	PgConfigPropertyV1KeyAgentPort     PgConfigPropertyV1Key = "agent_port"
+	PgConfigPropertyV1KeyHistoryMaxAge PgConfigPropertyV1Key = "history_max_age"
 )
 
 const (
@@ -48,6 +49,7 @@ var PgConfigPropertyV1Protections = map[PgConfigPropertyV1Key]PgConfigPropertyV1
 	PgConfigPropertyV1KeyTLSServerCrt:  PgConfigPropertyV1ProtectionProtected,
 	PgConfigPropertyV1KeyAgentHost:     PgConfigPropertyV1ProtectionPublic,
 	PgConfigPropertyV1KeyAgentPort:     PgConfigPropertyV1ProtectionPublic,
+	PgConfigPropertyV1KeyHistoryMaxAge: PgConfigPropertyV1ProtectionPublic,
 }
 
 type PgConfigPropertyV1 struct {

@@ -1180,6 +1180,7 @@ components:
         - TLS_SERVER_CRT
         - AGENT_HOST
         - AGENT_PORT
+        - HISTORY_MAX_AGE
 
     ConfigPropertyV1:
       type: object

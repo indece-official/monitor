@@ -35,6 +35,8 @@ func (c *Controller) mapPgConfigPropertyV1KeyToAPIConfigPropertyV1Key(pgConfigPr
 		return apipublic.AGENTHOST, nil
 	case model.PgConfigPropertyV1KeyAgentPort:
 		return apipublic.AGENTPORT, nil
+	case model.PgConfigPropertyV1KeyHistoryMaxAge:
+		return apipublic.HISTORYMAXAGE, nil
 	default:
 		return "", fmt.Errorf("invalid config property key: %s", pgConfigPropertyKey)
 	}
@@ -46,6 +48,8 @@ func (c *Controller) mapAPIConfigPropertyV1KeyToPgConfigPropertyV1Key(apiConfigP
 		return model.PgConfigPropertyV1KeyAgentHost, nil
 	case apipublic.AGENTPORT:
 		return model.PgConfigPropertyV1KeyAgentPort, nil
+	case apipublic.HISTORYMAXAGE:
+		return model.PgConfigPropertyV1KeyHistoryMaxAge, nil
 	default:
 		return "", fmt.Errorf("invalid config property key: %s", apiConfigPropertyKey)
 	}

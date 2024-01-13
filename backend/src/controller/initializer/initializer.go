@@ -103,6 +103,20 @@ func (c *Controller) Start() error {
 		}
 	}
 
+	if pgConfigProperties[model.PgConfigPropertyV1KeyHistoryMaxAge] == nil {
+		c.log.Infof("Setting default value for history max age (90d)")
+
+		pgConfigProperty := &model.PgConfigPropertyV1{}
+
+		pgConfigProperty.Key = model.PgConfigPropertyV1KeyHistoryMaxAge
+		pgConfigProperty.Value = (90 * 24 * time.Hour).String()
+
+		err = c.postgresService.UpsertConfigProperty(ctx, pgConfigProperty)
+		if err != nil {
+			return fmt.Errorf("error setting history max age config property: %s", err)
+		}
+	}
+
 	return nil
 }
 
